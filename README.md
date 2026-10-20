@@ -6,7 +6,7 @@ GatorStomp is a digital guitar pedal designed for guitarists who want to use the
 TODO
 
 ## Documentation
-This project uses Sphinx for it's documentation. The documentation is hosted [here](TODO).
+This project uses Sphinx for it's documentation. The documentation is hosted [here](https://casezumbrum.github.io/GatorStomp/).
 
 It can be built with the following commands.
 
