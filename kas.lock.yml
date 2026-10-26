@@ -1,0 +1,10 @@
+header:
+  version: 14
+overrides:
+  repos:
+    poky:
+      commit: 104772c5fd0653290cbb5e4b77813343957939cc
+    meta-arm:
+      commit: 0a4b911d9fd63ab29c4532a907fae3282dbdcfe4
+    meta-ti:
+      commit: 760bcd6af8cb13cf9c56c460e4dd0fdba6ea5b79
