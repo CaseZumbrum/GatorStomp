@@ -1,0 +1,17 @@
+.. _exhale_struct_structgs__socket__msg:
+
+Struct gs_socket_msg
+====================
+
+- Defined in :ref:`file_gs_socket_api_include_packet_structure.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: gs_socket_msg
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:

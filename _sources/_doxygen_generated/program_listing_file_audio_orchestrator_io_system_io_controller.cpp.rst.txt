@@ -1,0 +1,89 @@
+
+.. _program_listing_file_audio_orchestrator_io_system_io_controller.cpp:
+
+Program Listing for File io_controller.cpp
+==========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_orchestrator_io_system_io_controller.cpp>` (``audio_orchestrator/io_system/io_controller.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #include "io_controller.h"
+   
+   #include <sys/socket.h>
+   #include <sys/un.h>
+   #include <unistd.h>
+   
+   #include <cstring>
+   #include <iostream>
+   #include <cerrno>
+   
+   IO_Controller::IO_Controller(std::string socket_path){
+   
+       this->socket_path = socket_path;
+   
+       this->fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
+       if (this->fd == -1) {
+           throw std::runtime_error("Failed to open fd");
+       }
+   
+       this->addr.sun_family = AF_UNIX;
+   
+       if (std::strlen(this->socket_path.c_str()) >= sizeof(this->addr.sun_path)) {
+           close(this->fd);
+           throw std::runtime_error("Socket path is too long, failed to open");
+       }
+   
+       std::strncpy(this->addr.sun_path, this->socket_path.c_str(),
+                    sizeof(this->addr.sun_path) - 1);
+   
+       unlink(this->socket_path.c_str());
+   
+       if (bind(this->fd, reinterpret_cast<sockaddr*>(&this->addr),
+                sizeof(this->addr)) == -1) {
+           close(this->fd);
+           perror("bind");
+           throw std::runtime_error("Failed to bind the socket to the filesystem");
+       }
+   
+       if (listen(this->fd, 5) == -1) {
+           close(this->fd);
+           unlink(this->socket_path.c_str());
+           throw std::runtime_error("Did not receive any client conections");
+       }
+   
+       this->clients.push_back(accept(this->fd, nullptr, nullptr));
+       if (this->clients.back() == -1) {
+           close(this->fd);
+           unlink(this->socket_path.c_str());
+           throw std::runtime_error("Failed to accept the client connection received");
+       }
+   
+   }
+   
+   IO_Controller::~IO_Controller(){
+   
+       for(auto client: this->clients){
+           close(client);
+       }
+   
+       close(this->fd);
+       unlink(this->socket_path.c_str());
+   }
+   
+   bool IO_Controller::send_msg(gs_socket_msg* msg, int client_index){
+       if (write(this->clients[client_index], msg, sizeof(gs_socket_msg)) == -1) {
+           return false;
+       }
+       return true;
+   }
+   
+   bool IO_Controller::recv_msg(gs_socket_msg* msg, int client_index){
+       if (read(this->clients[client_index], msg, sizeof(gs_socket_msg)) < 0){
+           return false;
+       }
+       return true;
+   }

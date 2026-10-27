@@ -1,0 +1,62 @@
+:orphan:
+
+
+Full API
+========
+
+Directories
+***********
+
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_audio_orchestrator.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_audio_orchestrator_io_system.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_gs_socket_api.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_gs_socket_api_include.rst
+
+Files
+*****
+
+
+.. toctree::
+   :maxdepth: 5
+
+   file_audio_orchestrator_io_system_io_controller.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_audio_orchestrator_io_system_io_controller.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_audio_orchestrator_main.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_gs_socket_api_include_packet_structure.h.rst
+
+Pages
+*****
+
+
+.. toctree::
+   :maxdepth: 5
+
+   page_todo.rst

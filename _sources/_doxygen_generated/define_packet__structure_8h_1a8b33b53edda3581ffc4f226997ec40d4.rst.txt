@@ -1,0 +1,14 @@
+.. _exhale_define_packet__structure_8h_1a8b33b53edda3581ffc4f226997ec40d4:
+
+Define GS_SOCKET_PATH
+=====================
+
+- Defined in :ref:`file_gs_socket_api_include_packet_structure.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: GS_SOCKET_PATH
+   :project: GatorStomp

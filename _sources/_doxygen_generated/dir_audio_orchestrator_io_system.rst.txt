@@ -1,0 +1,22 @@
+.. _dir_audio_orchestrator_io_system:
+
+
+Directory io_system
+===================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator>` (``audio_orchestrator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+*Directory path:* ``audio_orchestrator/io_system``
+
+
+Files
+-----
+
+- :ref:`file_audio_orchestrator_io_system_io_controller.cpp`
+- :ref:`file_audio_orchestrator_io_system_io_controller.h`
+
+

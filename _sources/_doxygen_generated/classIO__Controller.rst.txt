@@ -1,0 +1,17 @@
+.. _exhale_class_classIO__Controller:
+
+Class IO_Controller
+===================
+
+- Defined in :ref:`file_audio_orchestrator_io_system_io_controller.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: IO_Controller
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:

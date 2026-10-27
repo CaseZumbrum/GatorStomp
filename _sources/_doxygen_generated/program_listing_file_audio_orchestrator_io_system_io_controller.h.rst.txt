@@ -1,0 +1,41 @@
+
+.. _program_listing_file_audio_orchestrator_io_system_io_controller.h:
+
+Program Listing for File io_controller.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_orchestrator_io_system_io_controller.h>` (``audio_orchestrator/io_system/io_controller.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <packet_structure.h>
+   
+   #include <string>
+   #include <array>
+   #include <vector>
+   #include <sys/socket.h>
+   #include <sys/un.h>
+   
+   #define BUFFER_SIZE 128
+   
+   class IO_Controller{
+       private:
+           std::string socket_path = GS_SOCKET_PATH;
+           std::array<gs_socket_msg, BUFFER_SIZE> input_buffer;
+           std::array<gs_socket_msg, BUFFER_SIZE> output_buffer;
+   
+           std::vector<int> clients;
+   
+           int fd;
+           sockaddr_un addr{};
+   
+       public:
+           IO_Controller(std::string socket_path);
+           ~IO_Controller();
+           bool send_msg(gs_socket_msg* msg, int client_index);
+           bool recv_msg(gs_socket_msg* msg, int client_index);
+   };

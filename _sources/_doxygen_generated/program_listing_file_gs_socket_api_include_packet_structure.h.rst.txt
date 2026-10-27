@@ -1,0 +1,34 @@
+
+.. _program_listing_file_gs_socket_api_include_packet_structure.h:
+
+Program Listing for File packet_structure.h
+===========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_gs_socket_api_include_packet_structure.h>` (``gs_socket_api/include/packet_structure.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <stdint.h>
+   
+   #define GS_SOCKET_PATH "/run/gatorstomp/orchestrator.sock"   /* proposed */
+   
+   enum gs_msg_type : uint8_t {
+       GS_MSG_ACK    = 0,
+       GS_MSG_BUTTON = 1,
+       GS_MSG_TWEAK = 2,
+       GS_MSG_VOLUME = 3,
+       GS_MSG_UNUSED = 4
+   };
+   
+   struct [[gnu::packed]] gs_socket_msg {
+       gs_msg_type type;
+       uint8_t id;
+       int8_t value;
+       int64_t time_ms;
+   };
+   
+   static_assert(sizeof(gs_socket_msg) == 11, "gs_socket_msg must be 12 bytes (Python mirror: '<BBBq')");
