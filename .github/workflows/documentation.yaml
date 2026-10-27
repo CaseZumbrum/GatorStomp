@@ -2,7 +2,7 @@ name: documentation
 
 on:
   push:
-    branches: [gat-41-define-interface-for-io-of-the-audio-orchestrator]
+    branches: [main]
 
 permissions:
   contents: write
@@ -27,7 +27,7 @@ jobs:
           make html
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/gat-41-define-interface-for-io-of-the-audio-orchestrator' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
