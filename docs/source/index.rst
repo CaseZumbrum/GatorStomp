@@ -13,6 +13,14 @@ For working with ``rst`` syntax, look into `reStructuredText <https://www.sphinx
 Building the docs
 -----------------
 
+To build the code you will need doxygen installed on your system, this can be installed on linux with
+
+.. code-block:: bash
+
+   sudo apt install doxygen
+
+or via this download link `here <https://www.doxygen.nl/download.html>`_
+
 .. code-block:: bash
 
    python -m venv .venv
@@ -27,4 +35,7 @@ Building the docs
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   building.rst
+   _doxygen_generated/library_root
 
