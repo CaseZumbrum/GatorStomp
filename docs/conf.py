@@ -34,7 +34,7 @@ html_static_path = ["source/_static"]
 exhale_args = {
     # Required Arguments
     "containmentFolder": "./source/_doxygen_generated",  # Where Exhale will generate the .rst files
-    "rootFileName": "library_root.rst",  # The main landing page for your API
+    "rootFileName": "doxygen.rst",  # The main landing page for your API
     "doxygenStripFromPath": "../src",  # Strip source prefix from file paths
     # Suggested Arguments
     "rootFileTitle": "Doxygen Documentation",  # Title of the main API page
