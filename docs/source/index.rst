@@ -30,7 +30,7 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
 
 .. note::
 
-   This will create an `index.html` file in `docs/build`
+   This will create an `index.html` file in `docs/build/html`
 
 .. toctree::
    :maxdepth: 2
