@@ -33,8 +33,10 @@ struct [[gnu::packed]] gs_socket_msg {
     gs_msg_type type;
     /** @brief which peripheral is sending this. 0->3 for GS_MSG_BUTTON and GS_MSG_TWEAK, unused for others */
     uint8_t id;
-    /** @brief Value for the event, 0->1 for GS_MSG_BUTTON, -254->255 for GS_MSG_TWEAK and GS_MSG_VOLUME, unused for others*/
-    int16_t value;
+    /** @brief Value for the event, 0->1 for GS_MSG_BUTTON, -128->127 for GS_MSG_TWEAK and GS_MSG_VOLUME, unused for others*/
+    int8_t value;
     /** @brief time since epoch in ms */
     int64_t time_ms;
 };
+
+static_assert(sizeof(gs_socket_msg) == 11, "gs_socket_msg must be 12 bytes (Python mirror: '<BBBq')");

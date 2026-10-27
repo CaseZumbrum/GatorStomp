@@ -12,7 +12,7 @@ GS_MSG_TWEAK = 2
 GS_MSG_VOLUME = 3
 GS_MSG_UNUSED = 4
 
-MSG_FORMAT = "<BBhq"
+MSG_FORMAT = "<BBBq"
 MSG_SIZE = struct.calcsize(MSG_FORMAT)
 
 assert MSG_SIZE == 12
