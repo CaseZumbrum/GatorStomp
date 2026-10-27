@@ -37,5 +37,5 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    :caption: Contents:
 
    building.rst
-   _doxygen_generated/library_root
+   _doxygen_generated/doxygen
 
