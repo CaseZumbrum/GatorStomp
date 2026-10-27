@@ -1,0 +1,36 @@
+header:
+  version: 14
+
+machine: pocketbeagle2
+distro: poky
+target: core-image-minimal
+
+repos:
+  poky:
+    url: https://git.yoctoproject.org/poky
+    branch: scarthgap
+    path: yocto/poky
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-arm:
+    url: https://git.yoctoproject.org/meta-arm
+    branch: scarthgap
+    path: yocto/meta-arm
+    layers:
+      meta-arm-toolchain:
+      meta-arm:
+
+  meta-ti:
+    url: https://git.yoctoproject.org/meta-ti
+    branch: scarthgap
+    path: yocto/meta-ti
+    layers:
+      meta-ti-bsp:
+      meta-beagle:
+
+  gatorstomp:
+    layers:
+      meta-gatorstomp:

@@ -11,5 +11,10 @@ CMakeCache.txt
 .venv/
 .mypy_cache/
 
+# Layer example files
+meta-gatorstomp/COPYING.MIT
+meta-gatorstomp/README
+meta-gatorstomp/recipes-example/
+
 # vscode settings folder
 .vscode/
