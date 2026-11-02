@@ -18,3 +18,6 @@ meta-gatorstomp/recipes-example/
 
 # vscode settings folder
 .vscode/
+
+# Don't add any layers or stuff from layers for yocto
+/yocto/
