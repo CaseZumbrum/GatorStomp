@@ -39,3 +39,4 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    building.rst
    _doxygen_generated/doxygen
 
+   yocto_setup
