@@ -5,6 +5,11 @@
  * A simulated peripheral connects during startup. Blocking accept happens before
  * audio starts; blocking recv_msg runs on a dedicated control thread, never in
  * the PCM loop. This is a test/example, not an alternative product orchestrator.
+ * PCM access uses only borrowed FDs and POSIX read/write; frame helpers must not
+ * be mixed with direct access. The library closes both FDs during finish/abort.
+ * This executable ignores SIGPIPE before starting threads so write() reports
+ * EPIPE. An embedding application must choose its own SIGPIPE policy. Direct
+ * syscalls have no library timeout; production cancellation is caller-managed.
  */
 #include "audio_io_process.h"
 #include "io_system/io_controller.h"
@@ -17,8 +22,10 @@
 #include <future>
 #include <iostream>
 #include <stdexcept>
+#include <system_error>
 #include <thread>
 #include <vector>
+#include <signal.h>
 #include <unistd.h>
 
 /** @brief Controlled peer for the current constructor's blocking accept(). */
@@ -44,12 +51,57 @@ static bool simulate_peripheral(const std::string &path)
     return ok;
 }
 
+/** @brief Fill a PCM block, retaining short reads until full or capture EOF.
+ * @return Complete bytes, including a short final block; zero means EOF.
+ * @throws std::system_error On a read failure other than EINTR.
+ * @throws std::runtime_error If EOF truncates a six-byte frame.
+ */
+static size_t read_pcm_block(int fd, uint8_t *buffer, size_t capacity)
+{
+    size_t used = 0;
+    while (used < capacity) {
+        ssize_t count = read(fd, buffer + used, capacity - used);
+        if (count > 0) {
+            used += static_cast<size_t>(count);
+        } else if (count == 0) {
+            break;
+        } else if (errno != EINTR) {
+            throw std::system_error(errno, std::generic_category(), "Capture read");
+        }
+    }
+    if (used % AUDIO_IO_FRAME_BYTES)
+        throw std::runtime_error("Capture EOF inside a PCM frame");
+    return used;
+}
+
+/** @brief Retry short writes/EINTR; EPIPE is terminal and leads to abort(). */
+static void write_pcm_block(int fd, const uint8_t *buffer, size_t bytes)
+{
+    size_t used = 0;
+    while (used < bytes) {
+        ssize_t count = write(fd, buffer + used, bytes - used);
+        if (count > 0) {
+            used += static_cast<size_t>(count);
+        } else if (count == 0) {
+            throw std::runtime_error("Playback write made no progress");
+        } else if (errno != EINTR) {
+            throw std::system_error(errno, std::generic_category(), "Playback write");
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2 && argc != 3) {
         std::cerr << "Usage: " << argv[0] << " /path/to/audio_io_worker [block_frames]\n";
         return EXIT_FAILURE;
     }
+    // Application policy, not a library side effect. Install before threads.
+    struct sigaction ignore_pipe{};
+    ignore_pipe.sa_handler = SIG_IGN;
+    sigemptyset(&ignore_pipe.sa_mask);
+    if (sigaction(SIGPIPE, &ignore_pipe, nullptr) < 0)
+        return EXIT_FAILURE;
     char temporary[] = "/tmp/gatorstomp-process-XXXXXX";
     if (!mkdtemp(temporary))
         return EXIT_FAILURE;
@@ -96,19 +148,24 @@ int main(int argc, char **argv)
         config.output_file = output.c_str();
         if (audio_io_process_start(&config, &audio) < 0)
             throw std::runtime_error(std::string("Audio startup: ") + std::strerror(errno));
+        int capture_fd = audio_io_process_get_capture_fd(audio);
+        int playback_fd = audio_io_process_get_playback_fd(audio);
+        if (capture_fd < 0 || playback_fd < 0)
+            throw std::runtime_error("Cannot borrow PCM pipe descriptors");
         std::vector<uint8_t> block(config.frames_per_buffer * AUDIO_IO_FRAME_BYTES);
         size_t total = 0;
         for (;;) {
-            ssize_t frames = audio_io_process_read_frames(audio, block.data(), config.frames_per_buffer);
-            if (frames < 0)
-                throw std::runtime_error("Capture transfer failed");
-            if (frames == 0)
+            size_t bytes = read_pcm_block(capture_fd, block.data(), block.size());
+            if (bytes == 0)
                 break;
-            // Insert the team's DSP callback here. Pass-through preserves bytes.
-            if (audio_io_process_write_frames(audio, block.data(), static_cast<size_t>(frames)) < 0)
-                throw std::runtime_error("Playback transfer failed");
-            total += static_cast<size_t>(frames);
+            // DSP receives bytes / AUDIO_IO_FRAME_BYTES complete frames here.
+            // Pass-through preserves every byte; never process a partial frame.
+            write_pcm_block(playback_fd, block.data(), bytes);
+            total += bytes / AUDIO_IO_FRAME_BYTES;
         }
+        // This fixture ends naturally. Live audio first requests capture stop,
+        // then keeps forwarding queued frames until EOF before calling finish.
+        // Do not close the borrowed FDs: finish closes playback to deliver EOF.
         AudioIOProcessResult status{};
         if (audio_io_process_finish(&audio, &status) < 0)
             throw std::runtime_error("Worker completion failed");

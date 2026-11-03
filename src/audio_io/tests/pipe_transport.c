@@ -141,6 +141,8 @@ static int lifecycle_tests(const char *real_worker)
     CHECK(audio_io_process_start(&c, &p) == 0);
     close(1000);
     CHECK(pump(p, &total, 1) == 0 && total == 17);
+    CHECK(audio_io_process_get_capture_fd(p) == -1 && errno == EBUSY);
+    CHECK(audio_io_process_get_playback_fd(p) == -1 && errno == EBUSY);
     CHECK(audio_io_process_finish(&p, &r) == 0 && p == NULL);
     CHECK(r.capture_error == 0 && r.playback_error == 0);
     CHECK(WIFEXITED(r.capture_wait_status) && WEXITSTATUS(r.capture_wait_status) == 0);
@@ -191,6 +193,8 @@ static int lifecycle_tests(const char *real_worker)
     c.timeout_ms = 60;
     CHECK(audio_io_process_start(&c, &p) == 0);
     CHECK(audio_io_process_read_frames(p, block, 17) == -1 && errno == ETIMEDOUT);
+    /* The helper may own a partial frame; a getter must not bypass it. */
+    CHECK(audio_io_process_get_capture_fd(p) == -1 && errno == EBUSY);
     delay_ms(180);
     CHECK(audio_io_process_read_frames(p, block, 17) == 17);
     for (size_t i = 0; i < sizeof(block); ++i)
@@ -261,6 +265,157 @@ static int lifecycle_tests(const char *real_worker)
     CHECK(audio_io_process_read_frames(p, block, 17) == 0);
     CHECK(audio_io_process_finish(&p, &r) == -1 && r.capture_error == EIO);
     CHECK(WIFSIGNALED(r.capture_wait_status));
+    CHECK(waitpid(-1, NULL, WNOHANG) == -1 && errno == ECHILD);
+    return 0;
+}
+
+/** @brief Raw blocking reads deliberately split frames into five-byte pieces. */
+static ssize_t direct_read_block(int fd, uint8_t *buffer, size_t capacity)
+{
+    size_t used = 0;
+    while (used < capacity) {
+        size_t request = capacity - used;
+        if (request > 5)
+            request = 5;
+        ssize_t n = read(fd, buffer + used, request);
+        if (n > 0) {
+            used += (size_t)n;
+        } else if (n == 0) {
+            break;
+        } else if (errno != EINTR) {
+            return -1;
+        }
+    }
+    if (used % AUDIO_IO_FRAME_BYTES) { errno = EPROTO; return -1; }
+    return (ssize_t)used;
+}
+
+/** @brief Exercise standard write with deliberately unaligned byte chunks. */
+static int direct_write_block(int fd, const uint8_t *buffer, size_t bytes)
+{
+    while (bytes) {
+        size_t request = bytes > 7 ? 7 : bytes;
+        ssize_t n = write(fd, buffer, request);
+        if (n < 0 && errno == EINTR)
+            continue;
+        if (n <= 0)
+            return -1;
+        bytes -= (size_t)n;
+        buffer += n;
+    }
+    return 0;
+}
+
+static int direct_pump(int capture, int playback, size_t *total)
+{
+    uint8_t block[17 * AUDIO_IO_FRAME_BYTES];
+    *total = 0;
+    for (;;) {
+        ssize_t bytes = direct_read_block(capture, block, sizeof(block));
+        if (bytes < 0)
+            return -1;
+        if (!bytes)
+            return 0;
+        for (size_t i = 0; i < (size_t)bytes; ++i)
+            CHECK(block[i] == (uint8_t)i);
+        CHECK(direct_write_block(playback, block, (size_t)bytes) == 0);
+        *total += (size_t)bytes / AUDIO_IO_FRAME_BYTES;
+    }
+}
+
+/** @brief Check borrowed blocking FDs, mode exclusion, EOF, stop, and EPIPE. */
+static int direct_access_tests(const char *real_worker)
+{
+    CHECK(audio_io_process_get_capture_fd(NULL) == -1 && errno == EINVAL);
+    CHECK(audio_io_process_get_playback_fd(NULL) == -1 && errno == EINVAL);
+    AudioIOProcess *p = NULL;
+    AudioIOProcessResult result;
+    AudioIOProcessConfig c = config_for("fragment", "sink");
+    CHECK(audio_io_process_start(&c, &p) == 0);
+    int capture = audio_io_process_get_capture_fd(p);
+    int playback = audio_io_process_get_playback_fd(p);
+    CHECK(capture >= 0 && playback >= 0 && capture != playback);
+    CHECK(audio_io_process_get_capture_fd(p) == capture);
+    CHECK(audio_io_process_get_playback_fd(p) == playback);
+    int flags = fcntl(capture, F_GETFL);
+    CHECK(flags >= 0 && !(flags & O_NONBLOCK) && (flags & O_ACCMODE) == O_RDONLY);
+    flags = fcntl(playback, F_GETFL);
+    CHECK(flags >= 0 && !(flags & O_NONBLOCK) && (flags & O_ACCMODE) == O_WRONLY);
+    CHECK(fcntl(capture, F_GETFD) & FD_CLOEXEC);
+    CHECK(fcntl(playback, F_GETFD) & FD_CLOEXEC);
+    uint8_t block[17 * AUDIO_IO_FRAME_BYTES];
+    CHECK(audio_io_process_read_frames(p, block, 17) == -1 && errno == EBUSY);
+    CHECK(audio_io_process_write_frames(p, block, 17) == -1 && errno == EBUSY);
+    size_t total;
+    CHECK(direct_pump(capture, playback, &total) == 0 && total == 17);
+    CHECK(audio_io_process_finish(&p, &result) == 0 && !p);
+    CHECK(fcntl(capture, F_GETFD) == -1 && errno == EBADF);
+    CHECK(fcntl(playback, F_GETFD) == -1 && errno == EBADF);
+
+    c = config_for("continuous", "sink");
+    CHECK(audio_io_process_start(&c, &p) == 0);
+    capture = audio_io_process_get_capture_fd(p);
+    playback = audio_io_process_get_playback_fd(p);
+    CHECK(capture >= 0 && playback >= 0);
+    CHECK(direct_read_block(capture, block, sizeof(block)) == sizeof(block));
+    CHECK(direct_write_block(playback, block, sizeof(block)) == 0);
+    CHECK(audio_io_process_request_capture_stop(p) == 0);
+    CHECK(audio_io_process_request_capture_stop(p) == 0);
+    CHECK(direct_pump(capture, playback, &total) == 0);
+    CHECK(audio_io_process_finish(&p, &result) == 0 && !p);
+
+    c = config_for("incomplete", "sink");
+    CHECK(audio_io_process_start(&c, &p) == 0);
+    capture = audio_io_process_get_capture_fd(p);
+    playback = audio_io_process_get_playback_fd(p);
+    CHECK(capture >= 0 && playback >= 0);
+    CHECK(direct_pump(capture, playback, &total) == -1 && errno == EPROTO);
+    audio_io_process_abort(&p);
+    CHECK(!p);
+    CHECK(fcntl(capture, F_GETFD) == -1 && errno == EBADF);
+    CHECK(fcntl(playback, F_GETFD) == -1 && errno == EBADF);
+
+    c = config_for("fragment", "exit-playback");
+    CHECK(audio_io_process_start(&c, &p) == 0);
+    capture = audio_io_process_get_capture_fd(p);
+    playback = audio_io_process_get_playback_fd(p);
+    CHECK(capture >= 0 && playback >= 0);
+    CHECK(direct_read_block(capture, block, sizeof(block)) == sizeof(block));
+    CHECK(direct_read_block(capture, block, sizeof(block)) == 0);
+    /* Direct writes require caller signal policy. Block/consume SIGPIPE only
+     * here, preserving the process default and the calling thread's old mask. */
+    sigset_t set, previous;
+    sigemptyset(&set);
+    sigaddset(&set, SIGPIPE);
+    CHECK(sigprocmask(SIG_BLOCK, &set, &previous) == 0);
+    ssize_t written;
+    do { written = write(playback, block, sizeof(block)); }
+    while (written >= 0 || errno == EINTR);
+    CHECK(errno == EPIPE);
+    struct timespec zero = {0, 0};
+    CHECK(sigtimedwait(&set, NULL, &zero) == SIGPIPE);
+    CHECK(sigprocmask(SIG_SETMASK, &previous, NULL) == 0);
+    CHECK(audio_io_process_finish(&p, &result) == -1 && result.playback_error == EIO);
+
+    /* A raw writer can truncate a frame: the real playback worker must reject
+     * it at EOF, and finish must expose that worker error to the caller. */
+    char input[] = "/tmp/gatorstomp-direct-XXXXXX";
+    int fixture = mkstemp(input);
+    CHECK(fixture >= 0);
+    CHECK(write(fixture, "123456", 6) == 6);
+    close(fixture);
+    c = config_for(input, NULL);
+    c.worker_path = real_worker;
+    c.playback_device = "null";
+    CHECK(audio_io_process_start(&c, &p) == 0);
+    capture = audio_io_process_get_capture_fd(p);
+    playback = audio_io_process_get_playback_fd(p);
+    CHECK(capture >= 0 && playback >= 0);
+    CHECK(direct_read_block(capture, block, sizeof(block)) == 6);
+    CHECK(direct_read_block(capture, block, sizeof(block)) == 0);
+    CHECK(write(playback, "1234567", 7) == 7);
+    CHECK(audio_io_process_finish(&p, &result) == -1 && result.playback_error == EPROTO);
+    unlink(input);
     CHECK(waitpid(-1, NULL, WNOHANG) == -1 && errno == ECHILD);
     return 0;
 }
@@ -344,7 +499,8 @@ int main(int argc, char **argv)
     if (sigaction(SIGPIPE, &default_pipe, NULL) < 0)
         return EXIT_FAILURE;
     int descriptors = fd_count();
-    if (descriptors < 0 || lifecycle_tests(argv[1]) < 0 || signal_tests() < 0)
+    if (descriptors < 0 || lifecycle_tests(argv[1]) < 0 ||
+        direct_access_tests(argv[1]) < 0 || signal_tests() < 0)
         return EXIT_FAILURE;
     struct sigaction pipe_after;
     if (sigaction(SIGPIPE, NULL, &pipe_after) < 0 || pipe_after.sa_handler != SIG_DFL) {

@@ -26,7 +26,39 @@ struct AudioIOProcess {
     size_t block_frames, buffered;
     uint8_t *buffer;
     int timeout_ms, eof, stopped, write_failed;
+    int capture_access, playback_access;
 };
+
+/** @brief Each pipe selects one access style for the handle's lifetime. */
+enum { ACCESS_UNUSED, ACCESS_HELPER, ACCESS_DIRECT };
+
+/** @brief Borrow a blocking endpoint without exposing helper-buffered bytes. */
+static int borrow_fd(int fd, int *access)
+{
+    if (*access == ACCESS_HELPER) {
+        errno = EBUSY;
+        return -1;
+    }
+    if (*access == ACCESS_UNUSED) {
+        int flags = fcntl(fd, F_GETFL);
+        if (flags < 0 || fcntl(fd, F_SETFL, flags & ~O_NONBLOCK) < 0)
+            return -1;
+        *access = ACCESS_DIRECT;
+    }
+    return fd;
+}
+
+int audio_io_process_get_capture_fd(AudioIOProcess *p)
+{
+    if (!p) { errno = EINVAL; return -1; }
+    return borrow_fd(p->capture_fd, &p->capture_access);
+}
+
+int audio_io_process_get_playback_fd(AudioIOProcess *p)
+{
+    if (!p) { errno = EINVAL; return -1; }
+    return borrow_fd(p->playback_fd, &p->playback_access);
+}
 
 /** @brief Close an owned descriptor and mark it unavailable. */
 static void close_fd(int *fd)
@@ -250,6 +282,8 @@ ssize_t audio_io_process_read_frames(AudioIOProcess *p, uint8_t *buffer, size_t 
         errno = EINVAL;
         return -1;
     }
+    if (p->capture_access == ACCESS_DIRECT) { errno = EBUSY; return -1; }
+    p->capture_access = ACCESS_HELPER;
     size_t wanted = capacity * AUDIO_IO_FRAME_BYTES;
     int64_t now = audio_pipe_now();
     if (now < 0)
@@ -284,6 +318,8 @@ int audio_io_process_write_frames(AudioIOProcess *p, const uint8_t *buffer, size
         errno = EINVAL;
         return -1;
     }
+    if (p->playback_access == ACCESS_DIRECT) { errno = EBUSY; return -1; }
+    p->playback_access = ACCESS_HELPER;
     int64_t now = audio_pipe_now();
     if (now < 0)
         return -1;
