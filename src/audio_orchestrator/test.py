@@ -12,10 +12,10 @@ GS_MSG_TWEAK = 2
 GS_MSG_VOLUME = 3
 GS_MSG_UNUSED = 4
 
-MSG_FORMAT = "<BBBq"
+MSG_FORMAT = "<BBbq"
 MSG_SIZE = struct.calcsize(MSG_FORMAT)
 
-assert MSG_SIZE == 12
+assert MSG_SIZE == 11
 
 
 def send_message(sock, msg_type, msg_id, value, time_ms):
@@ -28,7 +28,7 @@ def send_message(sock, msg_type, msg_id, value, time_ms):
         time_ms,
     )
 
-    assert len(data) == 12
+    assert len(data) == 11
     sock.sendall(data)
 
     print(f"Sent {len(data)} bytes: {data.hex()}")

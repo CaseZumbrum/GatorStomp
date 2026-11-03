@@ -40,3 +40,5 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    _doxygen_generated/doxygen
 
    yocto_setup
+   mock_listener
+   pocketbeagle2_button_demo

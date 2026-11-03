@@ -12,3 +12,4 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 add_subdirectory(src/audio_orchestrator)
 add_subdirectory(src/gs_socket_api)
+add_subdirectory(tools/mock_listener)
