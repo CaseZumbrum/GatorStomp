@@ -40,3 +40,4 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    _doxygen_generated/doxygen
 
    yocto_setup
+   running_os

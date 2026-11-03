@@ -1,0 +1,106 @@
+#!/bin/sh
+# Configure Pocket Beagle 2 as a USB network device
+
+G=/sys/kernel/config/usb_gadget/gatorstomp
+
+case "$1" in
+
+
+    start)
+        #------DEBUGGING------
+        # Save script output and errors to a persistent log
+        mkdir -p /home/root
+        exec >> /home/root/gatorstomp-usb-debug.log 2>&1
+        
+        # Print each command as it executes and stop if it fails
+        set -ex
+
+        echo "Starting GatorStomp USB networking"
+        echo "Available USB device controllers:"
+        ls -la /sys/class/udc
+        #------DEBUGGING------
+
+        # Mount ConfigFS if necessary - tells kernel what hardware functionality to enable/configure without modifying kernel source code
+        grep -qs ' /sys/kernel/config configfs' /proc/mounts || mount -t configfs configfs /sys/kernel/config || exit 1
+
+        # Create USB gadget using these generic example values that hopefully I don't have to ever change
+        mkdir -p "$G"
+        echo 0x1d6b > "$G/idVendor"
+        echo 0x0104 > "$G/idProduct"
+
+        # Create directory for USB device descriptions (0x409 is US English)
+        mkdir -p "$G/strings/0x409"
+
+        # Set the product and manufacturer name shown to the host computer
+        echo "GatorStomp" > "$G/strings/0x409/product"
+        echo "GatorStomp" > "$G/strings/0x409/manufacturer"
+
+        # Set a serial number
+        echo "GS-001" > "$G/strings/0x409/serialnumber"
+
+        # Create a USB configuration to specify USB functions for the computer
+        mkdir -p "$G/configs/c.1/strings/0x409"
+
+        # Give this configuration a description
+        echo "USB Network" > "$G/configs/c.1/strings/0x409/configuration"
+
+        # Create an NCM (Network Control Model) networking function to use ethernet and ssh over the USB
+        mkdir -p "$G/functions/ncm.usb0"
+
+        # Link networking function to our main configuration as a "feature"
+        ln -s "$G/functions/ncm.usb0" "$G/configs/c.1/ncm.usb0"
+
+        # Find the USB Device Controll (UDC)
+        UDC=$(ls /sys/class/udc | head -n 1)
+
+        # If no controller was found then we can't do anything so stop the script
+        if [ -z "$UDC" ]; then
+            echo "No USB Device Controller found"
+            exit 1
+        fi
+
+        # Activate the USB gadget by writing the controller's name into UDC binds our virtual USB network to the hardware
+        echo "$UDC" > "$G/UDC"
+
+        # Read the Linux network interface name (probably like usb0)
+        IFACE=$(cat "$G/functions/ncm.usb0/ifname")
+
+        # Configure board's USB network interface - give it the IP address 192.168.7.2 according to beagleboard docs
+        ifconfig "$IFACE" 192.168.7.2 netmask 255.255.255.0 up
+
+        # Configure DHCP for the connected computer
+        cat > /run/gatorstomp-udhcpd.conf <<EOF
+        start 192.168.7.10
+        end 192.168.7.30
+        interface $IFACE
+        option subnet 255.255.255.0
+        option lease 3600
+        lease_file /run/gatorstomp-udhcpd.leases
+        pidfile /run/gatorstomp-udhcpd.pid
+EOF
+
+        # Start the DHCP server on the USB interface
+        /usr/sbin/udhcpd -f /run/gatorstomp-udhcpd.conf &
+        ;;
+
+    stop)
+        # Turn off the DHCP server if it's running
+        if [ -f /run/gatorstomp-udhcpd.pid ]; then
+            kill "$(cat /run/gatorstomp-udhcpd.pid)" 2>/dev/null || true
+        fi
+
+        # Disconnect gadget from USB controller
+        if [ -e "$G/UDC" ]; then
+            echo "" > "$G/UDC"
+        fi
+        ;;
+
+    *)
+        # Show correct usage if the argument is invalid
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+    esac
+
+    # Exit successfully
+    exit 0
