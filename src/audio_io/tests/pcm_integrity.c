@@ -1,0 +1,148 @@
+/**
+ * @file pcm_integrity.c
+ * @brief Hardware-independent checks of packed stereo PCM and file I/O errors.
+ * @details Uses temporary raw files at 96 kHz, compares every output byte, and
+ * checks callback sizes, input precedence, empty input, and invalid configuration.
+ * Linux /dev/full exercises delayed output failures without ADC/DAC hardware.
+ */
+#define _POSIX_C_SOURCE 200809L
+#include "audio_io.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#define FRAME_BYTES 6
+#define FRAMES 1031
+
+struct ProcessingState {
+    size_t frames;
+    size_t calls;
+    int invalid_block;
+};
+
+static void invert_pcm(uint8_t *buffer, size_t frames, unsigned int channels,
+                       void *user_data)
+{
+    struct ProcessingState *state = user_data;
+    size_t expected = state->calls < FRAMES / 128 ? 128 : FRAMES % 128;
+    if (channels != 2 || frames != expected)
+        state->invalid_block = 1;
+    state->frames += frames;
+    state->calls++;
+    for (size_t i = 0; i < frames * channels * 3; ++i)
+        buffer[i] ^= 0xff;
+}
+
+static int matches(const char *path, const uint8_t *expected, size_t count)
+{
+    FILE *file = fopen(path, "rb");
+    if (!file)
+        return 0;
+    for (size_t i = 0; i < count; ++i) {
+        if (fgetc(file) != expected[i]) {
+            fclose(file);
+            return 0;
+        }
+    }
+    int valid = fgetc(file) == EOF && !ferror(file);
+    fclose(file);
+    return valid;
+}
+
+int main(void)
+{
+    char directory[] = "/tmp/gatorstomp-pcm-XXXXXX";
+    char input[128], output[128];
+    uint8_t pcm[FRAMES * FRAME_BYTES], inverted[sizeof(pcm)];
+    int status = EXIT_FAILURE;
+    if (!mkdtemp(directory))
+        return EXIT_FAILURE;
+    snprintf(input, sizeof(input), "%s/input.raw", directory);
+    snprintf(output, sizeof(output), "%s/output.raw", directory);
+    /* Exercise all byte values and both interleaved channels. */
+    for (size_t i = 0; i < sizeof(pcm); ++i) {
+        pcm[i] = (uint8_t)(i * 37 + i / 3);
+        inverted[i] = pcm[i] ^ 0xff;
+    }
+    /* Explicit S24_3LE samples: zero, maximum, minimum, and minus one. */
+    const uint8_t boundaries[] = {
+        0x00, 0x00, 0x00, 0xff, 0xff, 0x7f,
+        0x00, 0x00, 0x80, 0xff, 0xff, 0xff
+    };
+    memcpy(pcm, boundaries, sizeof(boundaries));
+    for (size_t i = 0; i < sizeof(boundaries); ++i)
+        inverted[i] = pcm[i] ^ 0xff;
+    FILE *file = fopen(input, "wb");
+    if (!file)
+        goto cleanup;
+    size_t written = fwrite(pcm, 1, sizeof(pcm), file);
+    int closed = fclose(file);
+    if (written != sizeof(pcm) || closed != 0)
+        goto cleanup;
+
+    AudioIOConfig config = {96000, 2, 128, input,
+                            "unused-because-file-takes-precedence", NULL, output};
+    if (audio_io_run(&config, NULL, NULL) != 0 ||
+        !matches(output, pcm, sizeof(pcm)))
+        goto cleanup;
+    struct ProcessingState state = {0, 0, 0};
+    if (audio_io_run(&config, invert_pcm, &state) != 0 ||
+        state.frames != FRAMES || state.calls != (FRAMES + 127) / 128 ||
+        state.invalid_block ||
+        !matches(output, inverted, sizeof(inverted)))
+        goto cleanup;
+    /* A final short block is valid; a partial six-byte frame is not. */
+    if (truncate(input, sizeof(pcm) - 1) != 0 ||
+        audio_io_run(&config, NULL, NULL) != -1 ||
+        audio_io_run(NULL, NULL, NULL) != -1)
+        goto cleanup;
+    /* Empty input produces an empty file without invoking the callback. */
+    state = (struct ProcessingState){0, 0, 0};
+    if (truncate(input, 0) != 0 ||
+        audio_io_run(&config, invert_pcm, &state) != 0 || state.calls != 0 ||
+        !matches(output, pcm, 0))
+        goto cleanup;
+
+    /* One frame fits stdio buffering: the write failure surfaces on close. */
+    file = fopen(input, "wb");
+    if (!file)
+        goto cleanup;
+    written = fwrite(pcm, 1, FRAME_BYTES, file);
+    closed = fclose(file);
+    if (written != FRAME_BYTES || closed != 0)
+        goto cleanup;
+    config.output_file = "/dev/full";
+    if (audio_io_run(&config, NULL, NULL) != -1)
+        goto cleanup;
+    config.output_file = output;
+
+    AudioIOConfig invalid = config;
+    invalid.sample_rate = 0;
+    if (audio_io_run(&invalid, NULL, NULL) != -1)
+        goto cleanup;
+    invalid = config;
+    invalid.channels = 0;
+    if (audio_io_run(&invalid, NULL, NULL) != -1)
+        goto cleanup;
+    invalid = config;
+    invalid.input_file = NULL;
+    invalid.capture_device = NULL;
+    if (audio_io_run(&invalid, NULL, NULL) != -1)
+        goto cleanup;
+    invalid = config;
+    invalid.output_file = NULL;
+    if (audio_io_run(&invalid, NULL, NULL) != -1)
+        goto cleanup;
+    config.frames_per_buffer = 0;
+    if (audio_io_run(&config, NULL, NULL) != -1)
+        goto cleanup;
+    status = EXIT_SUCCESS;
+cleanup:
+    unlink(input);
+    unlink(output);
+    rmdir(directory);
+    if (status != EXIT_SUCCESS)
+        fprintf(stderr, "PCM integrity check failed\n");
+    return status;
+}

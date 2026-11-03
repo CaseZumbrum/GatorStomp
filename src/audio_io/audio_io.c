@@ -1,39 +1,45 @@
-
+/**
+ * @file audio_io.c
+ * @brief Implementation of the blocking raw PCM and ALSA audio pipeline.
+ * @details Uses the fixed S24_3LE sample representation documented in audio_io.h.
+ * ALSA recovery retries transfers but cannot guarantee uninterrupted audio.
+ */
 #include "audio_io.h"
 #include <alsa/asoundlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#define BYTES_PER_SAMPLE 3 
+/** @brief Bytes per signed packed 24-bit sample, independent of channel count. */
+#define BYTES_PER_SAMPLE 3
 
-// Open and configure an ALSA PCM device
+/**
+ * @brief Open a blocking ALSA stream and configure its PCM format.
+ * @param handle Receives the opened handle; cleared if configuration fails.
+ * Must point to valid storage initialized to NULL by the caller.
+ * @param device ALSA device name; must not be NULL.
+ * @param stream Capture or playback direction.
+ * @param config Validated rate and channel configuration, borrowed during setup.
+ * @return 0 on success, -1 if opening or configuration fails.
+ * @details Requests packed 24-bit little-endian interleaved PCM with software
+ * resampling disabled and 100 ms latency. The caller closes a successful handle.
+ */
 static int open_pcm(
-    snd_pcm_t **handle, //Receives a pointer to an ALSA handle pointer, allowing the function to return the opened device through that pointer.
-    const char *device, //Receives the ALSA device name, such as "null".
-    snd_pcm_stream_t stream, //Specifies whether the device is for capture or playback.
+    snd_pcm_t **handle,
+    const char *device,
+    snd_pcm_stream_t stream,
     const AudioIOConfig *config
-){
-    int err=snd_pcm_open(handle, device, stream, 0); 
-    // handle receives the opened device.
-    // device identifies which ALSA device to use.
-    // stream selects input or output.
-    // 0 requests ordinary blocking mode
-
-    if (err<0){
-        fprintf(stderr, "ALSA open failed: %s\n",snd_strerror(err));
+)
+{
+    int err = snd_pcm_open(handle, device, stream, 0);
+    if (err < 0) {
+        fprintf(stderr, "ALSA open failed: %s\n", snd_strerror(err));
         return -1;
     }
 
-    err=snd_pcm_set_params(*handle,SND_PCM_FORMAT_S24_3LE,SND_PCM_ACCESS_RW_INTERLEAVED,config->channels,config->sample_rate,0,100000);
-    // *handle	The ALSA device that was just opened.
-    // SND_PCM_FORMAT_S24_3LE	Signed 24-bit little-endian samples, packed into three bytes.
-    // SND_PCM_ACCESS_RW_INTERLEAVED	Specifies that left/right channel samples are stored together in memory.
-    // config->channels	Requests two channels in our current configuration.
-    // config->sample_rate	Requests 96,000 frames per second.
-    // 0	Disables ALSA's automatic software sample-rate resampling.
-    // 100000	Requests approximately 100,000 microseconds (100 ms) of buffering latency.
-    
+    err = snd_pcm_set_params(*handle, SND_PCM_FORMAT_S24_3LE,
+                             SND_PCM_ACCESS_RW_INTERLEAVED,
+                             config->channels, config->sample_rate, 0, 100000);
     if (err<0) {
         fprintf(stderr, "ALSA configuration failed: %s\n",snd_strerror(err));
         snd_pcm_close(*handle);
@@ -43,7 +49,15 @@ static int open_pcm(
     return 0;
 }
 
-// Run ADC -> DSP -> DAC audio pipeline
+/**
+ * @brief Implement the synchronous pipeline declared in audio_io.h.
+ * @param config Borrowed file/device configuration.
+ * @param process Optional in-place DSP callback.
+ * @param user_data Opaque borrowed callback context.
+ * @return 0 on successful EOF and drain, -1 on failure.
+ * @details Allocates one block, handles short ALSA transfers, and releases opened
+ * resources on exit. Live capture has no built-in termination mechanism.
+ */
 int audio_io_run(
     const AudioIOConfig *config,
     AudioProcessCallback process,
@@ -125,14 +139,12 @@ int audio_io_run(
         if (input) {
             size_t bytes_read =fread(buffer, 1, buffer_bytes, input);
 
-            if (bytes_read == 0) {
-                if (ferror(input)) {
-                    perror("Reading input");
-                    goto cleanup;
-                }
-
-                break; // End of file
+            if (ferror(input)) {
+                perror("Reading input");
+                goto cleanup;
             }
+            if (bytes_read == 0)
+                break; // End of file
 
             if (bytes_read % frame_bytes != 0) {
                 fprintf(stderr, "Incomplete PCM frame\n");
@@ -211,17 +223,19 @@ int audio_io_run(
         }
     }
 
-    printf("GatorStomp audio processing completed!\n");
-    printf("Frames processed: %lu\n", total_frames);
-
     status = 0;
 
 cleanup:
-    if (input)
-        fclose(input);
+    if (input && fclose(input) != 0) {
+        perror("Closing input");
+        status = -1;
+    }
 
-    if (output)
-        fclose(output);
+    /* fclose flushes buffered writes and can reveal a delayed output error. */
+    if (output && fclose(output) != 0) {
+        perror("Closing output");
+        status = -1;
+    }
 
     if (capture)
         snd_pcm_close(capture);
@@ -231,5 +245,9 @@ cleanup:
 
     free(buffer);
 
+    if (status == 0) {
+        printf("GatorStomp audio processing completed!\n");
+        printf("Frames processed: %lu\n", total_frames);
+    }
     return status;
 }
