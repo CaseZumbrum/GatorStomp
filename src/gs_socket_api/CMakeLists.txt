@@ -1,0 +1,2 @@
+add_library(gs_socket_api INTERFACE)
+target_include_directories(gs_socket_api INTERFACE include)

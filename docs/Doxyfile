@@ -1,0 +1,17 @@
+# Doxyfile
+PROJECT_NAME     = "GatorStomp"
+OUTPUT_DIRECTORY = ./build/doxygen
+INPUT            = ../src
+RECURSIVE        = YES
+GENERATE_XML     = YES
+GENERATE_HTML    = YES
+HAVE_DOT = NO
+
+INCLUDE_PATTERNS =  *.cpp \ 
+                    *.c \
+                    *.h
+
+EXCLUDE_PATTERNS = *.py
+
+FULL_PATH_NAMES  = YES
+STRIP_FROM_PATH  = ../src/
