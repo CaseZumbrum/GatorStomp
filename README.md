@@ -40,3 +40,5 @@ make html
 - The OS is lacking a python and octave interpreter
 - The ADC/DAC drivers currently use anonymous FIFOs, we are planning to switch to named ones
 - Misaligned packets to the audio orchestrator can cause out of sync errors that destroy audio integrity
+
+For more information regarding completed work and known bugs, please view the pre_alpha_build document at the root of the repository.
