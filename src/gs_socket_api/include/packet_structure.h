@@ -39,4 +39,4 @@ struct [[gnu::packed]] gs_socket_msg {
     int64_t time_ms;
 };
 
-static_assert(sizeof(gs_socket_msg) == 11, "gs_socket_msg must be 12 bytes (Python mirror: '<BBBq')");
+static_assert(sizeof(gs_socket_msg) == 11, "gs_socket_msg must be 11 bytes (Python mirror: '<BBbq')");
