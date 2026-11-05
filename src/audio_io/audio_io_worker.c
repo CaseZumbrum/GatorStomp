@@ -1,12 +1,10 @@
 /** @file audio_io_worker.c
- * @brief Private capture/playback process executable, launched by the C API.
- * @details FD 3 is PCM (capture writes, playback reads), FD 4 sends an atomic
- * errno status at startup and completion, and capture FD 5 detects parent stop
- * by EOF. Workers never use the peripheral SOCK_SEQPACKET protocol.
+ * @brief Independent capture/playback worker using an existing named PCM FIFO.
+ * @details capture writes ALSA/file PCM to the FIFO; playback reads the FIFO
+ * into ALSA/a file. SIGTERM/SIGINT request stop. No children or control sockets.
  */
 #define _POSIX_C_SOURCE 200809L
-#include "audio_io_process.h"
-#include "audio_io_process_internal.h"
+#include "audio_io_fifo.h"
 #include <alsa/asoundlib.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -17,36 +15,28 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-enum { PCM_FD = 3, STATUS_FD = 4, STOP_FD = 5 };
+/** @brief Stop requests belong to this executable, not the reusable library. */
+static volatile sig_atomic_t stop_requested;
 
-/** @brief Stop at the next complete block when the parent closes its stop end. */
-static int stop_requested(void)
+static void handle_stop(int signal_number)
 {
-    struct pollfd p = {STOP_FD, POLLIN, 0};
-    int rc;
-    do { rc = poll(&p, 1, 0); } while (rc < 0 && errno == EINTR);
-    return rc != 0; /* Invalid/missing stop descriptor also stops capture safely. */
+    (void)signal_number;
+    stop_requested = 1;
 }
 
-/** @brief Fill a byte block or return a short final block at EOF. */
-static ssize_t read_block(int fd, uint8_t *buffer, size_t bytes)
+static int setup_signals(void)
 {
-    size_t used = 0;
-    while (used < bytes) {
-        ssize_t n = read(fd, buffer + used, bytes - used);
-        if (n > 0) { used += (size_t)n; continue; }
-        if (n == 0)
-            break;
-        if (errno == EINTR)
-            continue;
-        if (errno != EAGAIN || audio_pipe_wait(fd, POLLIN, -1) < 0)
-            return -1;
-    }
-    if (used % AUDIO_IO_FRAME_BYTES) { errno = EPROTO; return -1; }
-    return (ssize_t)used;
+    struct sigaction action = {0};
+    sigemptyset(&action.sa_mask);
+    action.sa_handler = handle_stop;
+    if (sigaction(SIGINT, &action, NULL) < 0 ||
+        sigaction(SIGTERM, &action, NULL) < 0)
+        return -1;
+    action.sa_handler = SIG_IGN; /* A disconnected reader becomes EPIPE. */
+    return sigaction(SIGPIPE, &action, NULL);
 }
 
-/** @brief Recover ALSA errors, translating failures to errno for the parent. */
+/** @brief Recover ALSA errors, translating failures to errno. */
 static int recover_pcm(snd_pcm_t *pcm, int error)
 {
     /* Avoid snd_pcm_recover's potentially unbounded suspend-resume retry loop.
@@ -67,9 +57,10 @@ static int wait_pcm(snd_pcm_t *pcm)
 }
 
 /** @brief Transfer capture blocks from ALSA or a raw fixture into the PCM pipe. */
-static int capture_audio(snd_pcm_t *pcm, int file, uint8_t *buffer, size_t frames)
+static int capture_audio(snd_pcm_t *pcm, int file, int fifo,
+                         uint8_t *buffer, size_t frames)
 {
-    while (!stop_requested()) {
+    while (!stop_requested) {
         ssize_t bytes;
         if (pcm) {
             snd_pcm_sframes_t n = snd_pcm_readi(pcm, buffer, frames);
@@ -85,36 +76,46 @@ static int capture_audio(snd_pcm_t *pcm, int file, uint8_t *buffer, size_t frame
             }
             bytes = n * AUDIO_IO_FRAME_BYTES;
         } else {
-            bytes = read_block(file, buffer, frames * AUDIO_IO_FRAME_BYTES);
+            bytes = audio_fifo_read_block(file, buffer, frames * AUDIO_IO_FRAME_BYTES,
+                                          &stop_requested);
             if (bytes < 0)
                 return -1;
             if (bytes == 0)
                 return 0;
         }
-        /* Finish this entire block even if stop arrives during a short write.
-         * The parent must keep draining; abort can kill a blocked worker. */
-        if (audio_pipe_write_all(PCM_FD, buffer, (size_t)bytes, -1) < 0)
+        /* Finish this block before stopping; a stalled reader has a deadline. */
+        if (audio_fifo_write_all(fifo, buffer, (size_t)bytes) < 0)
             return -1;
     }
     return 0;
 }
 
 /** @brief Receive complete PCM blocks and handle short ALSA/file writes. */
-static int playback_audio(snd_pcm_t *pcm, int file, uint8_t *buffer, size_t frames)
+static int playback_audio(snd_pcm_t *pcm, int file, int fifo,
+                          uint8_t *buffer, size_t frames)
 {
     for (;;) {
-        ssize_t bytes = read_block(PCM_FD, buffer, frames * AUDIO_IO_FRAME_BYTES);
+        ssize_t bytes = audio_fifo_read_block(fifo, buffer, frames * AUDIO_IO_FRAME_BYTES,
+                                              &stop_requested);
         if (bytes < 0)
             return -1;
         if (bytes == 0)
             break;
         if (!pcm) {
-            if (audio_pipe_write_all(file, buffer, (size_t)bytes, -1) < 0)
+            if (audio_fifo_write_all(file, buffer, (size_t)bytes) < 0)
                 return -1;
             continue;
         }
         size_t used = 0, count = (size_t)bytes / AUDIO_IO_FRAME_BYTES;
+        int64_t start = audio_fifo_now();
+        if (start < 0)
+            return -1;
         while (used < count) {
+            if (stop_requested) { errno = ECANCELED; return -1; }
+            int64_t now = audio_fifo_now();
+            if (now < 0)
+                return -1;
+            if (now - start >= AUDIO_IO_TIMEOUT_MS) { errno = ETIMEDOUT; return -1; }
             snd_pcm_sframes_t n = snd_pcm_writei(pcm,
                 buffer + used * AUDIO_IO_FRAME_BYTES, count - used);
             if (n == -EAGAIN || n == 0) {
@@ -132,7 +133,15 @@ static int playback_audio(snd_pcm_t *pcm, int file, uint8_t *buffer, size_t fram
     }
     if (pcm) {
         int rc;
+        int64_t start = audio_fifo_now();
+        if (start < 0)
+            return -1;
         while ((rc = snd_pcm_drain(pcm)) == -EAGAIN) {
+            if (stop_requested) { errno = ECANCELED; return -1; }
+            int64_t now = audio_fifo_now();
+            if (now < 0)
+                return -1;
+            if (now - start >= AUDIO_IO_TIMEOUT_MS) { errno = ETIMEDOUT; return -1; }
             if (wait_pcm(pcm) < 0)
                 return -1;
         }
@@ -169,68 +178,115 @@ static int open_file(const char *path, int capture)
     return fd;
 }
 
+/** @brief Parse the simple positional CLI, run one stream, and release resources. */
 int main(int argc, char **argv)
 {
-    if (argc != 5 || (strcmp(argv[1], "capture") && strcmp(argv[1], "playback")) ||
-        (strcmp(argv[2], "file") && strcmp(argv[2], "alsa")))
+    //check that arguments are valid
+    if ((argc != 5 && argc != 6) ||
+        (strcmp(argv[1], "capture") && strcmp(argv[1], "playback")) ||
+        (strcmp(argv[3], "file") && strcmp(argv[3], "alsa"))) {
+        fprintf(stderr, "Usage: %s capture|playback FIFO file|alsa PATH_OR_DEVICE [FRAMES]\n",
+                argv[0]);
         return EXIT_FAILURE;
+    }
+
+    //strcmp returns 0 when true, so if argv[1]==capture, capture=1
     int capture = !strcmp(argv[1], "capture");
-    char *end;
+
+    char *end = NULL;
     errno = 0;
-    unsigned long frames = strtoul(argv[4], &end, 10);
-    int error = (errno || *end || !frames || frames > AUDIO_IO_MAX_BLOCK_FRAMES) ?
-                EINVAL : 0;
+
+    /*
+    If the user provided a frame count, convert it from text to an integer.
+    Otherwise, use 128 frames by default
+    */
+    unsigned long frames = argc == 6 ? strtoul(argv[5], &end, 10) : 128;
+
+    //Validate the frame count
+    if (errno || (end && (*end || end == argv[5] || argv[5][0] == '-')) ||
+        !frames || frames > AUDIO_IO_MAX_BLOCK_FRAMES) {
+        fprintf(stderr, "Invalid block size (must be 1..%d frames)\n", AUDIO_IO_MAX_BLOCK_FRAMES);
+        return EXIT_FAILURE;
+    }
+
+
+    int error = 0, file = -1, fifo = -1, canceled = 0;
     uint8_t *buffer = NULL;
     snd_pcm_t *pcm = NULL;
-    int file = -1;
-    if (!error) {
-        buffer = malloc(frames * AUDIO_IO_FRAME_BYTES);
-        if (!buffer)
-            error = ENOMEM;
+
+    if (setup_signals() < 0) {
+        error = errno;
+        goto cleanup;
     }
-    if (!error && !strcmp(argv[2], "file")) {
-        file = open_file(argv[3], capture);
-        if (file < 0)
+
+
+    buffer = malloc(frames * AUDIO_IO_FRAME_BYTES);
+
+    if (!buffer){
+        error = ENOMEM;
+        goto cleanup;
+    }
+
+
+    /* Open capture output before ALSA so capture waits for a reader. */
+    //open the named pipe
+
+    fifo = audio_fifo_open(argv[2], capture, &stop_requested);
+    if (fifo < 0){
+        error = errno;
+        goto cleanup;
+    }
+
+    //if argv[3]=="file" FILE MODE
+    if (!strcmp(argv[3], "file")) {
+        /* Do not allow output truncation to destroy the named pipe itself. */
+        file = open_file(argv[4], capture);
+        if (file < 0){
             error = errno;
-    } else if (!error) {
-        int rc = snd_pcm_open(&pcm, argv[3], capture ? SND_PCM_STREAM_CAPTURE :
-                              SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+            goto cleanup;
+        }
+    }
+
+    //WILL BE USED FOR FUTURE HW TESTING (ALSA MODE)
+    else{
+        int rc = snd_pcm_open(&pcm, argv[4], capture ? SND_PCM_STREAM_CAPTURE : SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
         if (rc >= 0)
             rc = snd_pcm_set_params(pcm, SND_PCM_FORMAT_S24_3LE,
                     SND_PCM_ACCESS_RW_INTERLEAVED, AUDIO_IO_CHANNELS,
                     AUDIO_IO_RATE, 0, 100000);
-        if (rc < 0)
+        if (rc < 0){
             error = -rc;
+            goto cleanup;
+        }
     }
-    int ready = !error;
-    if (audio_pipe_write_all(STATUS_FD, &error, sizeof(error), -1) < 0) {
+    int result;
+
+    if (capture){
+        result = capture_audio(pcm, file, fifo, buffer, frames);
+    } else{
+        result = playback_audio(pcm, file, fifo, buffer, frames);
+    }
+
+    if (result < 0){
         error = errno;
-        ready = 0;
     }
-    if (ready) {
-        int rc = capture ? capture_audio(pcm, file, buffer, frames) :
-                           playback_audio(pcm, file, buffer, frames);
-        if (rc < 0)
-            error = errno;
-    }
+cleanup:
+    /* A requested stop is normal; playback drains only on normal FIFO EOF. */
+    canceled = error == ECANCELED && stop_requested;
     if (pcm) {
         if (capture || error)
             snd_pcm_drop(pcm);
         int rc = snd_pcm_close(pcm);
-        if (rc < 0 && !error)
-            error = -rc;
+        if (rc < 0 && (!error || canceled)) { error = -rc; canceled = 0; }
     }
-    if (file >= 0 && close(file) < 0 && !error)
+    if (file >= 0 && close(file) < 0 && (!error || canceled)) {
         error = errno;
-    /* Data EOF and status are independent: EOF never hides a worker failure. */
-    close(PCM_FD);
-    if (capture)
-        close(STOP_FD);
-    if (ready)
-        audio_pipe_write_all(STATUS_FD, &error, sizeof(error), -1);
-    close(STATUS_FD);
+        canceled = 0;
+    }
+    if (fifo >= 0)
+        close(fifo);
     free(buffer);
-    if (error)
+    if (error && !canceled)
         fprintf(stderr, "audio_io %s: %s\n", argv[1], strerror(error));
-    return error ? EXIT_FAILURE : EXIT_SUCCESS;
+    return error && !canceled ? EXIT_FAILURE : EXIT_SUCCESS;
 }
