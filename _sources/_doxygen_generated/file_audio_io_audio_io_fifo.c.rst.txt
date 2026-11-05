@@ -1,0 +1,77 @@
+
+.. _file_audio_io_audio_io_fifo.c:
+
+File audio_io_fifo.c
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_io>` (``audio_io``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+FIFO opening and bounded byte transfers; no signal handlers or child processes. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_io/audio_io_fifo.c``)
+-----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_io_audio_io_fifo.c.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``audio_io_fifo.h`` (:ref:`file_audio_io_audio_io_fifo.h`)
+
+- ``errno.h``
+
+- ``fcntl.h``
+
+- ``poll.h``
+
+- ``sys/stat.h``
+
+- ``time.h``
+
+- ``unistd.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_audio__io__fifo_8c_1ac7b6c6108ec572524d92207779a9f094`
+
+- :ref:`exhale_function_audio__io__fifo_8c_1acd8fb455d3f4325cbb65fb80cd1af034`
+
+- :ref:`exhale_function_audio__io__fifo_8c_1a87085f906f829d19552cd5d87b626270`
+
+- :ref:`exhale_function_audio__io__fifo_8c_1a339fce70802d6f5ecf88883b6459681d`
+
+- :ref:`exhale_function_audio__io__fifo_8c_1ad6f15b5c8b080dd1070b4fa150031fde`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_audio__io__fifo_8c_1a3024ccd4a9af5109d24e6c57565d74a1`
+

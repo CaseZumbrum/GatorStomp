@@ -1,0 +1,36 @@
+
+.. _program_listing_file_audio_io_audio_io_fifo.h:
+
+Program Listing for File audio_io_fifo.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_io_audio_io_fifo.h>` (``audio_io/audio_io_fifo.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef AUDIO_IO_FIFO_H
+   #define AUDIO_IO_FIFO_H
+   #include <signal.h>
+   #include <stddef.h>
+   #include <stdint.h>
+   #include <sys/types.h>
+   #ifdef __cplusplus
+   extern "C" {
+   #endif
+   
+   enum { AUDIO_IO_RATE = 96000, AUDIO_IO_CHANNELS = 2, AUDIO_IO_FRAME_BYTES = 6,
+          AUDIO_IO_MAX_BLOCK_FRAMES = 65536, AUDIO_IO_TIMEOUT_MS = 5000 };
+   
+   int audio_fifo_open(const char *path, int writing,
+                       const volatile sig_atomic_t *stop);
+   int64_t audio_fifo_now(void);
+   ssize_t audio_fifo_read_block(int fd, uint8_t *buffer, size_t bytes,
+                                 const volatile sig_atomic_t *stop);
+   int audio_fifo_write_all(int fd, const uint8_t *buffer, size_t bytes);
+   #ifdef __cplusplus
+   }
+   #endif
+   #endif

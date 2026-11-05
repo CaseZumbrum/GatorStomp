@@ -1,0 +1,14 @@
+.. _exhale_define_audio__io_8c_1a25065cd833bcfecfb404093aed3edaca:
+
+Define BYTES_PER_SAMPLE
+=======================
+
+- Defined in :ref:`file_audio_io_audio_io.c`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: BYTES_PER_SAMPLE
+   :project: GatorStomp

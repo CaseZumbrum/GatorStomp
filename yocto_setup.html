@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting up Yocto to work &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7026087e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Mock Orchestrator Listener" href="mock_listener.html" />
+    <link rel="prev" title="Typedef AudioProcessCallback" href="_doxygen_generated/typedef_audio__io_8h_1a432d3e57b532ff4a029332f5e1613488.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the C++ Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_doxygen_generated/doxygen.html">Doxygen Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setting up Yocto to work</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-setting-up-dependencies">Step 1: Setting up dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-setting-up-the-repository">Step 2: Setting up the repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-resume-development">Step 3: Resume development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-os">Building the OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#important-things-to-note">Important things to note</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_os.html">Connecting to the PocketBeagle 2</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Setting up Yocto to work</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/yocto_setup.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setting-up-yocto-to-work">
+<h1>Setting up Yocto to work<a class="headerlink" href="#setting-up-yocto-to-work" title="Link to this heading"></a></h1>
+<p>Follow the <a class="reference external" href="https://docs.yoctoproject.org/brief-yoctoprojectqs/index.html">Yocto Project Quick Build guide</a> (latest version) for general commands relating to Yocto.</p>
+<p>To start editing the Yocto OS layer on your computer, please follow these exact steps:</p>
+<section id="step-1-setting-up-dependencies">
+<h2>Step 1: Setting up dependencies<a class="headerlink" href="#step-1-setting-up-dependencies" title="Link to this heading"></a></h2>
+<p>Use Ubuntu on Linux or WSL2. Run this command to install basic functionalities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>chrpath<span class="w"> </span>cpio<span class="w"> </span>debianutils<span class="w"> </span>diffstat<span class="w"> </span>file<span class="w"> </span>gawk<span class="w"> </span>gcc<span class="w"> </span>git<span class="w"> </span>iputils-ping<span class="w"> </span>libacl1<span class="w"> </span>liblz4-tool<span class="w"> </span>locales<span class="w"> </span>python3<span class="w"> </span>python3-git<span class="w"> </span>python3-jinja2<span class="w"> </span>python3-pexpect<span class="w"> </span>python3-pip<span class="w"> </span>python3-subunit<span class="w"> </span>socat<span class="w"> </span>texinfo<span class="w"> </span>unzip<span class="w"> </span>wget<span class="w"> </span>xz-utils<span class="w"> </span>zstd
+</pre></div>
+</div>
+<p>Also install kas with these commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>pipx
+pipx<span class="w"> </span>ensurepath
+pipx<span class="w"> </span>install<span class="w"> </span>kas
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After running <code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">ensurepath</span></code>, you may need to restart your terminal before running <code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">kas</span></code>.</p>
+</div>
+</section>
+<section id="step-2-setting-up-the-repository">
+<h2>Step 2: Setting up the repository<a class="headerlink" href="#step-2-setting-up-the-repository" title="Link to this heading"></a></h2>
+<p>Clone the GatorStomp Project:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use the SSH link instead of the HTTPS one if you need it for authentication.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/CaseZumbrum/GatorStomp.git<span class="w"> </span>GatorStomp
+</pre></div>
+</div>
+<p>Run this command to restore the Yocto environment.</p>
+<p>This will install dependencies like Poky, and the ARM, TI, and other layers necessary for the OS.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kas<span class="w"> </span>checkout<span class="w"> </span>GatorStomp/kas.yml
+</pre></div>
+</div>
+</section>
+<section id="step-3-resume-development">
+<h2>Step 3: Resume development<a class="headerlink" href="#step-3-resume-development" title="Link to this heading"></a></h2>
+<p>You may start working in the <code class="docutils literal notranslate"><span class="pre">GatorStomp/meta-gatorstomp/</span></code> directory, where the OS layer lives.</p>
+</section>
+<section id="building-the-os">
+<h2>Building the OS<a class="headerlink" href="#building-the-os" title="Link to this heading"></a></h2>
+<p>To build, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kas<span class="w"> </span>build<span class="w"> </span>GatorStomp/kas.yml
+</pre></div>
+</div>
+<p>This will use BitBake within Kas to produce the GatorStomp Linux image.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.wic</span></code> disk image is generated from the first build, which can be flashed to a microSD on the physical PocketBeagle 2.</p>
+</section>
+<section id="important-things-to-note">
+<h2>Important things to note<a class="headerlink" href="#important-things-to-note" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Please do not commit Yocto build directories, caches, or any downloaded dependency repositories. Add them to the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> whenever possible.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kas.lock.yml</span></code> just exists to specify commits for reproducibility from dependency layers.</p></li>
+<li><p>The PocketBeagle 2 OS image is only meant for the physical board, and not to be used on any PC operating system.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="_doxygen_generated/typedef_audio__io_8h_1a432d3e57b532ff4a029332f5e1613488.html" class="btn btn-neutral float-left" title="Typedef AudioProcessCallback" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mock_listener.html" class="btn btn-neutral float-right" title="Mock Orchestrator Listener" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

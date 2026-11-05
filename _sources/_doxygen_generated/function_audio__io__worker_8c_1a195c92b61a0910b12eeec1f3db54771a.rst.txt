@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1a195c92b61a0910b12eeec1f3db54771a:
+
+Function wait_pcm
+=================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: wait_pcm(snd_pcm_t *)
+   :project: GatorStomp

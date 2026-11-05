@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1a35b2cbd23417f72524cc55ce1a432f55:
+
+Function setup_signals(void)
+============================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: setup_signals(void)
+   :project: GatorStomp

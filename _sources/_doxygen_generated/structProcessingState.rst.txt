@@ -1,0 +1,17 @@
+.. _exhale_struct_structProcessingState:
+
+Struct ProcessingState
+======================
+
+- Defined in :ref:`file_audio_io_tests_pcm_integrity.c`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: ProcessingState
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:
