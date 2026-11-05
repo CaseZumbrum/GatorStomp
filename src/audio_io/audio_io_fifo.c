@@ -1,0 +1,158 @@
+/** @file audio_io_fifo.c
+ * @brief FIFO opening and bounded byte transfers; no signal handlers or child processes.
+ */
+ //audio_fifo_read_block() uses a five-second deadline for the entire requested block. That is useful for detecting a stalled demo, but it may require adjustment when working with hardware
+#define _POSIX_C_SOURCE 200809L
+#include "audio_io_fifo.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <poll.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <unistd.h>
+//1 for writing, 0 for reading
+int audio_fifo_open(const char *path, int writing,
+                    const volatile sig_atomic_t *stop)
+{
+    struct stat st;
+    //check if fifo exists
+    if (!path) { errno = EINVAL; return -1; }
+    //stat asks for infor about file, if file does not exist, function fails
+    if (stat(path, &st) < 0)
+        return -1;
+    //checks if path points to named pipe, needs .pcm
+    if (!S_ISFIFO(st.st_mode)) { errno = EINVAL; return -1; }
+    int64_t start = audio_fifo_now();
+    if (start < 0)
+        return -1;
+    int fd;
+    for (;;) {
+        if (stop && *stop) { errno = ECANCELED; return -1; }
+        //OPEN named pipe, and open returns file descriptor
+        fd = open(path, (writing ? O_WRONLY : O_RDONLY) | O_NONBLOCK | O_CLOEXEC);
+        if (fd >= 0)
+            break;
+        if (errno == EINTR)
+            continue;
+        /* A writer waits for a reader; a reader opens immediately. */
+        if (!writing || errno != ENXIO)
+            return -1;
+        int64_t now = audio_fifo_now();
+        if (now < 0)
+            return -1;
+        if (now - start >= AUDIO_IO_TIMEOUT_MS) { errno = ETIMEDOUT; return -1; }
+        struct timespec pause = {0, 50000000};
+        nanosleep(&pause, NULL);
+    }
+    int error;
+    if (fstat(fd, &st) < 0)
+        error = errno;
+    else if (!S_ISFIFO(st.st_mode))
+        error = EINVAL;
+    else
+    //return descriptor
+        return fd;
+    close(fd);
+    errno = error;
+    return -1;
+}
+
+//gets the current time in milliseconds using a monotonic clock
+//don't want your program to wait forever if the other process stops responding, so like a scheduler clock
+int64_t audio_fifo_now(void)
+{
+    struct timespec now;
+    if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+        return -1;
+    return (int64_t)now.tv_sec * 1000 + now.tv_nsec / 1000000;
+}
+
+//helper for waiting until a file descriptor is ready
+static int wait_ready(int fd, short events, int64_t deadline, const volatile sig_atomic_t *stop)
+{
+    for (;;) {
+        if (stop && *stop) {
+            errno = ECANCELED;
+            return -1;
+        }
+        int64_t now = audio_fifo_now();
+        if (now < 0)
+            return -1;
+        if (now >= deadline) { errno = ETIMEDOUT; return -1; }
+        int timeout = deadline - now > 50 ? 50 : (int)(deadline - now);
+        struct pollfd p = {fd, events, 0};
+        //poll() asks Linux:
+        //Tell me when this pipe is ready for the operation I want
+        int rc = poll(&p, 1, timeout);
+        if (rc > 0) {
+            if (p.revents & POLLNVAL) { errno = EBADF; return -1; }
+            return 0; /* Let read/write translate HUP/ERR to EOF/EPIPE. */
+        }
+        if (rc < 0 && errno != EINTR)
+            return -1;
+    }
+}
+
+ssize_t audio_fifo_read_block(int fd, uint8_t *buffer, size_t bytes,
+                              const volatile sig_atomic_t *stop)
+{
+    //This rejects three situations:
+    //- The buffer doesn't exist.
+    //- The requested size is zero.
+    //- The requested size isn't divisible by six.
+    if (!buffer || !bytes || bytes % AUDIO_IO_FRAME_BYTES) {
+        errno = EINVAL;
+        return -1;
+    }
+    int64_t now = audio_fifo_now();
+    if (now < 0)
+        return -1;
+    int64_t deadline = now + AUDIO_IO_TIMEOUT_MS;
+    //start reading
+    size_t used = 0;
+    while (used < bytes) {
+        if (wait_ready(fd, POLLIN, deadline, stop) < 0){
+            return -1;
+        }
+        ssize_t n = read(fd, buffer + used, bytes - used);
+        if (n > 0)
+            used += (size_t)n;
+        else if (n == 0)
+            break;
+        else if (errno != EINTR && errno != EAGAIN)
+            return -1;
+    }
+    if (used % AUDIO_IO_FRAME_BYTES){
+        errno = EPROTO;
+        return -1;
+    }
+    return (ssize_t)used;
+}
+
+int audio_fifo_write_all(int fd, const uint8_t *buffer, size_t bytes)
+{
+    if (!buffer || !bytes){
+        errno = EINVAL;
+        return -1;
+    }
+    int64_t now = audio_fifo_now();
+    if (now < 0)
+        return -1;
+    int64_t deadline = now + AUDIO_IO_TIMEOUT_MS;
+
+    size_t used = 0;
+    while (used < bytes) {
+        if (wait_ready(fd, POLLOUT, deadline, NULL) < 0)
+            return -1;
+        ssize_t n = write(fd, buffer + used, bytes - used);
+        if (n > 0)
+            used += (size_t)n;
+        else if (n == 0){
+            errno = EIO;
+            return -1;
+        }
+        else if (errno != EINTR && errno != EAGAIN)
+            return -1;
+    }
+    return 0;
+}
