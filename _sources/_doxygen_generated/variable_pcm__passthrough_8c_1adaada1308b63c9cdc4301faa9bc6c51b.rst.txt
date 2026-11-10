@@ -1,0 +1,14 @@
+.. _exhale_variable_pcm__passthrough_8c_1adaada1308b63c9cdc4301faa9bc6c51b:
+
+Variable stop_requested
+=======================
+
+- Defined in :ref:`file_audio_io_examples_pcm_passthrough.c`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: stop_requested
+   :project: GatorStomp

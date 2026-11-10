@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PocketBeagle 2 Button Demo &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7026087e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Connecting to the PocketBeagle 2" href="running_os.html" />
+    <link rel="prev" title="Mock Orchestrator Listener" href="mock_listener.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the C++ Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_doxygen_generated/doxygen.html">Doxygen Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PocketBeagle 2 Button Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-the-board">Setting up the board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#which-button-is-which">Which button is which</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-the-user-button-is-wired">How the USER button is wired</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#copying-and-building">Copying and building</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-demo">Running the demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cross_compile.html">Cross Compilation and Script Execution</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PocketBeagle 2 Button Demo</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pocketbeagle2_button_demo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pocketbeagle-2-button-demo">
+<h1>PocketBeagle 2 Button Demo<a class="headerlink" href="#pocketbeagle-2-button-demo" title="Link to this heading"></a></h1>
+<p>This demo runs the <a class="reference internal" href="mock_listener.html"><span class="doc">mock orchestrator listener</span></a> on the PocketBeagle 2 itself and drives it with a real button. Pressing the board’s USER button sends <code class="docutils literal notranslate"><span class="pre">GS_MSG_BUTTON</span></code> messages over the orchestrator socket, the same way a foot switch will once the input service exists.</p>
+<p>The pipeline is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">USER</span> <span class="n">button</span> <span class="o">-&gt;</span> <span class="n">GPIO0_26</span> <span class="o">-&gt;</span> <span class="n">gpio_button_sender</span><span class="o">.</span><span class="n">py</span> <span class="o">-&gt;</span> <span class="n">Unix</span> <span class="n">socket</span> <span class="o">-&gt;</span> <span class="n">mock_listener</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">gpio_button_sender.py</span></code> stands in for the input service. It waits for the GPIO line to change, then sends one <code class="docutils literal notranslate"><span class="pre">gs_socket_msg</span></code> per press and release.</p>
+<section id="setting-up-the-board">
+<h2>Setting up the board<a class="headerlink" href="#setting-up-the-board" title="Link to this heading"></a></h2>
+<p>The demo was tested on the <strong>PocketBeagle 2 Debian 13.7 2026-10-09 IoT</strong> image from the <a class="reference external" href="https://www.beagleboard.org/distros">BeagleBoard distros page</a>.</p>
+<ol class="arabic simple">
+<li><p>Write the image to a microSD card (8 GB or larger). The BeagleBoard Imaging Utility works, and so does Raspberry Pi Imager using “Use custom” (answer No to its OS customisation settings).</p></li>
+<li><p>Before the first boot, open <code class="docutils literal notranslate"><span class="pre">sysconf.txt</span></code> on the card’s <code class="docutils literal notranslate"><span class="pre">BOOT</span></code> partition and set <code class="docutils literal notranslate"><span class="pre">user_name</span></code>, <code class="docutils literal notranslate"><span class="pre">user_password</span></code> and <code class="docutils literal notranslate"><span class="pre">hostname</span></code> by removing the <code class="docutils literal notranslate"><span class="pre">#</span></code> in front of each line. If Windows does not give <code class="docutils literal notranslate"><span class="pre">BOOT</span></code> a drive letter, add one in Disk Management.</p></li>
+<li><p>Put the card in the board and connect it to a computer with a USB C data cable. The first boot takes a few minutes. Later boots take about a minute.</p></li>
+<li><p>Log in over the USB network:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>&lt;user&gt;@192.168.7.2
+</pre></div>
+</div>
+</section>
+<section id="which-button-is-which">
+<h2>Which button is which<a class="headerlink" href="#which-button-is-which" title="Link to this heading"></a></h2>
+<p>With the board face up and the USB C port on the left, both buttons sit along the bottom edge below the USB C port. The left one is <strong>POWER</strong> and the right one is <strong>USER</strong>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>A short press of the POWER button tells Linux to shut down, and holding it cuts power. Use <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">poweroff</span></code> to turn the board off.</p>
+</div>
+</section>
+<section id="how-the-user-button-is-wired">
+<h2>How the USER button is wired<a class="headerlink" href="#how-the-user-button-is-wired" title="Link to this heading"></a></h2>
+<p>The USER button is not a normal GPIO input. It feeds the boot mode circuit, which is why the stock image has no input device for it. From the schematic in the PocketBeagle 2 documentation (Fig. 3.36 Buttons, Fig. 3.11 Bootstrap pins connection and Fig. 3.12 GPIO GPMC):</p>
+<ul class="simple">
+<li><p>The button pulls <code class="docutils literal notranslate"><span class="pre">USER_BTN</span></code> to ground when pressed.</p></li>
+<li><p>Transistors Q1 and Q2 invert that signal onto <code class="docutils literal notranslate"><span class="pre">BOOTMODE13</span></code> and <code class="docutils literal notranslate"><span class="pre">BOOTMODE11</span></code>, so those pins read 1 while the button is held and 0 when it is released.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOTMODE11</span></code> is the SoC pin <code class="docutils literal notranslate"><span class="pre">GPMC0_AD11</span></code>, which is <code class="docutils literal notranslate"><span class="pre">GPIO0_26</span></code>. <code class="docutils literal notranslate"><span class="pre">BOOTMODE13</span></code> is <code class="docutils literal notranslate"><span class="pre">GPMC0_AD13</span></code>, which is <code class="docutils literal notranslate"><span class="pre">GPIO0_28</span></code>. The demo uses <code class="docutils literal notranslate"><span class="pre">GPIO0_26</span></code>.</p></li>
+</ul>
+<p>The boot mode pins are only sampled at power up, so after boot they can be read like any other GPIO input. Only ever read them. Driving them as outputs would fight the transistors.</p>
+<p><code class="docutils literal notranslate"><span class="pre">GPIO0</span></code> is the controller labelled <code class="docutils literal notranslate"><span class="pre">600000.gpio</span></code>. Its <code class="docutils literal notranslate"><span class="pre">gpiochip</span></code> number can change between kernels, so find it with <code class="docutils literal notranslate"><span class="pre">gpiodetect</span></code> instead of assuming one. To check the button directly, replace <code class="docutils literal notranslate"><span class="pre">N</span></code> with that number and press the USER button:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gpiodetect
+gpiomon<span class="w"> </span>-c<span class="w"> </span>gpiochipN<span class="w"> </span><span class="m">26</span>
+</pre></div>
+</div>
+<p>Each press prints a <code class="docutils literal notranslate"><span class="pre">rising</span></code> line and each release prints a <code class="docutils literal notranslate"><span class="pre">falling</span></code> line.</p>
+</section>
+<section id="copying-and-building">
+<h2>Copying and building<a class="headerlink" href="#copying-and-building" title="Link to this heading"></a></h2>
+<p>WSL can reach the board over the USB network, but the board has no internet access of its own, so copy the files from the repo root in WSL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>&lt;user&gt;@192.168.7.2<span class="w"> </span><span class="s1">'mkdir -p ~/gatorstomp_demo/include'</span>
+scp<span class="w"> </span>src/gs_socket_api/include/packet_structure.h<span class="w"> </span>&lt;user&gt;@192.168.7.2:gatorstomp_demo/include/
+scp<span class="w"> </span>tools/mock_listener/main.cpp<span class="w"> </span>tools/mock_listener/gpio_button_sender.py<span class="w"> </span>&lt;user&gt;@192.168.7.2:gatorstomp_demo/
+</pre></div>
+</div>
+<p>The IoT image has <code class="docutils literal notranslate"><span class="pre">g++</span></code> but not CMake, so build the listener directly on the board:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/gatorstomp_demo
+g++<span class="w"> </span>-std<span class="o">=</span>c++17<span class="w"> </span>-Wall<span class="w"> </span>-Wextra<span class="w"> </span>-I<span class="w"> </span>include<span class="w"> </span>main.cpp<span class="w"> </span>-o<span class="w"> </span>mock_listener
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">gpio_button_sender.py</span></code> uses the <code class="docutils literal notranslate"><span class="pre">gpiod</span></code> Python library, which the IoT image already includes.</p>
+</section>
+<section id="running-the-demo">
+<h2>Running the demo<a class="headerlink" href="#running-the-demo" title="Link to this heading"></a></h2>
+<p>Open two SSH sessions to the board. In the first, start the listener:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/gatorstomp_demo
+./mock_listener<span class="w"> </span>/tmp/gs.sock
+</pre></div>
+</div>
+<p>In the second, start the button sender:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/gatorstomp_demo
+python3<span class="w"> </span>gpio_button_sender.py<span class="w"> </span>/tmp/gs.sock
+</pre></div>
+</div>
+<p>The sender reports the button’s current state as soon as it connects, then one message per press and release. The listener’s output is the proof that each message crossed the socket:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Client connected
+[1793687137013 ms] BUTTON  id=0  value=0 (released)
+[1793687160577 ms] BUTTON  id=0  value=1 (pressed)
+[1793687160729 ms] BUTTON  id=0  value=0 (released)
+</pre></div>
+</div>
+<p>Press Ctrl+C in either session to stop.</p>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<p>The PocketBeagle 2 has no battery backed clock and no internet access over USB, so its clock starts from the image’s build date after every boot. Presses still work, but the <code class="docutils literal notranslate"><span class="pre">time_ms</span></code> values will be wrong. To set the clock from the laptop, run this in WSL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-t<span class="w"> </span>&lt;user&gt;@192.168.7.2<span class="w"> </span><span class="s2">"sudo date -u -s '</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>+<span class="s1">'%F %T'</span><span class="k">)</span><span class="s2">'"</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mock_listener.html" class="btn btn-neutral float-left" title="Mock Orchestrator Listener" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="running_os.html" class="btn btn-neutral float-right" title="Connecting to the PocketBeagle 2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

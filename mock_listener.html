@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mock Orchestrator Listener &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7026087e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PocketBeagle 2 Button Demo" href="pocketbeagle2_button_demo.html" />
+    <link rel="prev" title="Setting up Yocto to work" href="yocto_setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the C++ Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_doxygen_generated/doxygen.html">Doxygen Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mock Orchestrator Listener</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#building">Building</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running">Running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-demo">Interactive demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-output">Example output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-it-checks">What it checks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cross_compile.html">Cross Compilation and Script Execution</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Mock Orchestrator Listener</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/mock_listener.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mock-orchestrator-listener">
+<h1>Mock Orchestrator Listener<a class="headerlink" href="#mock-orchestrator-listener" title="Link to this heading"></a></h1>
+<p>The mock orchestrator listener stands in for the audio orchestrator’s I/O handler. It creates the orchestrator’s Unix socket, accepts a client, and prints every <code class="docutils literal notranslate"><span class="pre">gs_socket_msg</span></code> it receives. This lets the input service be built and tested before the real orchestrator is ready.</p>
+<p>It lives in <code class="docutils literal notranslate"><span class="pre">tools/mock_listener</span></code> along with <code class="docutils literal notranslate"><span class="pre">test_sender.py</span></code>, a small Python script that pretends to be the input service.</p>
+<section id="building">
+<h2>Building<a class="headerlink" href="#building" title="Link to this heading"></a></h2>
+<p>From the root of the repo:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>build
+cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>--target<span class="w"> </span>mock_listener
+</pre></div>
+</div>
+</section>
+<section id="running">
+<h2>Running<a class="headerlink" href="#running" title="Link to this heading"></a></h2>
+<p>The default socket path, <code class="docutils literal notranslate"><span class="pre">/run/gatorstomp/orchestrator.sock</span></code>, needs root on a dev machine, so pass a path in <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> instead. Start the listener in one terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./build/bin/mock_listener<span class="w"> </span>/tmp/gs.sock
+</pre></div>
+</div>
+<p>Then run the test sender in a second terminal with the same path:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>tools/mock_listener/test_sender.py<span class="w"> </span>/tmp/gs.sock
+</pre></div>
+</div>
+<p>Press Ctrl+C in the first terminal to stop the listener. It removes the socket file on the way out.</p>
+</section>
+<section id="interactive-demo">
+<h2>Interactive demo<a class="headerlink" href="#interactive-demo" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">interactive_sender.py</span></code> turns the keyboard into a pretend pedal, which is useful for live demos. Start the listener as above, then run this in the second terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>tools/mock_listener/interactive_sender.py<span class="w"> </span>/tmp/gs.sock
+</pre></div>
+</div>
+<p>The left and right arrow keys turn the selected encoder by one step, and the up and down arrow keys choose which encoder (0 to 3) is selected. Keys 1 to 4 press and release foot switches 0 to 3. A terminal can’t tell when a key is let go, so each press toggles the switch between pressed and released. Press <code class="docutils literal notranslate"><span class="pre">b</span></code> to send a broken message and <code class="docutils literal notranslate"><span class="pre">q</span></code> to quit.</p>
+<p>Like the real input service, it sends the state of all 4 foot switches as soon as it connects. Each key press shows up as a line in the listener’s terminal.</p>
+</section>
+<section id="example-output">
+<h2>Example output<a class="headerlink" href="#example-output" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Mock orchestrator listening on /tmp/gs.sock (Ctrl+C to stop)
+Expecting 11 byte messages
+Waiting for a client...
+Client connected
+[1793680174617 ms] TWEAK   id=2  value=-1
+[1793680174818 ms] TWEAK   id=0  value=5
+[1793680175018 ms] BUTTON  id=1  value=1 (pressed)
+[1793680175218 ms] BUTTON  id=1  value=0 (released)
+[1793680175418 ms] PROTOCOL ERROR: type 3 (VOLUME) is not expected from the input service
+[1793680175619 ms] PROTOCOL ERROR: type 0 (ACK) is not expected from the input service
+[1793680175819 ms] PROTOCOL ERROR: type 9 (UNKNOWN) is not expected from the input service
+[1793680176019 ms] PROTOCOL ERROR: BUTTON id 7 is outside 0 to 3
+[1793680176220 ms] PROTOCOL ERROR: BUTTON value 2 should be 0 or 1
+PROTOCOL ERROR: got a 3 byte message, expected 11 bytes
+PROTOCOL ERROR: got a 12 byte message, expected 11 bytes
+Client disconnected
+Waiting for a client...
+</pre></div>
+</div>
+</section>
+<section id="what-it-checks">
+<h2>What it checks<a class="headerlink" href="#what-it-checks" title="Link to this heading"></a></h2>
+<p>Only <code class="docutils literal notranslate"><span class="pre">GS_MSG_BUTTON</span></code> and <code class="docutils literal notranslate"><span class="pre">GS_MSG_TWEAK</span></code> are expected from the input service. The listener logs a protocol error and keeps running when it receives:</p>
+<ul class="simple">
+<li><p>a message that is not exactly <code class="docutils literal notranslate"><span class="pre">sizeof(gs_socket_msg)</span></code> bytes</p></li>
+<li><p>any other message type, including <code class="docutils literal notranslate"><span class="pre">GS_MSG_VOLUME</span></code> and <code class="docutils literal notranslate"><span class="pre">GS_MSG_ACK</span></code></p></li>
+<li><p>an <code class="docutils literal notranslate"><span class="pre">id</span></code> outside 0 to 3</p></li>
+<li><p>a <code class="docutils literal notranslate"><span class="pre">GS_MSG_BUTTON</span></code> value other than 0 (released) or 1 (pressed)</p></li>
+</ul>
+<p>When the client disconnects, the listener logs it and waits for a new connection, so the input service’s reconnect behavior can be tested by stopping and restarting the sender. Any socket file left behind by an earlier run is removed at startup.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="yocto_setup.html" class="btn btn-neutral float-left" title="Setting up Yocto to work" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pocketbeagle2_button_demo.html" class="btn btn-neutral float-right" title="PocketBeagle 2 Button Demo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

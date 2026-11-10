@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io_8c_1a378b13d3f5992fc0be4b7c1dbba2c85f:
+
+Function open_pcm
+=================
+
+- Defined in :ref:`file_audio_io_audio_io.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: open_pcm(snd_pcm_t **, const char *, snd_pcm_stream_t, const AudioIOConfig *)
+   :project: GatorStomp

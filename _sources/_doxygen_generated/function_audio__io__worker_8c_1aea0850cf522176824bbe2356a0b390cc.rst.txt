@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1aea0850cf522176824bbe2356a0b390cc:
+
+Function handle_stop(int)
+=========================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: handle_stop(int)
+   :project: GatorStomp

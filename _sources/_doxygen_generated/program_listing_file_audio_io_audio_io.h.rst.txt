@@ -1,0 +1,47 @@
+
+.. _program_listing_file_audio_io_audio_io.h:
+
+Program Listing for File audio_io.h
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_io_audio_io.h>` (``audio_io/audio_io.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef AUDIO_IO_H
+   #define AUDIO_IO_H
+   
+   #include <stddef.h>
+   #include <stdint.h>
+   
+   #ifdef __cplusplus
+   extern "C" {
+   #endif
+   
+   typedef struct {
+       unsigned int sample_rate;
+       unsigned int channels;
+       unsigned int frames_per_buffer;
+       const char *input_file;
+       const char *capture_device;
+       const char *playback_device;
+       const char *output_file;
+   } AudioIOConfig;
+   
+   typedef void (*AudioProcessCallback)(
+       uint8_t *buffer,
+       size_t frames,
+       unsigned int channels,
+       void *user_data
+   );
+   
+   int audio_io_run(const AudioIOConfig *config, AudioProcessCallback process, void *user_data);
+   
+   #ifdef __cplusplus
+   }
+   #endif
+   
+   #endif

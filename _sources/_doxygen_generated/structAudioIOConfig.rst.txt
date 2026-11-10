@@ -1,0 +1,17 @@
+.. _exhale_struct_structAudioIOConfig:
+
+Struct AudioIOConfig
+====================
+
+- Defined in :ref:`file_audio_io_audio_io.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: AudioIOConfig
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:

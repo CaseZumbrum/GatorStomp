@@ -1,0 +1,181 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *) &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)" href="function_audio__io__fifo_8h_1a87085f906f829d19552cd5d87b626270.html" />
+    <link rel="prev" title="Function audio_fifo_open(const char *, int, const volatile sig_atomic_t *)" href="function_audio__io__fifo_8h_1acd8fb455d3f4325cbb65fb80cd1af034.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../building.html">Building the C++ Code</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="doxygen.html">Doxygen Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#page-hierarchy">Page Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="doxygen.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#enums">Enums</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="doxygen.html#functions">Functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8c_1ac7b6c6108ec572524d92207779a9f094.html">Function audio_fifo_now(void)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8h_1ac7b6c6108ec572524d92207779a9f094.html">Function audio_fifo_now(void)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8c_1acd8fb455d3f4325cbb65fb80cd1af034.html">Function audio_fifo_open(const char *, int, const volatile sig_atomic_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8h_1acd8fb455d3f4325cbb65fb80cd1af034.html">Function audio_fifo_open(const char *, int, const volatile sig_atomic_t *)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8h_1a87085f906f829d19552cd5d87b626270.html">Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8c_1a339fce70802d6f5ecf88883b6459681d.html">Function audio_fifo_write_all(int, const uint8_t *, size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8h_1a339fce70802d6f5ecf88883b6459681d.html">Function audio_fifo_write_all(int, const uint8_t *, size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io_8c_1a942db1d2e7af831d08242e451329b5ce.html">Function audio_io_run(const AudioIOConfig *, AudioProcessCallback, void *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io_8h_1a942db1d2e7af831d08242e451329b5ce.html">Function audio_io_run(const AudioIOConfig *, AudioProcessCallback, void *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1aa29b8916fbc5a07db5871b45d5c75826.html">Function capture_audio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1aea0850cf522176824bbe2356a0b390cc.html">Function handle_stop(int)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcm__passthrough_8c_1aea0850cf522176824bbe2356a0b390cc.html">Function handle_stop(int)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcm__integrity_8c_1a7c9e0ec55a7d75cf2b17672e2408ccb1.html">Function invert_pcm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcm__passthrough_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcm__integrity_8c_1a840291bc02cba5474a4cb46a9b9566fe.html">Function main(void)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_main_8cpp_1ae66f6b31b5ad750f1fe042a706a4e3d4.html">Function main()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcm__integrity_8c_1ab4adf0c34df8ba3b08178cff9de822a4.html">Function matches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1a92e59c33e2b59d340eb0a52d953397a7.html">Function open_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io_8c_1a378b13d3f5992fc0be4b7c1dbba2c85f.html">Function open_pcm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1a18678512af84f856bbc9138163176d05.html">Function playback_audio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1a131fbe1ce9ef86927a337725124d7e28.html">Function recover_pcm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1a35b2cbd23417f72524cc55ce1a432f55.html">Function setup_signals(void)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcm__passthrough_8c_1a35b2cbd23417f72524cc55ce1a432f55.html">Function setup_signals(void)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__worker_8c_1a195c92b61a0910b12eeec1f3db54771a.html">Function wait_pcm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_audio__io__fifo_8c_1ad6f15b5c8b080dd1070b4fa150031fde.html">Function wait_ready</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross_compile.html">Cross Compilation and Script Execution</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="doxygen.html">Doxygen Documentation</a></li>
+      <li class="breadcrumb-item active">Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_doxygen_generated/function_audio__io__fifo_8c_1a87085f906f829d19552cd5d87b626270.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="function-audio-fifo-read-block-int-uint8-t-size-t-const-volatile-sig-atomic-t">
+<span id="exhale-function-audio-io-fifo-8c-1a87085f906f829d19552cd5d87b626270"></span><h1>Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)<a class="headerlink" href="#function-audio-fifo-read-block-int-uint8-t-size-t-const-volatile-sig-atomic-t" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_audio_io_audio_io_fifo.c.html#file-audio-io-audio-io-fifo-c"><span class="std std-ref">File audio_io_fifo.c</span></a></p></li>
+</ul>
+<section id="function-documentation">
+<h2>Function Documentation<a class="headerlink" href="#function-documentation" title="Link to this heading"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421audio_fifo_read_blockiP7uint8_t6size_tPVK12sig_atomic_t">
+<span id="_CPPv321audio_fifo_read_blockiP7uint8_t6size_tPVK12sig_atomic_t"></span><span id="_CPPv221audio_fifo_read_blockiP7uint8_t6size_tPVK12sig_atomic_t"></span><span id="audio_fifo_read_block__i.uint8_tP.s.sig_atomic_tVCP"></span><span class="target" id="audio__io__fifo_8h_1a87085f906f829d19552cd5d87b626270"></span><span class="n"><span class="pre">ssize_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">audio_fifo_read_block</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fd</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buffer</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bytes</span></span>, <span class="k"><span class="pre">volatile</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">sig_atomic_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">stop</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421audio_fifo_read_blockiP7uint8_t6size_tPVK12sig_atomic_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Fill up to bytes, or return a short final block at EOF. </p>
+<p>
+Also accepts regular raw input files. Retains partial reads within this call; callers must not retry a failed block because bytes may be lost. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bytes read, zero at EOF, -1 with errno on error. bytes must be a positive multiple of six. EOF within a frame returns EPROTO. A nonzero optional stop flag returns ECANCELED. A block has a five-second deadline; errors are terminal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="function_audio__io__fifo_8h_1acd8fb455d3f4325cbb65fb80cd1af034.html" class="btn btn-neutral float-left" title="Function audio_fifo_open(const char *, int, const volatile sig_atomic_t *)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="function_audio__io__fifo_8h_1a87085f906f829d19552cd5d87b626270.html" class="btn btn-neutral float-right" title="Function audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

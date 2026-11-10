@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1a18678512af84f856bbc9138163176d05:
+
+Function playback_audio
+=======================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: playback_audio(snd_pcm_t *, int, int, uint8_t *, size_t)
+   :project: GatorStomp

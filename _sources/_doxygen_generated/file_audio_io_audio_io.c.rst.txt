@@ -1,0 +1,73 @@
+
+.. _file_audio_io_audio_io.c:
+
+File audio_io.c
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_io>` (``audio_io``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Implementation of the blocking raw PCM and ALSA audio pipeline. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_io/audio_io.c``)
+------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_io_audio_io.c.rst
+
+
+
+Detailed Description
+--------------------
+
+Uses the fixed S24_3LE sample representation documented in :ref:`file_audio_io_audio_io.h`. ALSA recovery retries transfers but cannot guarantee uninterrupted audio. 
+
+
+
+
+Includes
+--------
+
+
+- ``alsa/asoundlib.h``
+
+- ``audio_io.h`` (:ref:`file_audio_io_audio_io.h`)
+
+- ``stdint.h``
+
+- ``stdio.h``
+
+- ``stdlib.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_audio__io_8c_1a942db1d2e7af831d08242e451329b5ce`
+
+- :ref:`exhale_function_audio__io_8c_1a378b13d3f5992fc0be4b7c1dbba2c85f`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_audio__io_8c_1a25065cd833bcfecfb404093aed3edaca`
+

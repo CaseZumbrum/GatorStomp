@@ -1,0 +1,16 @@
+.. _dir_gs_socket_api:
+
+
+Directory gs_socket_api
+=======================
+
+
+*Directory path:* ``gs_socket_api``
+
+Subdirectories
+--------------
+
+- :ref:`dir_gs_socket_api_include`
+
+
+

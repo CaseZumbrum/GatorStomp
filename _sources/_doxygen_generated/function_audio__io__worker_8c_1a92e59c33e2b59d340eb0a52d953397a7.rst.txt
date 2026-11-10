@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1a92e59c33e2b59d340eb0a52d953397a7:
+
+Function open_file
+==================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: open_file(const char *, int)
+   :project: GatorStomp

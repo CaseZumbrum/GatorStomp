@@ -1,0 +1,21 @@
+.. _dir_audio_io_tests:
+
+
+Directory tests
+===============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_io>` (``audio_io``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+*Directory path:* ``audio_io/tests``
+
+
+Files
+-----
+
+- :ref:`file_audio_io_tests_pcm_integrity.c`
+
+

@@ -1,0 +1,80 @@
+
+.. _file_audio_io_audio_io.h:
+
+File audio_io.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_io>` (``audio_io``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Blocking ALSA and raw-file audio pipeline interface. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_io/audio_io.h``)
+------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_io_audio_io.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Samples are signed packed 24-bit little-endian interleaved PCM (S24_3LE), three bytes per channel. The tested configuration is 96000 Hz, stereo (six bytes per frame). Raw files have no headers or format metadata. 
+
+
+
+
+Includes
+--------
+
+
+- ``stddef.h``
+
+- ``stdint.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_io_audio_io.c`
+
+- :ref:`file_audio_io_tests_pcm_integrity.c`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structAudioIOConfig`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_audio__io_8h_1a942db1d2e7af831d08242e451329b5ce`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_audio__io_8h_1a432d3e57b532ff4a029332f5e1613488`
+

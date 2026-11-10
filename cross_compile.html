@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cross Compilation and Script Execution &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7026087e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Connecting to the PocketBeagle 2" href="running_os.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the C++ Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_doxygen_generated/doxygen.html">Doxygen Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cross Compilation and Script Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c-code">C Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-download-zig">Step 1: Download Zig</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-cross-compile-the-c-file">Step 2: Cross-Compile the C File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-transfer-the-executable">Step 3: Transfer the Executable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-execute-the-program">Step 4: Execute the Program</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-transfer-the-python-file">Step 1: Transfer the Python File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-execute-the-python-file">Step 2: Execute the Python File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#matlab-gnu-octave">MATLAB / GNU Octave</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-transfer-the-matlab-file">Step 1: Transfer the MATLAB File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-execute-the-matlab-file">Step 2: Execute the MATLAB File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ssh-host-identification-has-changed">SSH Host Identification Has Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-timed-out">Connection Timed Out</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cross Compilation and Script Execution</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cross_compile.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cross-compilation-and-script-execution">
+<h1>Cross Compilation and Script Execution<a class="headerlink" href="#cross-compilation-and-script-execution" title="Link to this heading"></a></h1>
+<p><strong>Author:</strong> Danush Singla</p>
+<p>This guide explains how to compile and execute C, Python, and MATLAB
+programs on the GatorStomp operating system running on the PocketBeagle 2.</p>
+<p>These instructions are intended for <strong>Windows computers</strong>.</p>
+<p>The development computer uses the x86-64 architecture, while the
+PocketBeagle 2 uses ARM64 (AArch64). C programs must therefore be
+cross-compiled for ARM64 Linux before execution.</p>
+<p>Python and MATLAB-compatible scripts can be transferred directly
+to the board and executed using their respective interpreters.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before beginning, ensure that the PocketBeagle 2 is running the
+GatorStomp Yocto image and is connected to the Windows computer
+using a data-capable USB-C cable.</p>
+<p>The examples below use the board’s default USB network address,
+<code class="docutils literal notranslate"><span class="pre">192.168.7.2</span></code>.</p>
+</div>
+<section id="c-code">
+<h2>C Code<a class="headerlink" href="#c-code" title="Link to this heading"></a></h2>
+<p>C programs must be cross-compiled into ARM64 Linux executables before
+they can run on the PocketBeagle 2.</p>
+<p>We use the Zig compiler for cross-compilation. Zig can generate ARM64
+Linux executables directly from Windows without requiring WSL or a
+separate Yocto SDK.</p>
+<section id="step-1-download-zig">
+<h3>Step 1: Download Zig<a class="headerlink" href="#step-1-download-zig" title="Link to this heading"></a></h3>
+<p>Download the Windows x86-64 version of Zig from the official website:</p>
+<p><a class="reference external" href="https://ziglang.org/download/">Download Zig</a></p>
+<p>Extract the downloaded ZIP archive to a directory on your computer.</p>
+<p>Note the location of <code class="docutils literal notranslate"><span class="pre">zig.exe</span></code>, which will be referred to as
+<code class="docutils literal notranslate"><span class="pre">PATH_TO_ZIG\zig.exe</span></code> throughout this guide.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Zig is only required on the Windows development computer.
+It does not need to be installed on the PocketBeagle 2.</p>
+</div>
+</section>
+<section id="step-2-cross-compile-the-c-file">
+<h3>Step 2: Cross-Compile the C File<a class="headerlink" href="#step-2-cross-compile-the-c-file" title="Link to this heading"></a></h3>
+<p>Open <strong>Windows PowerShell</strong> and navigate to the directory containing
+the C file you want to compile.</p>
+<p>For example, if your file is named <code class="docutils literal notranslate"><span class="pre">hello.c</span></code>, run:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">&amp;</span> <span class="s2">"PATH_TO_ZIG\zig.exe"</span> <span class="n">cc</span> <span class="n">-target</span> <span class="n">aarch64-linux-musl</span> <span class="n">-static</span> <span class="n">hello</span><span class="p">.</span><span class="n">c</span> <span class="n">-o</span> <span class="n">hello</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">PATH_TO_ZIG</span></code> with the actual directory containing Zig.</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">hello.c</span></code> with your source filename and <code class="docutils literal notranslate"><span class="pre">hello</span></code> with
+the desired executable name.</p>
+<p>The command uses the following options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cc</span></code> invokes Zig’s C compiler.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-target</span> <span class="pre">aarch64-linux-musl</span></code> targets ARM64 Linux using musl libc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-static</span></code> produces a statically linked executable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">hello</span></code> specifies the output executable filename.</p></li>
+</ul>
+<p>The resulting executable is intended for ARM64 Linux, not Windows.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Static compilation is useful for simple C programs because
+the executable does not depend on a separately installed C
+standard-library runtime.</p>
+<p>Programs using additional libraries or hardware-specific
+functionality may require extra dependencies or a different
+cross-compilation configuration.</p>
+</div>
+</section>
+<section id="step-3-transfer-the-executable">
+<h3>Step 3: Transfer the Executable<a class="headerlink" href="#step-3-transfer-the-executable" title="Link to this heading"></a></h3>
+<p>Ensure that the PocketBeagle 2 is powered on and connected to the
+Windows computer through USB-C.</p>
+<p>From PowerShell, navigate to the directory containing the compiled
+executable.</p>
+<p>Transfer it using SCP:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">-O</span> <span class="p">.\</span><span class="n">hello</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span><span class="p">:/</span><span class="n">home</span><span class="p">/</span><span class="n">root</span><span class="p">/</span><span class="n">hello</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">hello</span></code> with your executable’s filename.</p>
+<p>You may also change <code class="docutils literal notranslate"><span class="pre">/home/root/hello</span></code> to another destination
+on the PocketBeagle 2.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">-O</span></code> option uses the legacy SCP transfer protocol, which
+is supported by our current Dropbear SSH configuration.</p>
+</section>
+<section id="step-4-execute-the-program">
+<h3>Step 4: Execute the Program<a class="headerlink" href="#step-4-execute-the-program" title="Link to this heading"></a></h3>
+<p>Connect to the PocketBeagle 2 through SSH:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Once connected, navigate to the executable’s directory if necessary.</p>
+<p>Grant executable permissions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>+x<span class="w"> </span>/home/root/hello
+</pre></div>
+</div>
+<p>Then execute the program:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/home/root/hello
+</pre></div>
+</div>
+<p>Alternatively, from within <code class="docutils literal notranslate"><span class="pre">/home/root</span></code>, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./hello
+</pre></div>
+</div>
+<p>The C program will now execute on the PocketBeagle 2’s ARM64 processor.</p>
+</section>
+</section>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h2>
+<p>Python does not require cross-compilation for ordinary Python scripts.</p>
+<p>The GatorStomp Yocto image includes Python 3 and its standard-library
+modules. Python files can therefore be transferred directly to the
+PocketBeagle 2 and executed using the installed interpreter.</p>
+<section id="step-1-transfer-the-python-file">
+<h3>Step 1: Transfer the Python File<a class="headerlink" href="#step-1-transfer-the-python-file" title="Link to this heading"></a></h3>
+<p>Open Windows PowerShell in the directory containing your Python file.</p>
+<p>For a file named <code class="docutils literal notranslate"><span class="pre">hello.py</span></code>, run:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">-O</span> <span class="p">.\</span><span class="n">hello</span><span class="p">.</span><span class="n">py</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span><span class="p">:/</span><span class="n">home</span><span class="p">/</span><span class="n">root</span><span class="p">/</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">hello.py</span></code> with the filename you want to transfer.</p>
+<p>Change <code class="docutils literal notranslate"><span class="pre">/home/root/</span></code> if you want the file stored in a different
+directory on the board.</p>
+</section>
+<section id="step-2-execute-the-python-file">
+<h3>Step 2: Execute the Python File<a class="headerlink" href="#step-2-execute-the-python-file" title="Link to this heading"></a></h3>
+<p>Connect to the board:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Execute the Python script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>/home/root/hello.py
+</pre></div>
+</div>
+<p>Python will interpret and execute the file directly.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Python 3 and its standard-library modules are included in the
+GatorStomp image.</p>
+<p>Scripts requiring external packages, such as NumPy or SciPy,
+will also require those packages to be included in the OS image.</p>
+</div>
+</section>
+</section>
+<section id="matlab-gnu-octave">
+<h2>MATLAB / GNU Octave<a class="headerlink" href="#matlab-gnu-octave" title="Link to this heading"></a></h2>
+<p>The GatorStomp Yocto operating system includes GNU Octave,
+an open-source numerical computing environment that supports
+MATLAB-compatible <code class="docutils literal notranslate"><span class="pre">.m</span></code> files.</p>
+<p>MATLAB scripts do not need to be cross-compiled. They can be
+transferred directly to the PocketBeagle 2 and executed using
+the installed GNU Octave interpreter.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GNU Octave supports many MATLAB functions, but some proprietary
+MATLAB toolboxes and functions may not be compatible.</p>
+</div>
+<section id="step-1-transfer-the-matlab-file">
+<h3>Step 1: Transfer the MATLAB File<a class="headerlink" href="#step-1-transfer-the-matlab-file" title="Link to this heading"></a></h3>
+<p>Open Windows PowerShell in the directory containing your <code class="docutils literal notranslate"><span class="pre">.m</span></code> file.</p>
+<p>For a file named <code class="docutils literal notranslate"><span class="pre">hello.m</span></code>, run:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">-O</span> <span class="p">.\</span><span class="n">hello</span><span class="p">.</span><span class="n">m</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span><span class="p">:/</span><span class="n">home</span><span class="p">/</span><span class="n">root</span><span class="p">/</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">hello.m</span></code> with your MATLAB filename.</p>
+<p>The destination path may be changed if desired.</p>
+</section>
+<section id="step-2-execute-the-matlab-file">
+<h3>Step 2: Execute the MATLAB File<a class="headerlink" href="#step-2-execute-the-matlab-file" title="Link to this heading"></a></h3>
+<p>Connect to the PocketBeagle 2:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Run the script using GNU Octave:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>octave-cli<span class="w"> </span>--quiet<span class="w"> </span>--no-history<span class="w"> </span>/home/root/hello.m
+</pre></div>
+</div>
+<p>The command consists of:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">octave-cli</span></code>: Runs GNU Octave from the command line without
+launching its graphical interface.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--quiet</span></code>: Suppresses Octave’s startup messages.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--no-history</span></code>: Disables command-history recording.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/root/hello.m</span></code>: Specifies the script to execute.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">--quiet</span></code> option is optional and does not suppress normal
+script output or error messages.</p>
+<p>You can also run the script without it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>octave-cli<span class="w"> </span>/home/root/hello.m
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="ssh-host-identification-has-changed">
+<h3>SSH Host Identification Has Changed<a class="headerlink" href="#ssh-host-identification-has-changed" title="Link to this heading"></a></h3>
+<p>When reconnecting to the PocketBeagle 2 after flashing a new
+operating system image, SSH may display the following warning:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
+</pre></div>
+</div>
+<p>This occurs when the SSH host key presented by the board differs
+from the key previously saved on the Windows computer.</p>
+<p>If you have verified that you are connecting to your own PocketBeagle 2,
+remove the previously saved key:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh-keygen</span> <span class="n">-R</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Then reconnect:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Verify the new host key before accepting it.</p>
+</section>
+<section id="connection-timed-out">
+<h3>Connection Timed Out<a class="headerlink" href="#connection-timed-out" title="Link to this heading"></a></h3>
+<p>If SSH or SCP cannot connect, first verify that the board is
+powered on and recognized by Windows as a USB network adapter.</p>
+<p>Test the network connection:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ping</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>If the ping fails, check the USB-C cable and confirm that Windows
+has received an address on the <code class="docutils literal notranslate"><span class="pre">192.168.7.x</span></code> subnet.</p>
+<p>You can inspect network addresses using:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ipconfig</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The GatorStomp operating system supports three different workflows:</p>
+<ul class="simple">
+<li><p><strong>C:</strong> Cross-compile on Windows, transfer the ARM64 executable,
+and execute it on the board.</p></li>
+<li><p><strong>Python:</strong> Transfer the <code class="docutils literal notranslate"><span class="pre">.py</span></code> file and execute it using Python 3.</p></li>
+<li><p><strong>MATLAB:</strong> Transfer the <code class="docutils literal notranslate"><span class="pre">.m</span></code> file and execute it using GNU Octave,
+once Octave support is verified.</p></li>
+</ul>
+<p>C and Python workflows have been tested on the physical
+PocketBeagle 2. GNU Octave support remains pending final verification.</p>
+<p>All execution occurs on the PocketBeagle 2 using the GatorStomp
+Yocto operating system.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="running_os.html" class="btn btn-neutral float-left" title="Connecting to the PocketBeagle 2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

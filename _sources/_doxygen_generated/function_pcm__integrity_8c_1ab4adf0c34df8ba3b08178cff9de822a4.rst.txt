@@ -1,0 +1,14 @@
+.. _exhale_function_pcm__integrity_8c_1ab4adf0c34df8ba3b08178cff9de822a4:
+
+Function matches
+================
+
+- Defined in :ref:`file_audio_io_tests_pcm_integrity.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: matches(const char *, const uint8_t *, size_t)
+   :project: GatorStomp
