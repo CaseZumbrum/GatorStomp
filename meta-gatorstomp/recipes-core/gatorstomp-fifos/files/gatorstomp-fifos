@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# Script called during startup
+case "$1" in
+    start)
+        # Create directory for runtime communication files
+        mkdir -p /run/gatorstomp || exit 1
+        chmod 0755 /run/gatorstomp
+
+        # Create both named FIFOs if they don't already exist
+        for name in capture playback; do
+            fifo="/run/gatorstomp/${name}.pcm"
+
+            if [ ! -p "$fifo" ]; then
+                # Do not overwrite an existing file
+                if [ -e "$fifo" ] || [ -L "$fifo" ]; then
+                    echo "Invalid FIFO path: $fifo" >&2
+                    exit 1
+                fi
+
+                # Create the FIFO with the specified permissions
+                mkfifo -m 0660 "$fifo" || exit 1
+            fi
+        done       
+        ;;
+    stop)
+        # Leave the FIFOs alone until processes have stopped
+        ;;
+    restart)
+        "$0" start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
