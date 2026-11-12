@@ -43,5 +43,6 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    mock_listener
    pocketbeagle2_button_demo
    running_os
+   cross_compile
    tools/wav-pcm
    demos/audio_orchestrator_demos
