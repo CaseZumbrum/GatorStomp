@@ -21,3 +21,6 @@ meta-gatorstomp/recipes-example/
 
 # Don't add any layers or stuff from layers for yocto
 /yocto/
+
+# soundfiles used for testing
+*.wav
