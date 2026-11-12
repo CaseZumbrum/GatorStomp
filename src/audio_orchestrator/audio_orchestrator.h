@@ -6,10 +6,12 @@
 #include <functional>
 #include <thread>
 #include <atomic>
+#include <signal.h>
 
-#define ORCHESTRATOR_BUFFER_SIZE 1024
 
-typedef std::array<uint32_t,ORCHESTRATOR_BUFFER_SIZE> orchestrator_buffer_t;
+#define ORCHESTRATOR_BUFFER_SIZE 512*6
+
+typedef std::array<uint8_t,ORCHESTRATOR_BUFFER_SIZE> orchestrator_buffer_t;
 typedef std::function<void(orchestrator_buffer_t*, orchestrator_buffer_t*)> transform_function_t;
 
 class Audio_Orchestrator{
@@ -27,8 +29,9 @@ class Audio_Orchestrator{
 
         transform_function_t active_transform;
 
-        std::thread execution_thread;
         std::atomic<bool> keepRunning{true};
+
+        volatile sig_atomic_t stop_requested = 0;
     
         void execution_thread_runner();
 
@@ -42,5 +45,7 @@ class Audio_Orchestrator{
 
         bool start();
         bool stop();
+
+        std::thread execution_thread;
 
 };
