@@ -14,14 +14,7 @@
 #include <thread>
 #include <atomic>
 #include <signal.h>
-
-
-#define ORCHESTRATOR_BUFFER_SIZE 512*6
-
-/** @brief type for audio buffer arrays */
-typedef std::array<uint8_t,ORCHESTRATOR_BUFFER_SIZE> orchestrator_buffer_t;
-/** @brief type for transforms that are done on audio buffer arrays */
-typedef std::function<void(orchestrator_buffer_t*, orchestrator_buffer_t*)> transform_function_t;
+#include "effects/effect.h"
 
 /** @brief class for the Audio Orchestrator */
 class Audio_Orchestrator{
@@ -41,15 +34,11 @@ class Audio_Orchestrator{
         /** @brief audio buffer that is passed to the output fifo */
         orchestrator_buffer_t output_buffer;
 
-        /** @brief vector of transformation functions
-         * @todo make me a vector of Effect
-        */
-        std::vector<transform_function_t> transforms;
+        /** @brief vector of transformation functions */
+        std::vector<Effect*> transforms;
 
-        /** @brief the currently active transform
-         * @todo make me an Effect
-        */
-        transform_function_t active_transform;
+        /** @brief the currently active transform */
+        Effect* active_transform;
 
         /** @brief flag for the execution thread to keep running, set to false to stop the thread */
         std::atomic<bool> keepRunning{true};
@@ -75,10 +64,9 @@ class Audio_Orchestrator{
 
         /**
          * @brief add an effect to the orchestrators list
-         * @todo make me work with Effect
          * @return index of the effect in the vector
          */
-        unsigned int register_transform(transform_function_t transform);
+        unsigned int register_transform(Effect* transform);
 
         /**
          * @brief sets the active index

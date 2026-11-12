@@ -21,7 +21,6 @@ void passthrough(orchestrator_buffer_t* input, orchestrator_buffer_t* output){
 
 int main(){
     Audio_Orchestrator a("/tmp/gs_demo/capture.pcm", "/tmp/gs_demo/playback.pcm");
-    a.set_active_transform(a.register_transform(passthrough));
     EchoEffect echo(
         44100,  // Sample rate
         300.0f, // Delay (ms)
@@ -30,14 +29,7 @@ int main(){
         1.0f    // Dry
     );
 
-    unsigned int echo_index = a.register_transform(
-        [&echo](
-            orchestrator_buffer_t* input,
-            orchestrator_buffer_t* output
-        ) {
-            echo.process(input, output);
-        }
-    );
+    unsigned int echo_index = a.register_transform(&echo);
 
     a.set_active_transform(echo_index);
 

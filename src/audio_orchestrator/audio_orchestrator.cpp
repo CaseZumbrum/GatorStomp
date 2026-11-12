@@ -16,6 +16,7 @@
 
 #include "audio_io_fifo.h"
 #include "audio_orchestrator.h"
+#include "effects/effect.h"
 
 Audio_Orchestrator::Audio_Orchestrator(std::string input_pipe_path, std::string output_pipe_path){
     this->input_pipe_path = input_pipe_path;
@@ -43,7 +44,7 @@ Audio_Orchestrator::~Audio_Orchestrator(){
     close(this->output_pipe_fd);
 }
 
-unsigned int Audio_Orchestrator::register_transform(transform_function_t transform){
+unsigned int Audio_Orchestrator::register_transform(Effect* transform){
     this->transforms.push_back(transform);
     return this->transforms.size() - 1;
 }
@@ -93,7 +94,7 @@ void Audio_Orchestrator::execution_thread_runner() {
         if (bytesRead > 0) {
 
             // apply the active transform
-            this->active_transform(
+            this->active_transform->process(
                 &this->input_buffer,
                 &this->output_buffer
             );

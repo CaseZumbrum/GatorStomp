@@ -1,6 +1,11 @@
 #pragma once
 
-#include "../audio_orchestrator.h"
+#include <array>
+
+#define ORCHESTRATOR_BUFFER_SIZE 512*6
+
+/** @brief type for audio buffer arrays */
+typedef std::array<uint8_t,ORCHESTRATOR_BUFFER_SIZE> orchestrator_buffer_t;
 
 class Effect{
     public:
