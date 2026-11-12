@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @brief A simple calculator example for testing the audio orchestrator I/O structure. Sets up and receives a single message.
+ * @brief A simple audio orchestrator, spins up the orchestrator and starts the DSP execution thread.
  * @author Case Zumbrum
  */
 
@@ -47,8 +47,8 @@ int main(){
     echo.tweak(0, 0); 
 
     std::this_thread::sleep_for(std::chrono::seconds(20));
-    std::cout << "setting delay to 120" << std::endl;
-    echo.tweak(0, 120); 
+    std::cout << "setting delay to 0.4s" << std::endl;
+    echo.tweak(0, 400); 
 
     a.execution_thread.join();
     a.stop();
