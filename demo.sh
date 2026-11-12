@@ -4,7 +4,7 @@
 set -euo pipefail
 
 bin_dir="build/bin"
-script_dir="src/audio_io/demo"
+script_dir="tools/audio_io"
 
 #make a temporary folder for the audio files and pipes.
 mkdir -p /tmp/gs_demo
