@@ -91,10 +91,6 @@ for pid in "${pids[@]}"; do
     wait "$pid"
 done
 
-echo "Writing PCM output to a wav file..."
-
-python3 "$script_dir/pcm_to_wav.py" "$demo_dir/output.raw" "output.wav"
-
 echo "Done!"
 
 
