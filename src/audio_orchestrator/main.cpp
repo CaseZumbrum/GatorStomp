@@ -34,14 +34,6 @@ int main(){
     a.set_active_transform(echo_index);
 
     a.start();
-    std::this_thread::sleep_for(std::chrono::seconds(20));
-    std::cout << "setting delay to 0" << std::endl;
-    echo.tweak(0, 0); 
-
-    std::this_thread::sleep_for(std::chrono::seconds(20));
-    std::cout << "setting delay to 0.4s" << std::endl;
-    echo.tweak(0, 400); 
-
     a.execution_thread.join();
     a.stop();
     return 0;
