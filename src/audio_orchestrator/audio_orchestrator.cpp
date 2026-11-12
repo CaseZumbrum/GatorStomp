@@ -50,7 +50,6 @@ unsigned int Audio_Orchestrator::register_transform(transform_function_t transfo
 
 void Audio_Orchestrator::set_active_transform(unsigned int index){
     this->active_transform = this->transforms.at(index);
-    return true;
 }
 
 bool Audio_Orchestrator::start(){
