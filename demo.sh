@@ -3,9 +3,7 @@
 # Run the GatorStomp FIFO audio demo.
 set -euo pipefail
 
-
 bin_dir="build/bin"
-#finds the directory where run_demo.sh itself is located
 script_dir="src/audio_io/demo"
 
 #make a temporary folder for the audio files and pipes.
@@ -29,11 +27,7 @@ cleanup() {
 #thi means whenever this script exits, execute the cleanup function
 trap cleanup EXIT
 
-#generate simulated audio input
-# python3 "$script_dir/generate_tone.py" "$demo_dir/input.raw" "input.png"
-
 echo "Converting wav file to a PCM raw input..."
-
 python3 "$script_dir/wav_to_pcm.py" "stairway.wav" "$demo_dir/input.raw"
 
 #create the two named pipes
@@ -44,21 +38,16 @@ mkfifo "$demo_dir/playback.pcm"
 echo "Starting GatorStomp DAC/ADC demo..."
 
 echo "Spinning up DAC process..."
-
 # DAC: read audio from playback FIFO and save it.
 "$bin_dir/audio_io_worker" playback \
     "$demo_dir/playback.pcm" file "$demo_dir/output.raw" &
 pids+=("$!")
 
 echo "Spinning up audio orchestrator..."
-
-
 "$bin_dir/audio_orchestrator" &
 pids+=("$!")
 
 echo "Spinning up ADC process..."
-
-
 # ADC: read simulated audio and send it into capture FIFO.
 "$bin_dir/audio_io_worker" capture \
     "$demo_dir/capture.pcm" file "$demo_dir/input.raw" &
@@ -70,7 +59,6 @@ for pid in "${pids[@]}"; do
 done
 
 echo "Writing PCM output to a wav file..."
-
 python3 "$script_dir/pcm_to_wav.py" "$demo_dir/output.raw" "output.wav"
 
 echo "Done!"
