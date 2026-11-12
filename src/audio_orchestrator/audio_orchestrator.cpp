@@ -5,21 +5,23 @@
 #include <cerrno>
 #include <cstdio>
 #include <poll.h>
+#include <signal.h>
 
+#include "audio_io_fifo.h"
 #include "audio_orchestrator.h"
 
 Audio_Orchestrator::Audio_Orchestrator(std::string input_pipe_path, std::string output_pipe_path){
     this->input_pipe_path = input_pipe_path;
     this->output_pipe_path = output_pipe_path;
 
-    this->input_pipe_fd = open(this->input_pipe_path.c_str(), O_RDWR  | O_NONBLOCK);
-    if (this->input_pipe_fd == -1) {
-        throw std::runtime_error("Failed opening FIFO for reading.");
+    this->output_pipe_fd = audio_fifo_open(this->output_pipe_path.c_str(), 1, &this->stop_requested);
+    if (this->output_pipe_fd < 0) {
+        throw std::runtime_error("Failed opening FIFO for writing.");
     }
 
-    this->output_pipe_fd = open(this->output_pipe_path.c_str(), O_RDWR  | O_NONBLOCK);
-    if (this->output_pipe_fd == -1) {
-        throw std::runtime_error("Failed opening FIFO for writing.");
+    this->input_pipe_fd = audio_fifo_open(this->input_pipe_path.c_str(), 0, &this->stop_requested);
+    if (this->input_pipe_fd < 0) {
+        throw std::runtime_error("Failed opening FIFO for reading.");
     }
 }
 
@@ -60,12 +62,12 @@ bool Audio_Orchestrator::start(){
 }
 
 bool Audio_Orchestrator::stop(){
-    if(this->execution_thread.joinable()){
-        return false;
-    }
     this->keepRunning = false;
 
-    this->execution_thread.join();
+    if (this->execution_thread.joinable()) {
+        this->execution_thread.join();
+    }
+
     return true;
 } 
 
@@ -79,33 +81,29 @@ void Audio_Orchestrator::execution_thread_runner() {
 
     while (this->keepRunning) {
 
-        int poll_result = poll(&input_poll_fd, 1, 100);
+        // int poll_result = poll(&input_poll_fd, 1, 100);
 
-        if (poll_result == -1) {
-            if (errno == EINTR) {
-                continue;
-            }
+        // if (poll_result == -1) {
+        //     if (errno == EINTR) {
+        //         continue;
+        //     }
 
-            perror("poll failed");
-            break;
-        }
+        //     perror("poll failed");
+        //     break;
+        // }
 
-        if (poll_result == 0) {
-            continue;
-        }
+        // if (poll_result == 0) {
+        //     continue;
+        // }
 
-        if (input_poll_fd.revents & (POLLERR | POLLNVAL)) {
-            std::cerr << "FIFO polling error\n";
-            break;
-        }
+        // if (input_poll_fd.revents & (POLLERR | POLLNVAL)) {
+        //     std::cerr << "FIFO polling error\n";
+        //     break;
+        // }
 
-        if (input_poll_fd.revents & POLLIN) {
+        // if (input_poll_fd.revents & POLLIN) {
 
-            ssize_t bytesRead = read(
-                this->input_pipe_fd,
-                this->input_buffer.data(),
-                this->input_buffer.size()
-            );
+            ssize_t bytesRead = audio_fifo_read_block(this->input_pipe_fd, this->input_buffer.data(), this->input_buffer.size(), &this->stop_requested);
 
             if (bytesRead > 0) {
 
@@ -114,11 +112,7 @@ void Audio_Orchestrator::execution_thread_runner() {
                     &this->output_buffer
                 );
 
-                ssize_t bytesWritten = write(
-                    this->output_pipe_fd,
-                    this->output_buffer.data(),
-                    this->output_buffer.size()
-                );
+                ssize_t bytesWritten = audio_fifo_write_all(this->output_pipe_fd, this->output_buffer.data(), bytesRead);
 
                 if (bytesWritten == -1) {
                     if (errno != EAGAIN && errno != EWOULDBLOCK) {
@@ -128,17 +122,19 @@ void Audio_Orchestrator::execution_thread_runner() {
                 }
             }
             else if (bytesRead == -1) {
+                std::cout << errno << " ERROR" << std::endl;
                 if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) {
                     perror("FIFO read failed");
                     break;
                 }
             }
-        }
+            else{
+                std::cout << "0 bytes read, stopping..." << std::endl;
+                break;
+            }
 
-        if (input_poll_fd.revents & POLLHUP) {
-            continue;
-        }
 
-        input_poll_fd.revents = 0;
     }
+    close(this->input_pipe_fd);
+    close(this->output_pipe_fd);
 }

@@ -14,6 +14,14 @@ add_executable(audio_io_passthrough examples/pcm_passthrough.c)
 target_link_libraries(audio_io_passthrough PRIVATE audio_io)
 target_compile_features(audio_io_passthrough PRIVATE c_std_99)
 
+add_executable(audio_io_lowpass examples/pcm_lowpass.c)
+target_link_libraries(audio_io_lowpass PRIVATE audio_io)
+target_compile_features(audio_io_lowpass PRIVATE c_std_99)
+
+add_executable(audio_io_echo examples/pcm_echo.c)
+target_link_libraries(audio_io_echo PRIVATE audio_io)
+target_compile_features(audio_io_echo PRIVATE c_std_99)
+
 if(BUILD_TESTING)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_executable(audio_io_pcm_test tests/pcm_integrity.c)
