@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
-# Run the GatorStomp FIFO audio demo.
+# Run the GatorStomp FIFO audio demo
 set -euo pipefail
 
 
-bin_dir=$(realpath "${1:-build/bin}")
-#finds the directory where run_demo.sh itself is located
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+bin_dir="$script_dir/../build/bin"
+tools_dir="$script_dir/../tools/audio_io"
 
 #make a temporary folder for the audio files and pipes.
-demo_dir=$(mktemp -d)
+mkdir -p /tmp/gs_demo
+
+demo_dir="/tmp/gs_demo"
 pids=()
 
 cleanup() {
@@ -27,8 +29,8 @@ cleanup() {
 #thi means whenever this script exits, execute the cleanup function
 trap cleanup EXIT
 
-#generate simulated audio input
-python3 "$script_dir/generate_tone.py" "$demo_dir/input.raw"
+echo "Converting wav file to a PCM raw input..."
+python3 "$tools_dir/wav_to_pcm.py" "$1" "$demo_dir/input.raw"
 
 #create the two named pipes
 #IMPORTANT PART pipes are created before any of audio programs start
@@ -37,18 +39,19 @@ mkfifo "$demo_dir/playback.pcm"
 
 echo "Starting GatorStomp DAC/ADC demo..."
 
+echo "Spinning up DAC process..."
 # DAC: read audio from playback FIFO and save it.
-timeout --kill-after=2s 20s "$bin_dir/audio_io_worker" playback \
+"$bin_dir/audio_io_worker" playback \
     "$demo_dir/playback.pcm" file "$demo_dir/output.raw" &
 pids+=("$!")
 
-# Pass-through: forward audio from capture FIFO to playback FIFO.
-timeout --kill-after=2s 20s "$bin_dir/audio_io_passthrough" \
-    "$demo_dir/capture.pcm" "$demo_dir/playback.pcm" &
+echo "Spinning up audio orchestrator..."
+"$bin_dir/audio_orchestrator" &
 pids+=("$!")
 
+echo "Spinning up ADC process..."
 # ADC: read simulated audio and send it into capture FIFO.
-timeout --kill-after=2s 20s "$bin_dir/audio_io_worker" capture \
+"$bin_dir/audio_io_worker" capture \
     "$demo_dir/capture.pcm" file "$demo_dir/input.raw" &
 pids+=("$!")
 
@@ -57,10 +60,7 @@ for pid in "${pids[@]}"; do
     wait "$pid"
 done
 
-# Compare the original and received audio.
-if cmp -s "$demo_dir/input.raw" "$demo_dir/output.raw"; then
-    echo "PASS: Input and output audio match"
-else
-    echo "FAIL: Audio files do not match"
-    exit 1
-fi
+echo "Writing PCM output to a wav file..."
+python3 "$tools_dir/pcm_to_wav.py" "$demo_dir/output.raw" "$2"
+
+echo "Done!"

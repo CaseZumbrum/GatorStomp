@@ -1,21 +1,40 @@
 /**
  * @file main.cpp
- * @brief A simple calculator example for testing the audio orchestrator I/O structure. Sets up and receives a single message.
+ * @brief A simple audio orchestrator, spins up the orchestrator and starts the DSP execution thread.
  * @author Case Zumbrum
  */
 
 #include <iostream>
 #include <packet_structure.h>
 #include "io_system/io_controller.h"
+#include "audio_orchestrator.h"
+#include "effects/echo_effect.h"
+
+#include <thread>
+#include <chrono>
+
+void passthrough(orchestrator_buffer_t* input, orchestrator_buffer_t* output){
+    std::copy(input->begin(), input->end(), output->begin());
+}
+
+
 
 int main(){
-    IO_Controller c("/tmp/test.sock");
-    gs_socket_msg msg;
-    if(c.recv_msg(&msg, 0)){
-        std::cout << "Type: " << +msg.type << std::endl << "ID: " << +msg.id << std::endl << "Value: " << msg.value << std::endl << "Timestamp " << std::hex << msg.time_ms << std::endl;
-    }
-    else{
-        std::cout << "Error on recv" << std::endl;
-    }
+    Audio_Orchestrator a("/tmp/gs_demo/capture.pcm", "/tmp/gs_demo/playback.pcm");
+    EchoEffect echo(
+        44100,  // Sample rate
+        300.0f, // Delay (ms)
+        0.75f,   // Decay
+        0.5f,   // Wet
+        1.0f    // Dry
+    );
+
+    unsigned int echo_index = a.register_transform(&echo);
+
+    a.set_active_transform(echo_index);
+
+    a.start();
+    a.execution_thread.join();
+    a.stop();
     return 0;
 }
