@@ -5,5 +5,5 @@
 class Effect{
     public:
         virtual void process(orchestrator_buffer_t* input, orchestrator_buffer_t* output) = 0;
-        virtual void tweak(uint8_t index, int8_t value) = 0;
+        virtual void tweak(uint8_t index, float value) = 0;
 };

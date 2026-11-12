@@ -1,3 +1,8 @@
+/**
+ * @file echo_effect.cpp
+ * @brief A simple echo effect, tweakable
+ * @author Case Zumbrum
+ */
 
 #include "echo_effect.h"
 
@@ -22,11 +27,13 @@ EchoEffect::EchoEffect(
     if (sample_rate == 0)
         throw std::invalid_argument("Invalid sample rate");
 
-    update_delay(delay_ms);
+    // delay is special so it has to be set here!
+    set_delay(delay_ms);
 }
 
 int32_t EchoEffect::decode_sample(const uint8_t* data) const
 {
+    // convert to int
     int32_t sample =
         static_cast<int32_t>(data[0]) |
         (static_cast<int32_t>(data[1]) << 8) |
@@ -44,34 +51,20 @@ void EchoEffect::encode_sample(
     uint8_t* data
 ) const
 {
+    // ensure we aren't overflowing the buffer
     sample = std::clamp(
         sample,
         -8388608,
         8388607
     );
 
+    // sign removal
     uint32_t value = static_cast<uint32_t>(sample);
 
+    // set the buffer
     data[0] = value & 0xFF;
     data[1] = (value >> 8) & 0xFF;
     data[2] = (value >> 16) & 0xFF;
-}
-
-void EchoEffect::update_delay(float delay_ms)
-{
-    delay_ms = std::max(delay_ms, 1.0f);
-
-    delay_samples = std::max(
-        static_cast<size_t>(
-            sample_rate * delay_ms / 1000.0f
-        ),
-        static_cast<size_t>(1)
-    );
-
-    for (auto& channel : delay_buffer)
-        channel.assign(delay_samples, 0.0f);
-
-    write_position = 0;
 }
 
 void EchoEffect::process (
@@ -79,16 +72,18 @@ void EchoEffect::process (
     orchestrator_buffer_t* output
 )
 {
+    // make sure the buffers aren't null
     if (!input || !output)
         return;
 
     constexpr size_t TOTAL_FRAMES =
         ORCHESTRATOR_BUFFER_SIZE / FRAME_BYTES;
 
+    // for each frame
     for (size_t i = 0; i < TOTAL_FRAMES; ++i) {
-
+        // for each channel
         for (size_t channel = 0; channel < CHANNELS; ++channel) {
-
+            // get our current offset
             size_t offset =
                 i * FRAME_BYTES +
                 channel * BYTES_PER_SAMPLE;
@@ -99,7 +94,7 @@ void EchoEffect::process (
             float delayed =
                 delay_buffer[channel][write_position];
 
-            // Mix original audio and delayed audio.
+            // Mix original audio and delayed audio
             float result =
                 dry * static_cast<float>(original) +
                 wet * delayed;
@@ -109,14 +104,15 @@ void EchoEffect::process (
                 &(*output)[offset]
             );
 
-            // Store current input plus feedback.
+            // Store current input plus feedback with decay
             delay_buffer[channel][write_position] =
                 static_cast<float>(original) +
                 decay * delayed;
         }
-
+        // increment all channels
         write_position++;
 
+        // reset the write position
         if (write_position >= delay_samples)
             write_position = 0;
     }
@@ -124,6 +120,7 @@ void EchoEffect::process (
 
 void EchoEffect::reset()
 {
+    // fill every channel with 0
     for (auto& channel : delay_buffer)
         std::fill(
             channel.begin(),
@@ -134,13 +131,42 @@ void EchoEffect::reset()
     write_position = 0;
 }
 
-void EchoEffect::tweak(uint8_t index, int8_t value) {
-    this->set_delay(static_cast<float>(value)/64 * 1000);
+void EchoEffect::tweak(uint8_t index, float value) {
+    switch (index){
+        case 0:
+            this->set_delay(value);
+            break;
+        case 1:
+            this->set_decay(value);
+            break;
+        case 2:
+            this->set_wet(value);
+            break;
+        case 3:
+            this->set_dry(value);
+            break;
+        default:
+            break;
+    }
 }
 
 void EchoEffect::set_delay(float delay_ms)
 {
-    update_delay(delay_ms);
+    // get the delay in samples
+    delay_ms = std::max(delay_ms, 1.0f);
+
+    this->delay_samples = std::max(
+        static_cast<size_t>(
+            sample_rate * delay_ms / 1000.0f
+        ),
+        static_cast<size_t>(1)
+    );
+
+    // reset the delay buffers
+    for (auto& channel : delay_buffer)
+        channel.assign(this->delay_samples, 0.0f);
+
+    write_position = 0;
 }
 
 void EchoEffect::set_decay(float decay)
