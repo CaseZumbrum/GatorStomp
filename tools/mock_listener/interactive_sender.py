@@ -38,20 +38,27 @@ def pack(msg_type, msg_id, value):
     return struct.pack(MSG_FORMAT, msg_type, msg_id, value, time_ms)
 
 
+def show(screen, row, text):
+    # curses fails when writing past the edge of the window, so skip or cut anything that doesn't fit
+    height, width = screen.getmaxyx()
+    if row < height:
+        screen.addnstr(row, 0, text, width - 1)
+
+
 def draw(screen, path, encoder, switches, last_sent):
     screen.erase()
-    screen.addstr(0, 0, "GatorStomp interactive sender")
-    screen.addstr(1, 0, f"Connected to {path}")
+    show(screen, 0, "GatorStomp interactive sender")
+    show(screen, 1, f"Connected to {path}")
 
-    screen.addstr(3, 0, f"Selected encoder: {encoder}")
+    show(screen, 3, f"Selected encoder: {encoder}")
     for switch_id, state in enumerate(switches):
         name = "pressed" if state == 1 else "released"
-        screen.addstr(4 + switch_id, 0, f"Foot switch {switch_id} (key {switch_id + 1}): {name}")
+        show(screen, 4 + switch_id, f"Foot switch {switch_id} (key {switch_id + 1}): {name}")
 
-    screen.addstr(9, 0, f"Last sent: {last_sent}")
+    show(screen, 9, f"Last sent: {last_sent}")
 
     for line_number, line in enumerate(HELP):
-        screen.addstr(11 + line_number, 0, line)
+        show(screen, 11 + line_number, line)
 
     screen.refresh()
 

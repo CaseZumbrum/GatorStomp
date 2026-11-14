@@ -42,5 +42,6 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    yocto_setup
    mock_listener
    pocketbeagle2_button_demo
+   pocketbeagle2_pedal_controls
    running_os
    cross_compile
