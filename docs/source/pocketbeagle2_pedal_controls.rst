@@ -194,4 +194,4 @@ The encoder has two contacts, A and B, that open and close a quarter cycle apart
 
 ``pedal_sender.py`` watches both pins for every change, looks up each change from one state to the next as +1, -1 or 0, and adds them up. When the knob is back at rest, it sends one ``TWEAK`` message in the direction of the total. Contact bounce only flips between two neighbouring states, so it adds up to zero and never sends a message.
 
-When the Yocto image includes the kernel's ``rotary-encoder`` driver (``CONFIG_INPUT_GPIO_ROTARY_ENCODER``), the overlay can hand A and B to that driver instead. The encoder would then be read as input events like the foot switch, and the decoding in ``pedal_sender.py`` can be removed.
+The decoding is done in Python because the Debian image's kernel does not include the ``rotary-encoder`` driver (``CONFIG_INPUT_GPIO_ROTARY_ENCODER``). On a kernel that has it, the overlay can hand A and B to that driver instead. The encoder would then be read as input events like the foot switch, and the decoding in ``pedal_sender.py`` can be removed.
