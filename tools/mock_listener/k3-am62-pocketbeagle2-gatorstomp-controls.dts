@@ -1,0 +1,63 @@
+// GatorStomp pedal controls on the PocketBeagle 2
+//
+// Foot switch 0: P2.22 (GPIO0_63) and GND
+// Encoder 0 A: P2.18 (GPIO0_53)
+// Encoder 0 B: P2.20 (GPIO0_49)
+// Encoder 0 C: GND
+// Encoder 0 push: P2.24 (GPIO0_51) and GND
+//
+// Every pin uses the internal pull up, so it reads low while its contact is closed.
+// The gpio-keys driver turns the foot switch and the encoder push into input events.
+// This kernel has no rotary-encoder driver, so A and B are left free for user space to read.
+
+/dts-v1/;
+/plugin/;
+
+&{/chosen} {
+	overlays {
+		gatorstomp-controls = "GatorStomp foot switch and encoder";
+	};
+};
+
+&main_pmx0 {
+	gatorstomp_control_pins: gatorstomp-control-pins {
+		// Input, pull up, Schmitt trigger, mode 7 (GPIO) for each pin
+		pinctrl-single,pins = <
+			// P2.22 GPIO0_63 foot switch 0
+			0x100 0x64007
+			// P2.18 GPIO0_53 encoder 0 A
+			0x0d8 0x64007
+			// P2.20 GPIO0_49 encoder 0 B
+			0x0c8 0x64007
+			// P2.24 GPIO0_51 encoder 0 push
+			0x0d0 0x64007
+		>;
+	};
+};
+
+&{/} {
+	gatorstomp-controls {
+		compatible = "gpio-keys";
+		// This node applies the pin settings for all the controls, including encoder A and B
+		pinctrl-names = "default";
+		pinctrl-0 = <&gatorstomp_control_pins>;
+
+		footswitch-0 {
+			label = "GatorStomp Foot Switch 0";
+			// BTN_0
+			linux,code = <0x100>;
+			// GPIO0_63, active low
+			gpios = <&main_gpio0 63 1>;
+			debounce-interval = <10>;
+		};
+
+		encoder-0-push {
+			label = "GatorStomp Encoder 0 Push";
+			// BTN_TRIGGER_HAPPY1
+			linux,code = <0x2c0>;
+			// GPIO0_51, active low
+			gpios = <&main_gpio0 51 1>;
+			debounce-interval = <10>;
+		};
+	};
+};
