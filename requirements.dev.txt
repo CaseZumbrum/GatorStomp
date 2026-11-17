@@ -2,3 +2,6 @@ breathe
 exhale
 sphinx
 sphinx-rtd-theme
+wave
+numpy
+soundfile

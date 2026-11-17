@@ -1,2 +1,2 @@
-add_executable(audio_orchestrator main.cpp io_system/io_controller.cpp)
-target_link_libraries(audio_orchestrator PRIVATE gs_socket_api)
+add_executable(audio_orchestrator main.cpp io_system/io_controller.cpp audio_orchestrator.cpp effects/echo_effect.cpp)
+target_link_libraries(audio_orchestrator PRIVATE gs_socket_api audio_io)
