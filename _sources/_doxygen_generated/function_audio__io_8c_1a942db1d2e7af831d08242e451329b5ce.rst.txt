@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io_8c_1a942db1d2e7af831d08242e451329b5ce:
+
+Function audio_io_run(const AudioIOConfig \*, AudioProcessCallback, void \*)
+============================================================================
+
+- Defined in :ref:`file_audio_io_audio_io.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: audio_io_run(const AudioIOConfig *, AudioProcessCallback, void *)
+   :project: GatorStomp

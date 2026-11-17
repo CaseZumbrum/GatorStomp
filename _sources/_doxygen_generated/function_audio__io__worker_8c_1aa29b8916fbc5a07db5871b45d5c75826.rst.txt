@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1aa29b8916fbc5a07db5871b45d5c75826:
+
+Function capture_audio
+======================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: capture_audio(snd_pcm_t *, int, int, uint8_t *, size_t)
+   :project: GatorStomp

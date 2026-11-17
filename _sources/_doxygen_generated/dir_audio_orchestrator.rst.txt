@@ -1,0 +1,21 @@
+.. _dir_audio_orchestrator:
+
+
+Directory audio_orchestrator
+============================
+
+
+*Directory path:* ``audio_orchestrator``
+
+Subdirectories
+--------------
+
+- :ref:`dir_audio_orchestrator_io_system`
+
+
+Files
+-----
+
+- :ref:`file_audio_orchestrator_main.cpp`
+
+

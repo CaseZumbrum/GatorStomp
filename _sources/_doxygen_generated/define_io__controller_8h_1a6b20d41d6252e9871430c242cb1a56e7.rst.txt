@@ -1,0 +1,14 @@
+.. _exhale_define_io__controller_8h_1a6b20d41d6252e9871430c242cb1a56e7:
+
+Define BUFFER_SIZE
+==================
+
+- Defined in :ref:`file_audio_orchestrator_io_system_io_controller.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: BUFFER_SIZE
+   :project: GatorStomp

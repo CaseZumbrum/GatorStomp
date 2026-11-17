@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__worker_8c_1a131fbe1ce9ef86927a337725124d7e28:
+
+Function recover_pcm
+====================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: recover_pcm(snd_pcm_t *, int)
+   :project: GatorStomp

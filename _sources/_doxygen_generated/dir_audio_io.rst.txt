@@ -1,0 +1,26 @@
+.. _dir_audio_io:
+
+
+Directory audio_io
+==================
+
+
+*Directory path:* ``audio_io``
+
+Subdirectories
+--------------
+
+- :ref:`dir_audio_io_examples`
+- :ref:`dir_audio_io_tests`
+
+
+Files
+-----
+
+- :ref:`file_audio_io_audio_io.c`
+- :ref:`file_audio_io_audio_io.h`
+- :ref:`file_audio_io_audio_io_fifo.c`
+- :ref:`file_audio_io_audio_io_fifo.h`
+- :ref:`file_audio_io_audio_io_worker.c`
+
+

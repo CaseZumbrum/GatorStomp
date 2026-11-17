@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__fifo_8c_1a87085f906f829d19552cd5d87b626270:
+
+Function audio_fifo_read_block(int, uint8_t \*, size_t, const volatile sig_atomic_t \*)
+=======================================================================================
+
+- Defined in :ref:`file_audio_io_audio_io_fifo.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: audio_fifo_read_block(int, uint8_t *, size_t, const volatile sig_atomic_t *)
+   :project: GatorStomp

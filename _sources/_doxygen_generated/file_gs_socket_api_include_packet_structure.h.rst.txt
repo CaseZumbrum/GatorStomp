@@ -1,0 +1,80 @@
+
+.. _file_gs_socket_api_include_packet_structure.h:
+
+File packet_structure.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_gs_socket_api_include>` (``gs_socket_api/include``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Definition of the :ref:`exhale_struct_structgs__socket__msg` struct, which is sent across a Unix socket for communication between the audio orchestrator and peripherals. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``gs_socket_api/include/packet_structure.h``)
+---------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_gs_socket_api_include_packet_structure.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``stdint.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_orchestrator_io_system_io_controller.h`
+
+- :ref:`file_audio_orchestrator_main.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structgs__socket__msg`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_packet__structure_8h_1ae00bfb5c67747b737fbd39d2e01ec872`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_packet__structure_8h_1a8b33b53edda3581ffc4f226997ec40d4`
+

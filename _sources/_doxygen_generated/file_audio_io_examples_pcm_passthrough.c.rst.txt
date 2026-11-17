@@ -1,0 +1,76 @@
+
+.. _file_audio_io_examples_pcm_passthrough.c:
+
+File pcm_passthrough.c
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_io_examples>` (``audio_io/examples``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Minimal orchestrator/DSP stand-in: forwards complete PCM unchanged. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_io/examples/pcm_passthrough.c``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_io_examples_pcm_passthrough.c.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``audio_io_fifo.h`` (:ref:`file_audio_io_audio_io_fifo.h`)
+
+- ``errno.h``
+
+- ``stdio.h``
+
+- ``stdlib.h``
+
+- ``unistd.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_pcm__passthrough_8c_1aea0850cf522176824bbe2356a0b390cc`
+
+- :ref:`exhale_function_pcm__passthrough_8c_1a3c04138a5bfe5d72780bb7e82a18e627`
+
+- :ref:`exhale_function_pcm__passthrough_8c_1a35b2cbd23417f72524cc55ce1a432f55`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_pcm__passthrough_8c_1a3024ccd4a9af5109d24e6c57565d74a1`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_pcm__passthrough_8c_1adaada1308b63c9cdc4301faa9bc6c51b`
+

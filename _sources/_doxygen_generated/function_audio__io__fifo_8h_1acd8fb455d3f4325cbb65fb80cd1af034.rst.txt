@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__fifo_8h_1acd8fb455d3f4325cbb65fb80cd1af034:
+
+Function audio_fifo_open(const char \*, int, const volatile sig_atomic_t \*)
+============================================================================
+
+- Defined in :ref:`file_audio_io_audio_io_fifo.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: audio_fifo_open(const char *, int, const volatile sig_atomic_t *)
+   :project: GatorStomp

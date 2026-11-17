@@ -1,0 +1,14 @@
+.. _exhale_variable_audio__io__worker_8c_1adaada1308b63c9cdc4301faa9bc6c51b:
+
+Variable stop_requested
+=======================
+
+- Defined in :ref:`file_audio_io_audio_io_worker.c`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: stop_requested
+   :project: GatorStomp

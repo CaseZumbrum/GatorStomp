@@ -1,0 +1,63 @@
+
+.. _file_audio_orchestrator_io_system_io_controller.cpp:
+
+File io_controller.cpp
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator_io_system>` (``audio_orchestrator/io_system``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Implementation of the :ref:`exhale_class_classIO__Controller` class. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/io_system/io_controller.cpp``)
+---------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_io_system_io_controller.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``cerrno``
+
+- ``cstring``
+
+- ``io_controller.h`` (:ref:`file_audio_orchestrator_io_system_io_controller.h`)
+
+- ``iostream``
+
+- ``sys/socket.h``
+
+- ``sys/un.h``
+
+- ``unistd.h``
+
+
+
+
+

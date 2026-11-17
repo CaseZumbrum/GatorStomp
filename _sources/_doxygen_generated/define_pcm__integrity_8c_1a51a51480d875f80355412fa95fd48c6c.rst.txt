@@ -1,0 +1,14 @@
+.. _exhale_define_pcm__integrity_8c_1a51a51480d875f80355412fa95fd48c6c:
+
+Define FRAMES
+=============
+
+- Defined in :ref:`file_audio_io_tests_pcm_integrity.c`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: FRAMES
+   :project: GatorStomp
