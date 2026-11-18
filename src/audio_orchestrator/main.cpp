@@ -9,7 +9,6 @@
 #include "io_system/io_controller.h"
 #include "audio_orchestrator.h"
 #include "effects/echo_effect.h"
-#include "effects/vst_effect.h"
 #include "effects/passthrough_effect.h"
 
 #include <functional>
@@ -38,13 +37,6 @@ int main(){
         1.0f    // Dry
     );
     unsigned int echo_index = a.register_transform(&echo);
-
-    VST3Effect effect(
-        "./Warm Repeats.vst3"
-    );
-    unsigned int vst_index = a.register_transform(&effect);
-
-    
 
     a.set_active_transform(pass_index);
 
