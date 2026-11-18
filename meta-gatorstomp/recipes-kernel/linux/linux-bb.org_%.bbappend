@@ -19,15 +19,13 @@ do_configure:append() {
 do_configure:prepend() {
     DTS_DIR="${S}/arch/arm64/boot/dts/ti"
 
-    # Copy our custom device tree into the kernel source
     install -m 0644 ${WORKDIR}/gatorstomp-audio.dtsi \
         "$DTS_DIR/gatorstomp-audio.dtsi"
 
-    # Include our custom device tree in the existing board device tree
-    if ! grep -Fxq '#include "gatorstomp-audio.dtsi"' \
-        "$DTS_DIR/k3-am6232-pocketbeagle2.dts"; then
-
-        printf '\n#include "gatorstomp-audio.dtsi"\n' \
-            >> "$DTS_DIR/k3-am6232-pocketbeagle2.dts"
-    fi
+    # Adds the device tree for both 6232 and 6254 processors (ours is 6254)
+    for dts in k3-am6232-pocketbeagle2.dts k3-am62-pocketbeagle2.dts; do
+        if ! grep -Fxq '#include "gatorstomp-audio.dtsi"' "$DTS_DIR/$dts"; then
+            printf '\n#include "gatorstomp-audio.dtsi"\n' >> "$DTS_DIR/$dts"
+        fi
+    done
 }
