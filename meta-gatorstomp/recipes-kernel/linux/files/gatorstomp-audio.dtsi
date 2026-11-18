@@ -1,0 +1,113 @@
+/* GatorStomp DA7212 Audio Configuration */
+
+/* McASP0 pin multiplexing */
+&main_pmx0 {
+    gatorstomp_mcasp0_pins: gatorstomp-mcasp0-pins {
+        pinctrl-single,pins = <
+            AM62X_IOPAD(0x0194, PIN_INPUT,  0) /* B19 - P1.10 - AXR3 RX */
+            AM62X_IOPAD(0x0198, PIN_OUTPUT, 0) /* A19 - P1.12 - AXR2 TX */
+            AM62X_IOPAD(0x01A4, PIN_INPUT,  0) /* B20 - P2.01 - ACLKX */
+            AM62X_IOPAD(0x01A8, PIN_INPUT,  0) /* D20 - P1.04 - AFSX */
+
+            /* Disable other balls sharing these headers */
+            AM62X_IOPAD(0x01F0, PIN_DISABLE, 7) /* A18  - P1.10 */
+            AM62X_IOPAD(0x013C, PIN_DISABLE, 7) /* AE18 - P1.12 */
+            AM62X_IOPAD(0x0160, PIN_DISABLE, 7) /* AD24 - P2.01 */
+            AM62X_IOPAD(0x016C, PIN_DISABLE, 7) /* Y18  - P1.04 */
+        >;
+    };
+};
+
+/* McASP0 audio controller */
+&mcasp0 {
+    pinctrl-names = "default";
+    pinctrl-0 = <&gatorstomp_mcasp0_pins>;  /* Reference the pin group created above */
+
+    op-mode = <0>;          /* I2S mode */
+    serial-dir = <0 0 1 2>; /* AXR2 TX, AXR3 RX */
+    tdm-slots = <2>;        /* Stereo */
+    #sound-dai-cells = <0>;
+
+    status = "okay";
+};
+
+/* DA7212 audio codec */
+&main_i2c2 {
+    status = "okay";
+
+    da7212: audio-codec@1a {
+        compatible = "dlg,da7212";  /* Let's use the driver software we configured in .cfg file*/
+        reg = <0x1a>;
+        #sound-dai-cells = <0>;
+        clocks = <&da7212_mclk>;
+        clock-names = "mclk";
+
+        /* Sets the expected voltage supply */
+        VDDA-supply = <&da7212_vdda>;
+        VDDIO-supply = <&da7212_vddio>;
+
+        status = "okay";
+    };
+};
+
+/* GatorStomp sound card */
+/* Connects the CPU to the Codec through their pins */
+/ {
+    gatorstomp_sound: sound-gatorstomp {
+        compatible = "simple-audio-card";
+        simple-audio-card,name = "GatorStomp";
+        simple-audio-card,format = "i2s";
+
+        /* Grab the BCLK and LRCLK from the Codex to the processor */
+        simple-audio-card,bitclock-master = <&gatorstomp_codec>;
+        simple-audio-card,frame-master = <&gatorstomp_codec>;
+
+        status = "okay";
+
+        gatorstomp_cpu: simple-audio-card,cpu {
+            sound-dai = <&mcasp0>;
+        };
+
+        gatorstomp_codec: simple-audio-card,codec {
+            sound-dai = <&da7212>;
+        };
+    };
+};
+
+/* DA7212 onboard master clock */
+/ {
+    da7212_mclk: da7212-mclk {
+        compatible = "fixed-clock";
+        #clock-cells = <0>;
+        clock-frequency = <11289600>;
+    };
+};
+
+/* DA7212 onboard voltage regulators */
+/ {
+    da7212_vdda: regulator-da7212-vdda {
+        compatible = "regulator-fixed";
+        regulator-name = "DA7212_VDDA"; /* requires 1.8V as shown below */
+        regulator-min-microvolt = <1800000>;
+        regulator-max-microvolt = <1800000>;
+        regulator-always-on;
+    };
+
+    da7212_vddio: regulator-da7212-vddio {
+        compatible = "regulator-fixed";
+        regulator-name = "DA7212_VDDIO";    /* Maybe does 3.3V as shown below */
+        regulator-min-microvolt = <3300000>;
+        regulator-max-microvolt = <3300000>;
+        regulator-always-on;
+    };
+};
+
+/* Release P2.01 for McASP0 */
+&ecap2 {
+    status = "disabled";
+};
+
+/* Release UART1 pins for McASP0 audio */
+&main_uart1 {
+    status = "disabled";
+};
