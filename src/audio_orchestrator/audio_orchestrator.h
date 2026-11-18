@@ -14,6 +14,8 @@
 #include <thread>
 #include <atomic>
 #include <signal.h>
+
+#include <packet_structure.h>
 #include "effects/effect.h"
 
 /** @brief class for the Audio Orchestrator */
@@ -83,6 +85,8 @@ class Audio_Orchestrator{
          * @return success/fail of the stop
          */
         bool stop();
+
+        bool handle_message(gs_socket_msg msg);
 
         /** @brief the execution thread for the orchestrator, pointer value may change between after a stop/start */
         std::thread execution_thread;

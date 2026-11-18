@@ -125,3 +125,19 @@ void Audio_Orchestrator::execution_thread_runner() {
         }
     }
 }
+
+bool Audio_Orchestrator::handle_message(gs_socket_msg msg){
+    // todo make me a switch case
+    if(msg.type == gs_msg_type::GS_MSG_TWEAK){
+        this->active_transform->tweak(msg.id, msg.value);
+    }
+    else if(msg.type == gs_msg_type::GS_MSG_BUTTON){
+        if(msg.id < this->transforms.size()){
+            this->set_active_transform(msg.id);
+        }
+        else{
+            return false;
+        }
+    }
+    return true;
+}
