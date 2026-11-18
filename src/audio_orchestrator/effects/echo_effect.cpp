@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <iostream>
 
 EchoEffect::EchoEffect(
     unsigned int sample_rate,
@@ -131,19 +132,20 @@ void EchoEffect::reset()
     write_position = 0;
 }
 
-void EchoEffect::tweak(uint8_t index, float value) {
+void EchoEffect::tweak(uint8_t index, int8_t value) {
     switch (index){
         case 0:
-            this->set_delay(value);
+            std::cout << "Setting delay to " << std::clamp(static_cast<float>(value)/64.0 * 1000 + this->delay_ms, 0.0,2000.0) << std::endl;
+            this->set_delay(std::clamp(static_cast<float>(value)/64.0 * 1000 + this->delay_ms, 0.0,2000.0));
             break;
         case 1:
-            this->set_decay(value);
+            this->set_decay(std::clamp(static_cast<float>(value)/127.0 + this->decay, 0.0,1.0));
             break;
         case 2:
-            this->set_wet(value);
+            this->set_wet(std::clamp(static_cast<float>(value)/127.0 + this->wet, 0.0,1.0));
             break;
         case 3:
-            this->set_dry(value);
+            this->set_dry(std::clamp(static_cast<float>(value)/127.0 + this->dry, 0.0,1.0));
             break;
         default:
             break;
@@ -153,11 +155,11 @@ void EchoEffect::tweak(uint8_t index, float value) {
 void EchoEffect::set_delay(float delay_ms)
 {
     // get the delay in samples
-    delay_ms = std::max(delay_ms, 1.0f);
+    this->delay_ms = std::max(delay_ms, 1.0f);
 
     this->delay_samples = std::max(
         static_cast<size_t>(
-            sample_rate * delay_ms / 1000.0f
+            sample_rate * this->delay_ms / 1000.0f
         ),
         static_cast<size_t>(1)
     );

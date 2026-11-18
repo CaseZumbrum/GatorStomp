@@ -72,7 +72,7 @@ public:
      */
     void tweak(
         uint8_t index,
-        float value
+        int8_t value
     ) override;
 
 private:
@@ -89,6 +89,8 @@ private:
 
     /** @brief number of samples to delay */
     size_t delay_samples;
+    /** @brief delay in ms */
+    float delay_ms;
     /** @brief where we are in the delay buffer */
     size_t write_position;
 
