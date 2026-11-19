@@ -3,16 +3,22 @@ PocketBeagle 2 Foot Switch and Encoder
 
 This page connects a real foot switch and rotary encoder to the PocketBeagle 2 and sends them to the :doc:`mock orchestrator listener <mock_listener>`. Pressing the foot switch sends ``GS_MSG_BUTTON`` messages and turning the encoder sends ``GS_MSG_TWEAK`` messages, the same way the input service will on the finished pedal.
 
-The pipeline is::
+It works on both the BeagleBoard Debian image and the GatorStomp Yocto image, using the same overlay and the same sender. The only difference is how the encoder is read.
+
+On a kernel with the ``rotary-encoder`` driver (the Yocto image)::
+
+    Foot switch -> P2.22 -> gpio-keys driver -> /dev/input/eventN -> pedal_sender.py
+    Encoder pins A and B -> P2.18 and P2.20 -> rotary-encoder driver -> /dev/input/eventN -> pedal_sender.py
+    pedal_sender.py -> Unix socket -> mock_listener
+
+On a kernel without it (the Debian image)::
 
     Foot switch -> P2.22 -> gpio-keys driver -> /dev/input/eventN -> pedal_sender.py
     Encoder pin A -> P2.18 -> gpiod -> pedal_sender.py
     Encoder pin B -> P2.20 -> gpiod -> pedal_sender.py
     pedal_sender.py -> Unix socket -> mock_listener
 
-``pedal_sender.py`` is a prototype of the input service. It reads both controls in one process, since the listener accepts one client at a time.
-
-It assumes the board is already set up as described in :doc:`pocketbeagle2_button_demo`, with SSH working and the listener built in ``~/gatorstomp_demo``.
+``pedal_sender.py`` is a prototype of the input service. It reads both controls in one process, since the listener accepts one client at a time, and checks at startup which way to read the encoder.
 
 Parts
 -----
@@ -97,14 +103,23 @@ Connect the controls like this. The encoder's common pin and push button need GN
 
 On the breadboard, make sure no two encoder pins share a connected strip. Placing the encoder across the center gap usually does this.
 
-Installing the overlay
-----------------------
+These pins do not overlap with the McASP0 audio pins used by the Yocto image (P1.04, P1.10, P1.12 and P2.01).
+
+The overlay
+-----------
 
 The header pins start out with no pull up, so an open switch does not read as a steady value. The device tree overlay ``tools/mock_listener/k3-am62-pocketbeagle2-gatorstomp-controls.dts`` fixes that at boot:
 
 * It sets all four pins to GPIO input with the internal pull up, so each pin reads high when its contact is open and low when it is pressed.
-* It hands the foot switch and the encoder push to the ``gpio-keys`` driver, which reports them as ``BTN_0`` and ``BTN_TRIGGER_HAPPY1`` input events with a 10 ms debounce.
-* It leaves encoder A and B for ``pedal_sender.py`` to read with ``gpiod``. The Debian image's kernel does not include the ``rotary-encoder`` driver.
+* It hands the foot switch and the encoder push to the ``gpio-keys`` driver, which reports them as ``BTN_0`` and ``BTN_TRIGGER_HAPPY1`` input events with a 10 ms debounce. The input device is named ``gatorstomp-controls``.
+* It hands encoder A and B to the ``rotary-encoder`` driver, which reports each click as ``+1`` or ``-1`` on ``REL_DIAL``. The input device is named ``gatorstomp-encoder-0``. On a kernel without this driver, the node is left unused and A and B stay free for ``pedal_sender.py`` to read with ``gpiod``.
+
+How the overlay gets loaded depends on the image.
+
+Installing on the Debian image
+------------------------------
+
+This assumes the board is set up as described in :doc:`pocketbeagle2_button_demo`, with SSH working and the listener built in ``~/gatorstomp_demo``.
 
 From the repo root in WSL, copy the overlay and the sender to the board:
 
@@ -141,9 +156,61 @@ Reboot with ``sudo reboot``. To check that the overlay loaded:
     gpiodetect
     gpioinfo -c gpiochipN 49 51 53 63
 
-The first command prints ``GatorStomp foot switch and encoder``, and the input device list includes ``gatorstomp-controls``. Replace ``N`` with the number of the ``600000.gpio`` chip from ``gpiodetect``. Lines 51 and 63 show ``GatorStomp Encoder 0 Push`` and ``GatorStomp Foot Switch 0`` as their consumers.
+The first command prints ``GatorStomp foot switch and encoder``, and the input device list includes ``gatorstomp-controls`` but not ``gatorstomp-encoder-0``, since this kernel has no ``rotary-encoder`` driver. Replace ``N`` with the number of the ``600000.gpio`` chip from ``gpiodetect``. Lines 51 and 63 show ``GatorStomp Encoder 0 Push`` and ``GatorStomp Foot Switch 0`` as their consumers, and lines 49 and 53 are free.
 
 To undo it, delete the ``fdtoverlays`` line and reboot. If the board ever fails to boot after a change here, choose ``microSD (failsafe)`` from the boot menu on the serial console. That entry does not load any overlays.
+
+Installing on the Yocto image
+-----------------------------
+
+This assumes the board is running the GatorStomp Yocto image and reachable as described in :doc:`running_os`. Log in as ``root`` with no password. The steps below were tested with the image built on 2026-11-18.
+
+The image's bootloader loads ``/boot/dtb/ti/k3-am62-pocketbeagle2.dtb`` from the root partition and does not read an overlay list that can be edited on the board. For a manual test, the overlay is merged into that file instead.
+
+Run the commands below from the repo root in WSL. Merging needs ``dtc`` and ``fdtoverlay`` from the ``device-tree-compiler`` package (``sudo apt install device-tree-compiler``). The tested setup ran the same two tools on the Debian image instead, which includes them.
+
+.. note::
+
+   This changes one file on the SD card by hand. Reflashing the card puts the original back.
+
+The image has no ``scp`` support, so files are copied by piping them through ``ssh``. Copy the image's own device tree off the board, merge the overlay into it, and keep the original as a backup:
+
+.. code-block:: bash
+
+    ssh root@192.168.7.2 'cat /boot/dtb/ti/k3-am62-pocketbeagle2.dtb' > base.dtb
+    dtc -@ -I dts -O dtb -o controls.dtbo tools/mock_listener/k3-am62-pocketbeagle2-gatorstomp-controls.dts
+    fdtoverlay -i base.dtb -o k3-am62-pocketbeagle2.dtb controls.dtbo
+
+    ssh root@192.168.7.2 'cp /boot/dtb/ti/k3-am62-pocketbeagle2.dtb /boot/dtb/ti/k3-am62-pocketbeagle2.dtb.orig'
+    ssh root@192.168.7.2 'cat > /boot/dtb/ti/k3-am62-pocketbeagle2.dtb' < k3-am62-pocketbeagle2.dtb
+
+The image has no compiler, so the listener has to be built for ARM64 elsewhere. A static build has no library dependencies, so it runs on the Yocto image unchanged. The tested build was made in ``~/gatorstomp_demo`` on the Debian image:
+
+.. code-block:: bash
+
+    g++ -std=c++17 -Wall -Wextra -O2 -static -I include main.cpp -o mock_listener_static
+
+:doc:`cross_compile` describes building with Zig from Windows instead. For C++ use ``zig c++`` in place of ``zig cc``.
+
+Copy the listener and the sender to the board:
+
+.. code-block:: bash
+
+    ssh root@192.168.7.2 'mkdir -p ~/gatorstomp_demo'
+    ssh root@192.168.7.2 'cat > ~/gatorstomp_demo/mock_listener && chmod +x ~/gatorstomp_demo/mock_listener' < mock_listener_static
+    ssh root@192.168.7.2 'cat > ~/gatorstomp_demo/pedal_sender.py' < tools/mock_listener/pedal_sender.py
+
+Reboot with ``reboot``. To check that the controls loaded:
+
+.. code-block:: bash
+
+    tr -d '\0' < /proc/device-tree/chosen/overlays/gatorstomp-controls; echo
+    cat /sys/class/input/event*/device/name
+    ls -l /sys/bus/platform/devices/gatorstomp-encoder-0/driver
+
+The input device list includes both ``gatorstomp-encoder-0`` and ``gatorstomp-controls``, and the encoder's driver link points to ``rotary-encoder``.
+
+To undo it, copy ``k3-am62-pocketbeagle2.dtb.orig`` back over ``k3-am62-pocketbeagle2.dtb`` and reboot.
 
 Running the demo
 ----------------
@@ -162,7 +229,19 @@ In the second, start the pedal sender:
     cd ~/gatorstomp_demo
     python3 pedal_sender.py /tmp/gs.sock
 
-The sender reports the foot switch state as soon as it connects. Each foot switch press and release then shows up as one ``BUTTON`` line, and each click of the encoder as one ``TWEAK`` line, with clockwise as ``1`` and counterclockwise as ``-1``:
+The sender first says how it is reading the encoder. On the Yocto image:
+
+.. code-block:: text
+
+    Encoder 0: read from the rotary-encoder driver (/dev/input/event0)
+
+On the Debian image:
+
+.. code-block:: text
+
+    Encoder 0: no rotary-encoder driver, decoding A and B with gpiod
+
+It then reports the foot switch state. Each foot switch press and release shows up in the listener as one ``BUTTON`` line, and each click of the encoder as one ``TWEAK`` line, with clockwise as ``1`` and counterclockwise as ``-1``:
 
 .. code-block:: text
 
@@ -192,6 +271,7 @@ The encoder has two contacts, A and B, that open and close a quarter cycle apart
     1 0
     1 1 next click
 
-``pedal_sender.py`` watches both pins for every change, looks up each change from one state to the next as +1, -1 or 0, and adds them up. When the knob is back at rest, it sends one ``TWEAK`` message in the direction of the total. Contact bounce only flips between two neighbouring states, so it adds up to zero and never sends a message.
+At startup, ``pedal_sender.py`` looks for the ``gatorstomp-encoder-0`` input device.
 
-The decoding is done in Python because the Debian image's kernel does not include the ``rotary-encoder`` driver (``CONFIG_INPUT_GPIO_ROTARY_ENCODER``). On a kernel that has it, the overlay can hand A and B to that driver instead. The encoder would then be read as input events like the foot switch, and the decoding in ``pedal_sender.py`` can be removed.
+* **If it exists,** the kernel's ``rotary-encoder`` driver is doing the decoding. The overlay lists A then B, both active low, and sets one click per full cycle (``rotary-encoder,steps-per-period = <1>``), so each click arrives as one input event of ``+1`` (clockwise) or ``-1``. The sender passes it on as a ``TWEAK`` message.
+* **If it does not,** the sender reads A and B with ``gpiod`` and decodes them itself. It watches both pins for every change, looks up each change from one state to the next as +1, -1 or 0, and adds them up. When the knob is back at rest, it sends one ``TWEAK`` message in the direction of the total. Contact bounce only flips between two neighbouring states, so it adds up to zero and never sends a message. ``gpiod`` is only imported in this case, so the sender does not need it on a kernel with the driver.

@@ -8,7 +8,11 @@
 //
 // Every pin uses the internal pull up, so it reads low while its contact is closed.
 // The gpio-keys driver turns the foot switch and the encoder push into input events.
-// This kernel has no rotary-encoder driver, so A and B are left free for user space to read.
+//
+// The rotary-encoder node turns encoder clicks into input events on kernels that have
+// the rotary-encoder driver. On kernels without it, such as the BeagleBoard Debian image,
+// the node is left unused and A and B stay free for user space to read with gpiod.
+// pedal_sender.py checks which case it is in and handles both.
 
 /dts-v1/;
 /plugin/;
@@ -38,7 +42,8 @@
 &{/} {
 	gatorstomp-controls {
 		compatible = "gpio-keys";
-		// This node applies the pin settings for all the controls, including encoder A and B
+		// This node applies the pin settings for all the controls, including encoder A and B,
+		// so the pull ups are set even on kernels without the rotary-encoder driver
 		pinctrl-names = "default";
 		pinctrl-0 = <&gatorstomp_control_pins>;
 
@@ -59,5 +64,16 @@
 			gpios = <&main_gpio0 51 1>;
 			debounce-interval = <10>;
 		};
+	};
+
+	gatorstomp-encoder-0 {
+		compatible = "rotary-encoder";
+		// A (GPIO0_53) then B (GPIO0_49), both active low. In this order clockwise is +1.
+		gpios = <&main_gpio0 53 1>, <&main_gpio0 49 1>;
+		// Report clicks as relative steps on REL_DIAL
+		linux,axis = <0x07>;
+		rotary-encoder,relative-axis;
+		// One click is one full cycle of A and B (20 clicks and 20 pulses per turn)
+		rotary-encoder,steps-per-period = <1>;
 	};
 };
