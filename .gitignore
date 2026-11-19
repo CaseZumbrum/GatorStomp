@@ -24,3 +24,6 @@ meta-gatorstomp/recipes-example/
 
 # soundfiles used for testing
 *.wav
+
+# guitar plugins
+/plugins/
