@@ -1,7 +1,6 @@
 /**
  * @file audio_orchestrator.h
  * @brief Definition of the audio_orchestrator class, which is the hub for all DSP in gatorstomp
- * @todo move tweaks into me!
  * @author Case Zumbrum
  */
 
