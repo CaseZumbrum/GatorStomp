@@ -18,8 +18,11 @@
 /** @brief class for a gs_socket_message handler */
 typedef std::function<bool(gs_socket_msg)> message_handler_t;
 
+/** @brief struct used for packaging a thread and a finished flag */
 struct ClientThread {
+    /** @brief actual execution thread */
     std::thread thread;
+    /** @brief flag for if the thread has finished */
     std::shared_ptr<std::atomic<bool>> finished;
 };
 
