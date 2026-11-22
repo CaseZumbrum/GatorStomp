@@ -1,6 +1,8 @@
 # Build directories
 build/
 _doxygen_generated
+cross_build
+cross_deps
 
 # CMake files
 CMakeFiles/
