@@ -15,12 +15,16 @@
 #include <thread>
 #include <chrono>
 
-int main(){
-    // todo take in pipe/socket as arguments
+int main(int argc, char **argv){
+    
+    if(argc != 4){
+        std::cerr << "Usage: "<< argv[0] << " INPUT_PIPE_PATH OUTPUT_PIPE_PATH SOCKET_API_PATH" << std::endl;
+        return -1;
+    }
 
-    Audio_Orchestrator a("/tmp/gs_demo/capture.pcm", "/tmp/gs_demo/playback.pcm");
+    Audio_Orchestrator a(argv[1], argv[2]);
 
-    IO_Controller server("/tmp/gs.sock", std::bind(&Audio_Orchestrator::handle_message, &a, std::placeholders::_1));
+    IO_Controller server(argv[3], std::bind(&Audio_Orchestrator::handle_message, &a, std::placeholders::_1));
 
     server.start();
 
