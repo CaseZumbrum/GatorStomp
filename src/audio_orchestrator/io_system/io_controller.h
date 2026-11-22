@@ -1,7 +1,6 @@
 /**
  * @file io_controller.h
  * @brief Definition of the IO_Controller class, which is used by the audio orchestrator to communicate with peripheral device processes across a UNIX socket.
- * @todo currently only works on a single client connection, needs to be updated to accept connections during operation.
  * @author Case Zumbrum
  */
 
@@ -44,4 +43,6 @@ private:
 
     void accept_clients();
     void handle_client(int client_fd);
+    // todo me
+    void thread_garbage_collector();
 };
