@@ -126,17 +126,30 @@ void Audio_Orchestrator::execution_thread_runner() {
 }
 
 bool Audio_Orchestrator::handle_message(gs_socket_msg msg){
-    // todo make me a switch case
-    if(msg.type == gs_msg_type::GS_MSG_TWEAK){
-        this->active_transform->tweak(msg.id, msg.value);
-    }
-    else if(msg.type == gs_msg_type::GS_MSG_BUTTON){
-        if(msg.id < this->transforms.size()){
-            this->set_active_transform(msg.id);
-        }
-        else{
+    switch(msg.type){
+
+        case gs_msg_type::GS_MSG_ACK:
+            return true;
+
+        case gs_msg_type::GS_MSG_TWEAK:
+            this->active_transform->tweak(msg.id, msg.value);
+            return true;
+
+        case gs_msg_type::GS_MSG_BUTTON:
+            if(msg.id < this->transforms.size()){
+                this->set_active_transform(msg.id);
+                return true;
+            }
+            else{
+                return false;
+            }
+        
+        // Todo unimplemented
+        case gs_msg_type::GS_MSG_VOLUME:
             return false;
-        }
+
+        default:
+            return false;
     }
-    return true;
+    return false;
 }
