@@ -21,3 +21,34 @@ One demo is live (plays output through your speakers, I believe this will only w
 .. note::
 
     As of right now, the demos only function on 44.1 kHz 2 channel audio, but small changes could be made to make it work with other .wav files
+
+
+Demo on Beagle Board
++++++++++++++++++++++
+
+There is also a demo for the beagle board itself, this demo uses the aux input and output of the dev-board (which are the two audio jacks)
+
+Follow the instructions for :doc:`/cross_compile` to get the binaries prepared.
+
+.. code-block:: bash
+   
+   # in the beagle board!
+   bash beagle_demo.sh
+
+.. important::
+
+   make sure you transfer binaries for the audio_orchestrator and audio_io_workers (as well as the demo script itself)
+
+If you just want to test the speakers/mic independently, you can use the below commands
+
+.. code-block:: bash
+   
+   # configure what channels are on/off, you can also use the amixer settings found in the demo if wanted!
+   alsamixer
+
+   # this will play the .wav file to the speakers
+   aplay -D plughw:0,0 stairway.wav
+
+   # this will record across the aux input
+   arecord -D plughw:0,0 -f S16_LE -r 48000 -c 2 -d 10 line_input.wav
+
