@@ -1,7 +1,6 @@
 /**
  * @file io_controller.cpp
  * @brief Implementation of the IO_Controller class
- * @todo add a thread manager
  * @author Case Zumbrum
  */
 
