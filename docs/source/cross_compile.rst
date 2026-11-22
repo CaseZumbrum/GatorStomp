@@ -2,19 +2,10 @@
 Cross Compilation and Script Execution
 ======================================
 
-**Author:** Danush Singla
+**Author:** Danush Singla and Case Zumbrum
 
 This guide explains how to compile and execute C, Python, and MATLAB
 programs on the GatorStomp operating system running on the PocketBeagle 2.
-
-These instructions are intended for **Windows computers**.
-
-The development computer uses the x86-64 architecture, while the
-PocketBeagle 2 uses ARM64 (AArch64). C programs must therefore be
-cross-compiled for ARM64 Linux before execution.
-
-Python and MATLAB-compatible scripts can be transferred directly
-to the board and executed using their respective interpreters.
 
 .. note::
 
@@ -26,177 +17,105 @@ to the board and executed using their respective interpreters.
    ``192.168.7.2``.
 
 
-C Code
+C/C++ Code
 ------
 
-C programs must be cross-compiled into ARM64 Linux executables before
-they can run on the PocketBeagle 2.
+Since the PocketBeagle has an Arm64 architecture, and most development is done on x86 processors it is necessary to cross-compile to Arm64.
 
-We use the Zig compiler for cross-compilation. Zig can generate ARM64
-Linux executables directly from Windows without requiring WSL or a
-separate Yocto SDK.
+Luckily, since we are using CMake, this is pretty easy!
 
-Step 1: Download Zig
-~~~~~~~~~~~~~~~~~~~~
+Setup
++++++
 
-Download the Windows x86-64 version of Zig from the official website:
+You will need to install a few things to get started.
 
-`Download Zig <https://ziglang.org/download/>`_
+You can use the `cross_compilation_setup.sh` script to do all of this for you if you wish, or follow below for more specific instructions.
 
-Extract the downloaded ZIP archive to a directory on your computer.
+.. code-block:: bash
 
-Note the location of ``zig.exe``, which will be referred to as
-``PATH_TO_ZIG\zig.exe`` throughout this guide.
+   source ./cross_compilation_setup.sh
 
-.. note::
+First is installing the actual cross compiler
 
-   Zig is only required on the Windows development computer.
-   It does not need to be installed on the PocketBeagle 2.
+.. code-block:: bash
 
+   # install the cross compiler
+   sudo apt install g++-aarch64-linux-gnu -y
 
-Step 2: Cross-Compile the C File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The biggest thing necessary is the Arm64 ALSA binaries, the easiest way to do this is to download them pre-compiled from ALSA (but of course you can also compile your own)
 
-Open **Windows PowerShell** and navigate to the directory containing
-the C file you want to compile.
+.. code-block:: bash
 
-For example, if your file is named ``hello.c``, run:
+   # make the cross dependencies directory
+   mkdir -p ./cross_deps/alsa
+   cd ./cross_deps/alsa
 
-.. code-block:: powershell
+   # download the binaries
+   wget http://ports.ubuntu.com/ubuntu-ports/pool/main/a/alsa-lib/libasound2-dev_1.2.6.1-1ubuntu1_arm64.deb
+   wget http://ports.ubuntu.com/ubuntu-ports/pool/main/a/alsa-lib/libasound2_1.2.6.1-1ubuntu1_arm64.deb
 
-   & "PATH_TO_ZIG\zig.exe" cc -target aarch64-linux-musl -static hello.c -o hello
+   # install them locally
+   dpkg-deb -x libasound2-dev_*.deb .
+   dpkg-deb -x libasound2_*.deb .
 
-Replace ``PATH_TO_ZIG`` with the actual directory containing Zig.
+Lastly is setting up CMake
 
-Replace ``hello.c`` with your source filename and ``hello`` with
-the desired executable name.
+.. code-block:: bash
 
-The command uses the following options:
-
-- ``cc`` invokes Zig's C compiler.
-- ``-target aarch64-linux-musl`` targets ARM64 Linux using musl libc.
-- ``-static`` produces a statically linked executable.
-- ``-o hello`` specifies the output executable filename.
-
-The resulting executable is intended for ARM64 Linux, not Windows.
-
-.. note::
-
-   Static compilation is useful for simple C programs because
-   the executable does not depend on a separately installed C
-   standard-library runtime.
-
-   Programs using additional libraries or hardware-specific
-   functionality may require extra dependencies or a different
-   cross-compilation configuration.
+   cmake -S . -B cross_build -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DALSA_INCLUDE_DIR=$PWD/cross_deps/alsa/usr/include -DALSA_LIBRARY=$PWD/cross_deps/alsa/usr/lib/aarch64-linux-gnu/libasound.so
 
 
-Step 3: Transfer the Executable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Building
+++++++++
+
+With cmake setup it is real easy to build now!
+
+.. code-block:: bash
+
+   cd cross_build
+   # optionally you can specify a target here!
+   make
+
+Transferring to the Board
++++++++++++++++++++++++++
 
 Ensure that the PocketBeagle 2 is powered on and connected to the
 Windows computer through USB-C.
 
-From PowerShell, navigate to the directory containing the compiled
-executable.
+You can use scp to send files directly
 
-Transfer it using SCP:
+.. code-block:: bash
 
-.. code-block:: powershell
+   scp -O [file to transfer] root@192.168.7.2:/home/root/hello
 
-   scp -O .\hello root@192.168.7.2:/home/root/hello
+.. note::
 
-Replace ``hello`` with your executable's filename.
-
-You may also change ``/home/root/hello`` to another destination
-on the PocketBeagle 2.
-
-The ``-O`` option uses the legacy SCP transfer protocol, which
-is supported by our current Dropbear SSH configuration.
+   You can also use something like FileZilla to make this process easier!
 
 
-Step 4: Execute the Program
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Executing on the Board
++++++++++++++++++++++++++
 
-Connect to the PocketBeagle 2 through SSH:
-
-.. code-block:: powershell
+.. code-block:: bash
 
    ssh root@192.168.7.2
+   chmod +x [file to execute]
+   ./[file to execute]
 
-Once connected, navigate to the executable's directory if necessary.
 
-Grant executable permissions:
+.. note:: 
 
-.. code-block:: bash
-
-   chmod +x /home/root/hello
-
-Then execute the program:
-
-.. code-block:: bash
-
-   /home/root/hello
-
-Alternatively, from within ``/home/root``, run:
-
-.. code-block:: bash
-
-   ./hello
-
-The C program will now execute on the PocketBeagle 2's ARM64 processor.
+   there is a full demo in `demos/beagle_demo.sh` that will run do a full audio io demo!
 
 
 Python
 ------
 
-Python does not require cross-compilation for ordinary Python scripts.
-
-The GatorStomp Yocto image includes Python 3 and its standard-library
-modules. Python files can therefore be transferred directly to the
-PocketBeagle 2 and executed using the installed interpreter.
-
-Step 1: Transfer the Python File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Open Windows PowerShell in the directory containing your Python file.
-
-For a file named ``hello.py``, run:
-
-.. code-block:: powershell
-
-   scp -O .\hello.py root@192.168.7.2:/home/root/
-
-Replace ``hello.py`` with the filename you want to transfer.
-
-Change ``/home/root/`` if you want the file stored in a different
-directory on the board.
-
-
-Step 2: Execute the Python File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Connect to the board:
-
-.. code-block:: powershell
-
-   ssh root@192.168.7.2
-
-Execute the Python script:
-
-.. code-block:: bash
-
-   python3 /home/root/hello.py
-
-Python will interpret and execute the file directly.
+The yocto build that GatorStomp uses has a python interpreter on it already, so you can just transfer your files (as seen above) and run them normally via `python3`
 
 .. note::
 
-   Python 3 and its standard-library modules are included in the
-   GatorStomp image.
-
-   Scripts requiring external packages, such as NumPy or SciPy,
-   will also require those packages to be included in the OS image.
+   There is no external dependencies in this, to use them you will need to transfer the wheelhouses over to the beagle
 
 
 MATLAB / GNU Octave
@@ -215,54 +134,10 @@ the installed GNU Octave interpreter.
    GNU Octave supports many MATLAB functions, but some proprietary
    MATLAB toolboxes and functions may not be compatible.
 
-
-Step 1: Transfer the MATLAB File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Open Windows PowerShell in the directory containing your ``.m`` file.
-
-For a file named ``hello.m``, run:
-
-.. code-block:: powershell
-
-   scp -O .\hello.m root@192.168.7.2:/home/root/
-
-Replace ``hello.m`` with your MATLAB filename.
-
-The destination path may be changed if desired.
-
-
-Step 2: Execute the MATLAB File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Connect to the PocketBeagle 2:
-
-.. code-block:: powershell
-
-   ssh root@192.168.7.2
-
-Run the script using GNU Octave:
-
 .. code-block:: bash
 
-   octave-cli --quiet --no-history /home/root/hello.m
+   octave-cli --quiet --no-history [file to execute]
 
-The command consists of:
-
-- ``octave-cli``: Runs GNU Octave from the command line without
-  launching its graphical interface.
-- ``--quiet``: Suppresses Octave's startup messages.
-- ``--no-history``: Disables command-history recording.
-- ``/home/root/hello.m``: Specifies the script to execute.
-
-The ``--quiet`` option is optional and does not suppress normal
-script output or error messages.
-
-You can also run the script without it:
-
-.. code-block:: bash
-
-   octave-cli /home/root/hello.m
 
 
 Troubleshooting
@@ -316,21 +191,3 @@ You can inspect network addresses using:
 .. code-block:: powershell
 
    ipconfig
-
-
-Summary
--------
-
-The GatorStomp operating system supports three different workflows:
-
-- **C:** Cross-compile on Windows, transfer the ARM64 executable,
-  and execute it on the board.
-- **Python:** Transfer the ``.py`` file and execute it using Python 3.
-- **MATLAB:** Transfer the ``.m`` file and execute it using GNU Octave,
-  once Octave support is verified.
-
-C and Python workflows have been tested on the physical
-PocketBeagle 2. GNU Octave support remains pending final verification.
-
-All execution occurs on the PocketBeagle 2 using the GatorStomp
-Yocto operating system.
