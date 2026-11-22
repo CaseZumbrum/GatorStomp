@@ -135,7 +135,6 @@ void EchoEffect::reset()
 void EchoEffect::tweak(uint8_t index, int8_t value) {
     switch (index){
         case 0:
-            std::cout << "Setting delay to " << std::clamp(static_cast<float>(value)/64.0 * 1000 + this->delay_ms, 0.0,2000.0) << std::endl;
             this->set_delay(std::clamp(static_cast<float>(value)/64.0 * 1000 + this->delay_ms, 0.0,2000.0));
             break;
         case 1:
