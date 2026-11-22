@@ -44,7 +44,6 @@ public:
      * @brief sends a message to a specific client
      * @param msg the message to send
      * @param client_index the index of the client
-     * @todo rework this to not use indices
      */
     bool send_msg(gs_socket_msg* msg, int client_index);
 

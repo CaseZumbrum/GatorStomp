@@ -46,7 +46,7 @@ echo "Spinning up DAC process..."
 pids+=("$!")
 
 echo "Spinning up audio orchestrator..."
-"$bin_dir/audio_orchestrator" &
+"$bin_dir/audio_orchestrator" "$demo_dir/capture.pcm" "$demo_dir/playback.pcm" "$demo_dir/gs.sock" &
 pids+=("$!")
 
 echo "Spinning up ADC process..."
