@@ -1,0 +1,89 @@
+
+.. _file_audio_orchestrator_io_system_io_controller.h:
+
+File io_controller.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator_io_system>` (``audio_orchestrator/io_system``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Definition of the :ref:`exhale_class_classIO__Controller` class, which is used by the audio orchestrator to communicate with peripheral device processes across a UNIX socket. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/io_system/io_controller.h``)
+-------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_io_system_io_controller.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``atomic``
+
+- ``functional``
+
+- ``memory``
+
+- ``mutex``
+
+- ``packet_structure.h`` (:ref:`file_gs_socket_api_include_packet_structure.h`)
+
+- ``string``
+
+- ``thread``
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_orchestrator_io_system_io_controller.cpp`
+
+- :ref:`file_audio_orchestrator_main.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structClientThread`
+
+- :ref:`exhale_class_classIO__Controller`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_io__controller_8h_1a07237acf3f9fccd4b59e9acc1d074a56`
+

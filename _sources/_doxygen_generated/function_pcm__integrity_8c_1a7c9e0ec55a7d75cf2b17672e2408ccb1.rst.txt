@@ -1,0 +1,14 @@
+.. _exhale_function_pcm__integrity_8c_1a7c9e0ec55a7d75cf2b17672e2408ccb1:
+
+Function invert_pcm
+===================
+
+- Defined in :ref:`file_audio_io_tests_pcm_integrity.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: invert_pcm(uint8_t *, size_t, unsigned int, void *)
+   :project: GatorStomp

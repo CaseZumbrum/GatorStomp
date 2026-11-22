@@ -1,0 +1,207 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class IO_Controller &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class PassthroughEffect" href="classPassthroughEffect.html" />
+    <link rel="prev" title="Class Effect" href="classEffect.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../building.html">Building the C++ Code</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="doxygen.html">Doxygen Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="doxygen.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="doxygen.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structAudioIOConfig.html">Struct AudioIOConfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structClientThread.html">Struct ClientThread</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structgs__socket__msg.html">Struct gs_socket_msg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structProcessingState.html">Struct ProcessingState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classAudio__Orchestrator.html">Class Audio_Orchestrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classEchoEffect.html">Class EchoEffect</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classEffect.html">Class Effect</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Class IO_Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classPassthroughEffect.html">Class PassthroughEffect</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_pedal_controls.html">PocketBeagle 2 Foot Switch and Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross_compile.html">Cross Compilation and Script Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/wav-pcm.html">WAV to PCM conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/audio_orchestrator_demos.html">Audio Orchestrator Demos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="doxygen.html">Doxygen Documentation</a></li>
+      <li class="breadcrumb-item active">Class IO_Controller</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_doxygen_generated/classIO__Controller.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="class-io-controller">
+<span id="exhale-class-classio-controller"></span><h1>Class IO_Controller<a class="headerlink" href="#class-io-controller" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_audio_orchestrator_io_system_io_controller.h.html#file-audio-orchestrator-io-system-io-controller-h"><span class="std std-ref">File io_controller.h</span></a></p></li>
+</ul>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Link to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv413IO_Controller">
+<span id="_CPPv313IO_Controller"></span><span id="_CPPv213IO_Controller"></span><span id="IO_Controller"></span><span class="target" id="classIO__Controller"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IO_Controller</span></span></span><a class="headerlink" href="#_CPPv413IO_Controller" title="Link to this definition"></a><br /></dt>
+<dd><p>Class for the socket API of the audio orchestrator. Does not handle messages, but accepts a callback for them. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13IO_Controller13IO_ControllerENSt6stringE17message_handler_t">
+<span id="_CPPv3N13IO_Controller13IO_ControllerENSt6stringE17message_handler_t"></span><span id="_CPPv2N13IO_Controller13IO_ControllerENSt6stringE17message_handler_t"></span><span id="IO_Controller::IO_Controller__ss.message_handler_t"></span><span class="target" id="classIO__Controller_1a5887893636e86a5f2b13078968f50665"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IO_Controller</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">socket_path</span></span>, <a class="reference internal" href="typedef_io__controller_8h_1a07237acf3f9fccd4b59e9acc1d074a56.html#_CPPv417message_handler_t" title="message_handler_t"><span class="n"><span class="pre">message_handler_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">message_handler</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13IO_Controller13IO_ControllerENSt6stringE17message_handler_t" title="Link to this definition"></a><br /></dt>
+<dd><p>constructor </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>socket_path</strong> – path of the socket to open </p></li>
+<li><p><strong>message_handler</strong> – callback to call when a successful message is received </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13IO_ControllerD0Ev">
+<span id="_CPPv3N13IO_ControllerD0Ev"></span><span id="_CPPv2N13IO_ControllerD0Ev"></span><span id="IO_Controller::~IO_Controller"></span><span class="target" id="classIO__Controller_1a8d1076cf3435ebe760a1f1c7475595d4"></span><span class="sig-name descname"><span class="n"><span class="pre">~IO_Controller</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13IO_ControllerD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>destructor, kills the socket and all threads </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13IO_Controller8send_msgEP13gs_socket_msgi">
+<span id="_CPPv3N13IO_Controller8send_msgEP13gs_socket_msgi"></span><span id="_CPPv2N13IO_Controller8send_msgEP13gs_socket_msgi"></span><span id="IO_Controller::send_msg__gs_socket_msgP.i"></span><span class="target" id="classIO__Controller_1a8cccf35be5b75860122bce9115e28356"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">send_msg</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="structgs__socket__msg.html#_CPPv413gs_socket_msg" title="gs_socket_msg"><span class="n"><span class="pre">gs_socket_msg</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">msg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">client_index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13IO_Controller8send_msgEP13gs_socket_msgi" title="Link to this definition"></a><br /></dt>
+<dd><p>sends a message to a specific client </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> – the message to send </p></li>
+<li><p><strong>client_index</strong> – the index of the client </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13IO_Controller5startEv">
+<span id="_CPPv3N13IO_Controller5startEv"></span><span id="_CPPv2N13IO_Controller5startEv"></span><span id="IO_Controller::start"></span><span class="target" id="classIO__Controller_1a136b829e688d2be688d0e618333fe4dc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13IO_Controller5startEv" title="Link to this definition"></a><br /></dt>
+<dd><p>starts the socket api </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13IO_Controller4stopEv">
+<span id="_CPPv3N13IO_Controller4stopEv"></span><span id="_CPPv2N13IO_Controller4stopEv"></span><span id="IO_Controller::stop"></span><span class="target" id="classIO__Controller_1a4b23140f86c01d8596f6830e78523ae1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13IO_Controller4stopEv" title="Link to this definition"></a><br /></dt>
+<dd><p>stops the socket api, killing all active connections </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="classEffect.html" class="btn btn-neutral float-left" title="Class Effect" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classPassthroughEffect.html" class="btn btn-neutral float-right" title="Class PassthroughEffect" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

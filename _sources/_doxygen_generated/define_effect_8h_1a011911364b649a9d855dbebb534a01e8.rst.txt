@@ -1,0 +1,14 @@
+.. _exhale_define_effect_8h_1a011911364b649a9d855dbebb534a01e8:
+
+Define ORCHESTRATOR_BUFFER_SIZE
+===============================
+
+- Defined in :ref:`file_audio_orchestrator_effects_effect.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: ORCHESTRATOR_BUFFER_SIZE
+   :project: GatorStomp

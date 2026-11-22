@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Program Listing for File audio_orchestrator.cpp &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../building.html">Building the C++ Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doxygen.html">Doxygen Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_pedal_controls.html">PocketBeagle 2 Foot Switch and Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross_compile.html">Cross Compilation and Script Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/wav-pcm.html">WAV to PCM conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/audio_orchestrator_demos.html">Audio Orchestrator Demos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Program Listing for File audio_orchestrator.cpp</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_doxygen_generated/program_listing_file_audio_orchestrator_audio_orchestrator.cpp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="program-listing-for-file-audio-orchestrator-cpp">
+<span id="program-listing-file-audio-orchestrator-audio-orchestrator-cpp"></span><h1>Program Listing for File audio_orchestrator.cpp<a class="headerlink" href="#program-listing-for-file-audio-orchestrator-cpp" title="Link to this heading"></a></h1>
+<p>↰ <a class="reference internal" href="file_audio_orchestrator_audio_orchestrator.cpp.html#file-audio-orchestrator-audio-orchestrator-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">audio_orchestrator/audio_orchestrator.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/stat.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fcntl.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cerrno&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdio&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;poll.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;signal.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"audio_io_fifo.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"audio_orchestrator.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"effects/effect.h"</span>
+
+<span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">Audio_Orchestrator</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">input_pipe_path</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">output_pipe_path</span><span class="p">){</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_pipe_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input_pipe_path</span><span class="p">;</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_pipe_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">output_pipe_path</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// open the output fifo</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_pipe_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">audio_fifo_open</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_pipe_path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">stop_requested</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_pipe_fd</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Failed opening FIFO for writing."</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// open the input fifo</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_pipe_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">audio_fifo_open</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_pipe_path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">stop_requested</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_pipe_fd</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Failed opening FIFO for reading."</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">Audio_Orchestrator</span><span class="o">::~</span><span class="n">Audio_Orchestrator</span><span class="p">(){</span>
+<span class="w">    </span><span class="c1">// stop the execution thread</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">stop</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// close file descriptors</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_pipe_fd</span><span class="p">);</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_pipe_fd</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">register_transform</span><span class="p">(</span><span class="n">Effect</span><span class="o">*</span><span class="w"> </span><span class="n">transform</span><span class="p">){</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">transforms</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">transform</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">transforms</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">set_active_transform</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="p">){</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">active_transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">transforms</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">start</span><span class="p">(){</span>
+<span class="w">    </span><span class="c1">// if the thread is already running, we can't start it</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execution_thread</span><span class="p">.</span><span class="n">joinable</span><span class="p">()){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// make sure there is an active transform</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">active_transform</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// we are about to start the thread, make sure it is setup to actually run</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">keepRunning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// spin up the execution thread with it's entrypoint (acting on this instance)</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execution_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">execution_thread_runner</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">stop</span><span class="p">(){</span>
+<span class="w">    </span><span class="c1">// tell the thread to stop</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">keepRunning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// join the thread (wait for it to finish)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execution_thread</span><span class="p">.</span><span class="n">joinable</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execution_thread</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">execution_thread_runner</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// until we are told to stop</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">keepRunning</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// read in a buffer from the input fifo</span>
+<span class="w">        </span><span class="kt">ssize_t</span><span class="w"> </span><span class="n">bytesRead</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">audio_fifo_read_block</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_pipe_fd</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_buffer</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_buffer</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="o">&amp;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">stop_requested</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// success</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bytesRead</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">            </span><span class="c1">// apply the active transform</span>
+<span class="w">            </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">active_transform</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">(</span>
+<span class="w">                </span><span class="o">&amp;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">input_buffer</span><span class="p">,</span>
+<span class="w">                </span><span class="o">&amp;</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_buffer</span>
+<span class="w">            </span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// write hte output buffer to the output fifo</span>
+<span class="w">            </span><span class="kt">ssize_t</span><span class="w"> </span><span class="n">bytesWritten</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">audio_fifo_write_all</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_pipe_fd</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">output_buffer</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">bytesRead</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// failure</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bytesWritten</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">errno</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EAGAIN</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">errno</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EWOULDBLOCK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">perror</span><span class="p">(</span><span class="s">"FIFO write failed"</span><span class="p">);</span>
+<span class="w">                    </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// fail</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bytesRead</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">errno</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" ERROR"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">errno</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EAGAIN</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">errno</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EWOULDBLOCK</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">errno</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EINTR</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">perror</span><span class="p">(</span><span class="s">"FIFO read failed"</span><span class="p">);</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// zero bytes read, the buffers are empty and something is up</span>
+<span class="w">        </span><span class="k">else</span><span class="p">{</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"0 bytes read, stopping..."</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">Audio_Orchestrator</span><span class="o">::</span><span class="n">handle_message</span><span class="p">(</span><span class="n">gs_socket_msg</span><span class="w"> </span><span class="n">msg</span><span class="p">){</span>
+<span class="w">    </span><span class="k">switch</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">type</span><span class="p">){</span>
+
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">gs_msg_type</span><span class="o">::</span><span class="no">GS_MSG_ACK</span><span class="p">:</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">gs_msg_type</span><span class="o">::</span><span class="no">GS_MSG_TWEAK</span><span class="p">:</span>
+<span class="w">            </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">active_transform</span><span class="o">-&gt;</span><span class="n">tweak</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">gs_msg_type</span><span class="o">::</span><span class="no">GS_MSG_BUTTON</span><span class="p">:</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">transforms</span><span class="p">.</span><span class="n">size</span><span class="p">()){</span>
+<span class="w">                </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">set_active_transform</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">id</span><span class="p">);</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Todo unimplemented</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">gs_msg_type</span><span class="o">::</span><span class="no">GS_MSG_VOLUME</span><span class="p">:</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">default</span><span class="o">:</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+.. _exhale_typedef_io__controller_8h_1a07237acf3f9fccd4b59e9acc1d074a56:
+
+Typedef message_handler_t
+=========================
+
+- Defined in :ref:`file_audio_orchestrator_io_system_io_controller.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: message_handler_t
+   :project: GatorStomp

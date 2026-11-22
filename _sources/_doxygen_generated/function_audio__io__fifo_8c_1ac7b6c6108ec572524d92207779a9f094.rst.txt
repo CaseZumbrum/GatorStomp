@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__fifo_8c_1ac7b6c6108ec572524d92207779a9f094:
+
+Function audio_fifo_now(void)
+=============================
+
+- Defined in :ref:`file_audio_io_audio_io_fifo.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: audio_fifo_now(void)
+   :project: GatorStomp

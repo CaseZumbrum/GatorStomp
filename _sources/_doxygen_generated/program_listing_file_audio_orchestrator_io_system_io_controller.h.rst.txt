@@ -1,0 +1,63 @@
+
+.. _program_listing_file_audio_orchestrator_io_system_io_controller.h:
+
+Program Listing for File io_controller.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_orchestrator_io_system_io_controller.h>` (``audio_orchestrator/io_system/io_controller.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   
+   #pragma once
+   
+   #include <packet_structure.h>
+   #include <string>
+   #include <vector>
+   #include <thread>
+   #include <mutex>
+   #include <atomic>
+   #include <functional>
+   #include <memory>
+   
+   typedef std::function<bool(gs_socket_msg)> message_handler_t;
+   
+   struct ClientThread {
+       std::thread thread;
+       std::shared_ptr<std::atomic<bool>> finished;
+   };
+   
+   class IO_Controller {
+   public:
+       explicit IO_Controller(std::string socket_path, message_handler_t message_handler);
+       ~IO_Controller();
+   
+       bool send_msg(gs_socket_msg* msg, int client_index);
+   
+       void start();
+       void stop();
+   
+   private:
+       std::string socket_path;
+   
+       int fd = -1;
+   
+       std::vector<int> clients;
+       std::vector<ClientThread> client_threads;
+   
+       std::thread accept_thread;
+   
+       std::thread monitor_thread;
+   
+       std::mutex clients_mutex;
+       std::atomic<bool> running{false};
+   
+       message_handler_t message_handler;
+   
+       void accept_clients();
+       void handle_client(int client_fd, std::shared_ptr<std::atomic<bool>> finished);
+       void thread_garbage_collector();
+   };

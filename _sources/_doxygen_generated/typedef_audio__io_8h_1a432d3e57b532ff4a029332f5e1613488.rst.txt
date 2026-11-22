@@ -1,0 +1,14 @@
+.. _exhale_typedef_audio__io_8h_1a432d3e57b532ff4a029332f5e1613488:
+
+Typedef AudioProcessCallback
+============================
+
+- Defined in :ref:`file_audio_io_audio_io.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: AudioProcessCallback
+   :project: GatorStomp

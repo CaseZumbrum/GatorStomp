@@ -1,0 +1,65 @@
+
+.. _program_listing_file_audio_orchestrator_audio_orchestrator.h:
+
+Program Listing for File audio_orchestrator.h
+=============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_orchestrator_audio_orchestrator.h>` (``audio_orchestrator/audio_orchestrator.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   
+   #pragma once
+   
+   #include <string>
+   #include <array>
+   #include <vector>
+   #include <functional>
+   #include <thread>
+   #include <atomic>
+   #include <signal.h>
+   
+   #include <packet_structure.h>
+   #include "effects/effect.h"
+   
+   class Audio_Orchestrator{
+   
+       private:
+           std::string input_pipe_path;
+           std::string output_pipe_path;
+           int input_pipe_fd;
+           int output_pipe_fd;
+   
+           orchestrator_buffer_t input_buffer;
+           orchestrator_buffer_t output_buffer;
+   
+           std::vector<Effect*> transforms;
+   
+           Effect* active_transform;
+   
+           std::atomic<bool> keepRunning{true};
+   
+           volatile sig_atomic_t stop_requested = 0;
+       
+           void execution_thread_runner();
+   
+       public:
+           Audio_Orchestrator(std::string input_pipe_path, std::string output_pipe_path);
+   
+           ~Audio_Orchestrator();
+   
+           unsigned int register_transform(Effect* transform);
+   
+           void set_active_transform(unsigned int index);
+   
+           bool start();
+           bool stop();
+   
+           bool handle_message(gs_socket_msg msg);
+   
+           std::thread execution_thread;
+   
+   };

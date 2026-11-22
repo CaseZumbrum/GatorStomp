@@ -1,0 +1,66 @@
+
+.. _file_audio_orchestrator_effects_passthrough_effect.h:
+
+File passthrough_effect.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator_effects>` (``audio_orchestrator/effects``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+A simple passthrough effect. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/effects/passthrough_effect.h``)
+----------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_effects_passthrough_effect.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``effect.h`` (:ref:`file_audio_orchestrator_effects_echo_effect.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_orchestrator_main.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classPassthroughEffect`
+

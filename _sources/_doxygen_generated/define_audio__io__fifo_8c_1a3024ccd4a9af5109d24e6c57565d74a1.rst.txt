@@ -1,0 +1,14 @@
+.. _exhale_define_audio__io__fifo_8c_1a3024ccd4a9af5109d24e6c57565d74a1:
+
+Define _POSIX_C_SOURCE
+======================
+
+- Defined in :ref:`file_audio_io_audio_io_fifo.c`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: _POSIX_C_SOURCE
+   :project: GatorStomp

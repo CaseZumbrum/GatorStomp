@@ -1,0 +1,14 @@
+.. _exhale_function_audio__io__fifo_8c_1ad6f15b5c8b080dd1070b4fa150031fde:
+
+Function wait_ready
+===================
+
+- Defined in :ref:`file_audio_io_audio_io_fifo.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: wait_ready(int, short, int64_t, const volatile sig_atomic_t *)
+   :project: GatorStomp

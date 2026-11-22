@@ -1,0 +1,26 @@
+.. _exhale_class_classPassthroughEffect:
+
+Class PassthroughEffect
+=======================
+
+- Defined in :ref:`file_audio_orchestrator_effects_passthrough_effect.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public Effect`` (:ref:`exhale_class_classEffect`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: PassthroughEffect
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:

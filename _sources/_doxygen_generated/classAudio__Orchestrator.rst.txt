@@ -1,0 +1,17 @@
+.. _exhale_class_classAudio__Orchestrator:
+
+Class Audio_Orchestrator
+========================
+
+- Defined in :ref:`file_audio_orchestrator_audio_orchestrator.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: Audio_Orchestrator
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:

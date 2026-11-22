@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class EchoEffect &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class Effect" href="classEffect.html" />
+    <link rel="prev" title="Class Audio_Orchestrator" href="classAudio__Orchestrator.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../building.html">Building the C++ Code</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="doxygen.html">Doxygen Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doxygen.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="doxygen.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="doxygen.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structAudioIOConfig.html">Struct AudioIOConfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structClientThread.html">Struct ClientThread</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structgs__socket__msg.html">Struct gs_socket_msg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structProcessingState.html">Struct ProcessingState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classAudio__Orchestrator.html">Class Audio_Orchestrator</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Class EchoEffect</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classEffect.html">Class Effect</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classIO__Controller.html">Class IO_Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classPassthroughEffect.html">Class PassthroughEffect</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doxygen.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pocketbeagle2_pedal_controls.html">PocketBeagle 2 Foot Switch and Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross_compile.html">Cross Compilation and Script Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/wav-pcm.html">WAV to PCM conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/audio_orchestrator_demos.html">Audio Orchestrator Demos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="doxygen.html">Doxygen Documentation</a></li>
+      <li class="breadcrumb-item active">Class EchoEffect</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_doxygen_generated/classEchoEffect.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="class-echoeffect">
+<span id="exhale-class-classechoeffect"></span><h1>Class EchoEffect<a class="headerlink" href="#class-echoeffect" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_audio_orchestrator_effects_echo_effect.h.html#file-audio-orchestrator-effects-echo-effect-h"><span class="std std-ref">File echo_effect.h</span></a></p></li>
+</ul>
+<section id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Link to this heading"></a></h2>
+<section id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">Effect</span></code> (<a class="reference internal" href="classEffect.html#exhale-class-classeffect"><span class="std std-ref">Class Effect</span></a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Link to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv410EchoEffect">
+<span id="_CPPv310EchoEffect"></span><span id="_CPPv210EchoEffect"></span><span id="EchoEffect"></span><span class="target" id="classEchoEffect"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EchoEffect</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="classEffect.html#_CPPv46Effect" title="Effect"><span class="n"><span class="pre">Effect</span></span></a><a class="headerlink" href="#_CPPv410EchoEffect" title="Link to this definition"></a><br /></dt>
+<dd><p>Class for the echo effect. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect10EchoEffectEjffff">
+<span id="_CPPv3N10EchoEffect10EchoEffectEjffff"></span><span id="_CPPv2N10EchoEffect10EchoEffectEjffff"></span><span id="EchoEffect::EchoEffect__unsigned-i.float.float.float.float"></span><span class="target" id="classEchoEffect_1a593d2e0ab857e0bc3d53aa4fde54ec8a"></span><span class="sig-name descname"><span class="n"><span class="pre">EchoEffect</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">sample_rate</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">44100</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delay_ms</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">300.0f</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">decay</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5f</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">wet</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5f</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dry</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.0f</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10EchoEffect10EchoEffectEjffff" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructor, initializes buffers and attributes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_rate</strong> – sample rate for the signal, needed to accurately perform the echo delay (in Hz) </p></li>
+<li><p><strong>delay_ms</strong> – amount of time for a single delay pulse </p></li>
+<li><p><strong>decay</strong> – how much the echo should be scaled by </p></li>
+<li><p><strong>wet</strong> – how much the output should include delay </p></li>
+<li><p><strong>dry</strong> – how much the output should include the original </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect5resetEv">
+<span id="_CPPv3N10EchoEffect5resetEv"></span><span id="_CPPv2N10EchoEffect5resetEv"></span><span id="EchoEffect::reset"></span><span class="target" id="classEchoEffect_1aa36537db4dd27ff3a4872976c5d96cd6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reset</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10EchoEffect5resetEv" title="Link to this definition"></a><br /></dt>
+<dd><p>reset the delay buffer </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect9set_delayEf">
+<span id="_CPPv3N10EchoEffect9set_delayEf"></span><span id="_CPPv2N10EchoEffect9set_delayEf"></span><span id="EchoEffect::set_delay__float"></span><span class="target" id="classEchoEffect_1af12890829014b1433ea1c564709274ac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_delay</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delay_ms</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10EchoEffect9set_delayEf" title="Link to this definition"></a><br /></dt>
+<dd><p>setter for delay </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delay_ms</strong> – delay in ms </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect9set_decayEf">
+<span id="_CPPv3N10EchoEffect9set_decayEf"></span><span id="_CPPv2N10EchoEffect9set_decayEf"></span><span id="EchoEffect::set_decay__float"></span><span class="target" id="classEchoEffect_1ae87a5026a51b5c1058294e5e7ec09e33"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_decay</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">decay</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10EchoEffect9set_decayEf" title="Link to this definition"></a><br /></dt>
+<dd><p>setter for decay </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>decay</strong> – decay </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect7set_wetEf">
+<span id="_CPPv3N10EchoEffect7set_wetEf"></span><span id="_CPPv2N10EchoEffect7set_wetEf"></span><span id="EchoEffect::set_wet__float"></span><span class="target" id="classEchoEffect_1acf893c9c9f576bdc16b22ae5b23a4e8b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_wet</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">wet</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10EchoEffect7set_wetEf" title="Link to this definition"></a><br /></dt>
+<dd><p>setter for wet value </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wet</strong> – wet value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect7set_dryEf">
+<span id="_CPPv3N10EchoEffect7set_dryEf"></span><span id="_CPPv2N10EchoEffect7set_dryEf"></span><span id="EchoEffect::set_dry__float"></span><span class="target" id="classEchoEffect_1a28bfcd33063562a0e26d07dabd0b0f6b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_dry</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dry</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10EchoEffect7set_dryEf" title="Link to this definition"></a><br /></dt>
+<dd><p>setter for dry value </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dry</strong> – dry value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect7processEP21orchestrator_buffer_tP21orchestrator_buffer_t">
+<span id="_CPPv3N10EchoEffect7processEP21orchestrator_buffer_tP21orchestrator_buffer_t"></span><span id="_CPPv2N10EchoEffect7processEP21orchestrator_buffer_tP21orchestrator_buffer_t"></span><span id="EchoEffect::process__orchestrator_buffer_tP.orchestrator_buffer_tP"></span><span class="target" id="classEchoEffect_1a3627e493e84c79012bd1d2c765dae73a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">process</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="typedef_effect_8h_1a4a88e0daebf6b8fa2f5921547dcf30e8.html#_CPPv421orchestrator_buffer_t" title="orchestrator_buffer_t"><span class="n"><span class="pre">orchestrator_buffer_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">input</span></span>, <a class="reference internal" href="typedef_effect_8h_1a4a88e0daebf6b8fa2f5921547dcf30e8.html#_CPPv421orchestrator_buffer_t" title="orchestrator_buffer_t"><span class="n"><span class="pre">orchestrator_buffer_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">output</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N10EchoEffect7processEP21orchestrator_buffer_tP21orchestrator_buffer_t" title="Link to this definition"></a><br /></dt>
+<dd><p>function that processes an audio buffer </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – pointer to the input buffer </p></li>
+<li><p><strong>output</strong> – pointer to the output buffer </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N10EchoEffect5tweakE7uint8_t6int8_t">
+<span id="_CPPv3N10EchoEffect5tweakE7uint8_t6int8_t"></span><span id="_CPPv2N10EchoEffect5tweakE7uint8_t6int8_t"></span><span id="EchoEffect::tweak__uint8_t.int8_t"></span><span class="target" id="classEchoEffect_1ad78ce76aaedc6d432c16cf6ca4c02cca"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">tweak</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span>, <span class="n"><span class="pre">int8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N10EchoEffect5tweakE7uint8_t6int8_t" title="Link to this definition"></a><br /></dt>
+<dd><p>function used by the orchestrator for tweaking the effect </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> – 0: delay_ms, 1: decay rate, 2: wet, 3: dry </p></li>
+<li><p><strong>value</strong> – value for the tweak </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="classAudio__Orchestrator.html" class="btn btn-neutral float-left" title="Class Audio_Orchestrator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classEffect.html" class="btn btn-neutral float-right" title="Class Effect" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

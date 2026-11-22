@@ -1,0 +1,82 @@
+
+.. _file_audio_orchestrator_audio_orchestrator.h:
+
+File audio_orchestrator.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator>` (``audio_orchestrator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Definition of the audio_orchestrator class, which is the hub for all DSP in gatorstomp. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/audio_orchestrator.h``)
+--------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_audio_orchestrator.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``array``
+
+- ``atomic``
+
+- ``effects/effect.h`` (:ref:`file_audio_orchestrator_effects_effect.h`)
+
+- ``functional``
+
+- ``packet_structure.h`` (:ref:`file_gs_socket_api_include_packet_structure.h`)
+
+- ``signal.h``
+
+- ``string``
+
+- ``thread``
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_orchestrator_audio_orchestrator.cpp`
+
+- :ref:`file_audio_orchestrator_main.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classAudio__Orchestrator`
+

@@ -1,0 +1,14 @@
+.. _exhale_enum_packet__structure_8h_1ae00bfb5c67747b737fbd39d2e01ec872:
+
+Enum gs_msg_type
+================
+
+- Defined in :ref:`file_gs_socket_api_include_packet_structure.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: gs_msg_type
+   :project: GatorStomp

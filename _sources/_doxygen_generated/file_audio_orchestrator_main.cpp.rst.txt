@@ -1,0 +1,74 @@
+
+.. _file_audio_orchestrator_main.cpp:
+
+File main.cpp
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator>` (``audio_orchestrator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+A simple audio orchestrator, spins up the orchestrator and starts the DSP execution thread. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/main.cpp``)
+--------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_main.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``audio_orchestrator.h`` (:ref:`file_audio_orchestrator_audio_orchestrator.h`)
+
+- ``chrono``
+
+- ``effects/echo_effect.h`` (:ref:`file_audio_orchestrator_effects_echo_effect.h`)
+
+- ``effects/passthrough_effect.h`` (:ref:`file_audio_orchestrator_effects_passthrough_effect.h`)
+
+- ``functional``
+
+- ``io_system/io_controller.h`` (:ref:`file_audio_orchestrator_io_system_io_controller.h`)
+
+- ``iostream``
+
+- ``packet_structure.h`` (:ref:`file_gs_socket_api_include_packet_structure.h`)
+
+- ``thread``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_main_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627`
+

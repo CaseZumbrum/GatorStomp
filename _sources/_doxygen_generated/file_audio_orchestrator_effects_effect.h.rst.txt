@@ -1,0 +1,71 @@
+
+.. _file_audio_orchestrator_effects_effect.h:
+
+File effect.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator_effects>` (``audio_orchestrator/effects``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/effects/effect.h``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_effects_effect.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``array``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_orchestrator_audio_orchestrator.cpp`
+
+- :ref:`file_audio_orchestrator_audio_orchestrator.h`
+
+- :ref:`file_audio_orchestrator_effects_echo_effect.h`
+
+- :ref:`file_audio_orchestrator_effects_passthrough_effect.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classEffect`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_effect_8h_1a011911364b649a9d855dbebb534a01e8`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_effect_8h_1a4a88e0daebf6b8fa2f5921547dcf30e8`
+

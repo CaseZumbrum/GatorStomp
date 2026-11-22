@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cross Compilation and Script Execution &mdash; GatorStomp 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/collapsible-lists/css/tree_view.css?v=a885cde7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7026087e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js?v=73120307"></script>
+      <script src="_static/collapsible-lists/js/apply-collapsible-lists.js?v=660e4f45"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="WAV to PCM conversion" href="tools/wav-pcm.html" />
+    <link rel="prev" title="Connecting to the PocketBeagle 2" href="running_os.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GatorStomp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building the C++ Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_doxygen_generated/doxygen.html">Doxygen Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yocto_setup.html">Setting up Yocto to work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mock_listener.html">Mock Orchestrator Listener</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pocketbeagle2_button_demo.html">PocketBeagle 2 Button Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pocketbeagle2_pedal_controls.html">PocketBeagle 2 Foot Switch and Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_os.html">Connecting to the PocketBeagle 2</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cross Compilation and Script Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c-c-code">C/C++ Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building">Building</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transferring-to-the-board">Transferring to the Board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#executing-on-the-board">Executing on the Board</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#matlab-gnu-octave">MATLAB / GNU Octave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools/wav-pcm.html">WAV to PCM conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/audio_orchestrator_demos.html">Audio Orchestrator Demos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GatorStomp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cross Compilation and Script Execution</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cross_compile.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cross-compilation-and-script-execution">
+<h1>Cross Compilation and Script Execution<a class="headerlink" href="#cross-compilation-and-script-execution" title="Link to this heading"></a></h1>
+<p><strong>Author:</strong> Danush Singla and Case Zumbrum</p>
+<p>This guide explains how to compile and execute C, Python, and MATLAB
+programs on the GatorStomp operating system running on the PocketBeagle 2.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before beginning, ensure that the PocketBeagle 2 is running the
+GatorStomp Yocto image and is connected to the Windows computer
+using a data-capable USB-C cable.</p>
+<p>The examples below use the board’s default USB network address,
+<code class="docutils literal notranslate"><span class="pre">192.168.7.2</span></code>.</p>
+</div>
+<section id="c-c-code">
+<h2>C/C++ Code<a class="headerlink" href="#c-c-code" title="Link to this heading"></a></h2>
+<p>Since the PocketBeagle has an Arm64 architecture, and most development is done on x86 processors it is necessary to cross-compile to Arm64.</p>
+<p>Luckily, since we are using CMake, this is pretty easy!</p>
+<section id="setup">
+<h3>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h3>
+<p>You will need to install a few things to get started.</p>
+<p>You can use the <cite>cross_compilation_setup.sh</cite> script to do all of this for you if you wish, or follow below for more specific instructions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./cross_compilation_setup.sh
+</pre></div>
+</div>
+<p>First is installing the actual cross compiler</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># install the cross compiler</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>g++-aarch64-linux-gnu<span class="w"> </span>-y
+</pre></div>
+</div>
+<p>The biggest thing necessary is the Arm64 ALSA binaries, the easiest way to do this is to download them pre-compiled from ALSA (but of course you can also compile your own)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># make the cross dependencies directory</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>./cross_deps/alsa
+<span class="nb">cd</span><span class="w"> </span>./cross_deps/alsa
+
+<span class="c1"># download the binaries</span>
+wget<span class="w"> </span>http://ports.ubuntu.com/ubuntu-ports/pool/main/a/alsa-lib/libasound2-dev_1.2.6.1-1ubuntu1_arm64.deb
+wget<span class="w"> </span>http://ports.ubuntu.com/ubuntu-ports/pool/main/a/alsa-lib/libasound2_1.2.6.1-1ubuntu1_arm64.deb
+
+<span class="c1"># install them locally</span>
+dpkg-deb<span class="w"> </span>-x<span class="w"> </span>libasound2-dev_*.deb<span class="w"> </span>.
+dpkg-deb<span class="w"> </span>-x<span class="w"> </span>libasound2_*.deb<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Lastly is setting up CMake</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-S<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>cross_build<span class="w"> </span>-DCMAKE_C_COMPILER<span class="o">=</span>aarch64-linux-gnu-gcc<span class="w"> </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>aarch64-linux-gnu-g++<span class="w"> </span>-DALSA_INCLUDE_DIR<span class="o">=</span><span class="nv">$PWD</span>/cross_deps/alsa/usr/include<span class="w"> </span>-DALSA_LIBRARY<span class="o">=</span><span class="nv">$PWD</span>/cross_deps/alsa/usr/lib/aarch64-linux-gnu/libasound.so
+</pre></div>
+</div>
+</section>
+<section id="building">
+<h3>Building<a class="headerlink" href="#building" title="Link to this heading"></a></h3>
+<p>With cmake setup it is real easy to build now!</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>cross_build
+<span class="c1"># optionally you can specify a target here!</span>
+make
+</pre></div>
+</div>
+</section>
+<section id="transferring-to-the-board">
+<h3>Transferring to the Board<a class="headerlink" href="#transferring-to-the-board" title="Link to this heading"></a></h3>
+<p>Ensure that the PocketBeagle 2 is powered on and connected to the
+Windows computer through USB-C.</p>
+<p>You can use scp to send files directly</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp<span class="w"> </span>-O<span class="w"> </span><span class="o">[</span>file<span class="w"> </span>to<span class="w"> </span>transfer<span class="o">]</span><span class="w"> </span>root@192.168.7.2:/home/root/hello
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also use something like FileZilla to make this process easier!</p>
+</div>
+</section>
+<section id="executing-on-the-board">
+<h3>Executing on the Board<a class="headerlink" href="#executing-on-the-board" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>root@192.168.7.2
+chmod<span class="w"> </span>+x<span class="w"> </span><span class="o">[</span>file<span class="w"> </span>to<span class="w"> </span>execute<span class="o">]</span>
+./<span class="o">[</span>file<span class="w"> </span>to<span class="w"> </span>execute<span class="o">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>there is a full demo in <cite>demos/beagle_demo.sh</cite> that will run do a full audio io demo!</p>
+</div>
+</section>
+</section>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h2>
+<p>The yocto build that GatorStomp uses has a python interpreter on it already, so you can just transfer your files (as seen above) and run them normally via <cite>python3</cite></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is no external dependencies in this, to use them you will need to transfer the wheelhouses over to the beagle</p>
+</div>
+</section>
+<section id="matlab-gnu-octave">
+<h2>MATLAB / GNU Octave<a class="headerlink" href="#matlab-gnu-octave" title="Link to this heading"></a></h2>
+<p>The GatorStomp Yocto operating system includes GNU Octave,
+an open-source numerical computing environment that supports
+MATLAB-compatible <code class="docutils literal notranslate"><span class="pre">.m</span></code> files.</p>
+<p>MATLAB scripts do not need to be cross-compiled. They can be
+transferred directly to the PocketBeagle 2 and executed using
+the installed GNU Octave interpreter.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GNU Octave supports many MATLAB functions, but some proprietary
+MATLAB toolboxes and functions may not be compatible.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>octave-cli<span class="w"> </span>--quiet<span class="w"> </span>--no-history<span class="w"> </span><span class="o">[</span>file<span class="w"> </span>to<span class="w"> </span>execute<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p>When reconnecting to the PocketBeagle 2 after flashing a new
+operating system image, SSH may display the following warning:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
+</pre></div>
+</div>
+<p>This occurs when the SSH host key presented by the board differs
+from the key previously saved on the Windows computer.</p>
+<p>If you have verified that you are connecting to your own PocketBeagle 2,
+remove the previously saved key:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh-keygen</span> <span class="n">-R</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Then reconnect:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">root</span><span class="nv">@192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>Verify the new host key before accepting it.</p>
+<p>If SSH or SCP cannot connect, first verify that the board is
+powered on and recognized by Windows as a USB network adapter.</p>
+<p>Test the network connection:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ping</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">2</span>
+</pre></div>
+</div>
+<p>If the ping fails, check the USB-C cable and confirm that Windows
+has received an address on the <code class="docutils literal notranslate"><span class="pre">192.168.7.x</span></code> subnet.</p>
+<p>You can inspect network addresses using:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">ipconfig</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="running_os.html" class="btn btn-neutral float-left" title="Connecting to the PocketBeagle 2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools/wav-pcm.html" class="btn btn-neutral float-right" title="WAV to PCM conversion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Case Zumbrum, Ajna Topic, Shan Sundal, Danush Singla.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

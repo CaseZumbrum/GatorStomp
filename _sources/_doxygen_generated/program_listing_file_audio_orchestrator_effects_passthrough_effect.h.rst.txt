@@ -1,0 +1,35 @@
+
+.. _program_listing_file_audio_orchestrator_effects_passthrough_effect.h:
+
+Program Listing for File passthrough_effect.h
+=============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_audio_orchestrator_effects_passthrough_effect.h>` (``audio_orchestrator/effects/passthrough_effect.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   
+   #pragma once
+   
+   #include <cstdint>
+   #include "effect.h"
+   
+   class PassthroughEffect : public Effect{
+   public:
+       PassthroughEffect(){}
+   
+       void process(
+           orchestrator_buffer_t* input,
+           orchestrator_buffer_t* output
+       ) override {
+           std::copy(input->begin(), input->end(), output->begin());
+       }
+   
+       void tweak(
+           uint8_t index,
+           int8_t value
+       ) override {}
+   };

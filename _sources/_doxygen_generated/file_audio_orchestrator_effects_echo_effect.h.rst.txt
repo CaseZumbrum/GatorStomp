@@ -1,0 +1,72 @@
+
+.. _file_audio_orchestrator_effects_echo_effect.h:
+
+File echo_effect.h
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_orchestrator_effects>` (``audio_orchestrator/effects``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+A simple echo effect, tweakable. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_orchestrator/effects/echo_effect.h``)
+---------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_orchestrator_effects_echo_effect.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Case Zumbrum 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstddef``
+
+- ``cstdint``
+
+- ``effect.h`` (:ref:`file_audio_orchestrator_effects_echo_effect.h`)
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_audio_orchestrator_effects_echo_effect.cpp`
+
+- :ref:`file_audio_orchestrator_main.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classEchoEffect`
+

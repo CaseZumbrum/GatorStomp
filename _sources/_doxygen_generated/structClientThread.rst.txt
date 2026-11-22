@@ -1,0 +1,17 @@
+.. _exhale_struct_structClientThread:
+
+Struct ClientThread
+===================
+
+- Defined in :ref:`file_audio_orchestrator_io_system_io_controller.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: ClientThread
+   :project: GatorStomp
+   :members:
+   :protected-members:
+   :undoc-members:

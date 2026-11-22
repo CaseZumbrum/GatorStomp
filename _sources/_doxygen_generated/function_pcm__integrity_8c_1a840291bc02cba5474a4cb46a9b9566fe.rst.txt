@@ -1,0 +1,14 @@
+.. _exhale_function_pcm__integrity_8c_1a840291bc02cba5474a4cb46a9b9566fe:
+
+Function main(void)
+===================
+
+- Defined in :ref:`file_audio_io_tests_pcm_integrity.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: main(void)
+   :project: GatorStomp

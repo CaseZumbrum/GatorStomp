@@ -1,0 +1,102 @@
+
+.. _file_audio_io_audio_io_worker.c:
+
+File audio_io_worker.c
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_audio_io>` (``audio_io``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+
+Independent capture/playback worker using an existing named PCM FIFO. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``audio_io/audio_io_worker.c``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_audio_io_audio_io_worker.c.rst
+
+
+
+Detailed Description
+--------------------
+
+capture writes ALSA/file PCM to the FIFO; playback reads the FIFO into ALSA/a file. SIGTERM/SIGINT request stop. No children or control sockets. 
+
+
+
+
+Includes
+--------
+
+
+- ``alsa/asoundlib.h``
+
+- ``audio_io_fifo.h`` (:ref:`file_audio_io_audio_io_fifo.h`)
+
+- ``errno.h``
+
+- ``fcntl.h``
+
+- ``poll.h``
+
+- ``stdio.h``
+
+- ``stdlib.h``
+
+- ``string.h``
+
+- ``sys/stat.h``
+
+- ``unistd.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_audio__io__worker_8c_1aa29b8916fbc5a07db5871b45d5c75826`
+
+- :ref:`exhale_function_audio__io__worker_8c_1aea0850cf522176824bbe2356a0b390cc`
+
+- :ref:`exhale_function_audio__io__worker_8c_1a3c04138a5bfe5d72780bb7e82a18e627`
+
+- :ref:`exhale_function_audio__io__worker_8c_1a92e59c33e2b59d340eb0a52d953397a7`
+
+- :ref:`exhale_function_audio__io__worker_8c_1a18678512af84f856bbc9138163176d05`
+
+- :ref:`exhale_function_audio__io__worker_8c_1a131fbe1ce9ef86927a337725124d7e28`
+
+- :ref:`exhale_function_audio__io__worker_8c_1a35b2cbd23417f72524cc55ce1a432f55`
+
+- :ref:`exhale_function_audio__io__worker_8c_1a195c92b61a0910b12eeec1f3db54771a`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_audio__io__worker_8c_1a3024ccd4a9af5109d24e6c57565d74a1`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_audio__io__worker_8c_1adaada1308b63c9cdc4301faa9bc6c51b`
+

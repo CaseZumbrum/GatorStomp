@@ -1,0 +1,14 @@
+.. _exhale_typedef_effect_8h_1a4a88e0daebf6b8fa2f5921547dcf30e8:
+
+Typedef orchestrator_buffer_t
+=============================
+
+- Defined in :ref:`file_audio_orchestrator_effects_effect.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: orchestrator_buffer_t
+   :project: GatorStomp
