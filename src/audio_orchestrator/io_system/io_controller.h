@@ -1,64 +1,93 @@
 /**
  * @file io_controller.h
  * @brief Definition of the IO_Controller class, which is used by the audio orchestrator to communicate with peripheral device processes across a UNIX socket.
- * @todo currently only works on a single client connection, needs to be updated to accept connections during operation.
  * @author Case Zumbrum
  */
 
 #pragma once
+
 #include <packet_structure.h>
-
 #include <string>
-#include <array>
 #include <vector>
-#include <sys/socket.h>
-#include <sys/un.h>
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <functional>
+#include <memory>
 
-#define BUFFER_SIZE 128
+/** @brief class for a gs_socket_message handler */
+typedef std::function<bool(gs_socket_msg)> message_handler_t;
 
-/**
- * @brief Class for the IO_Controller, creates and binds to a unix socket
- */
-class IO_Controller{
-    private:
-        /** @brief the path to the socket being used, defaults to the GS_SOCKET_PATH */
-        std::string socket_path = GS_SOCKET_PATH;
-        /** @brief buffer for input messages */
-        std::array<gs_socket_msg, BUFFER_SIZE> input_buffer;
-        /** @brief buffer for output messages */
-        std::array<gs_socket_msg, BUFFER_SIZE> output_buffer;
+/** @brief struct used for packaging a thread and a finished flag */
+struct ClientThread {
+    /** @brief actual execution thread */
+    std::thread thread;
+    /** @brief flag for if the thread has finished */
+    std::shared_ptr<std::atomic<bool>> finished;
+};
 
-        /** @brief vector of connected clients */
-        std::vector<int> clients;
+/** @brief Class for the socket API of the audio orchestrator. Does not handle messages, but accepts a callback for them*/
+class IO_Controller {
+public:
+    /**
+     * @brief constructor
+     * @param socket_path path of the socket to open
+     * @param message_handler callback to call when a successful message is received
+     */
+    explicit IO_Controller(std::string socket_path, message_handler_t message_handler);
+    /**
+     * @brief destructor, kills the socket and all threads
+     */
+    ~IO_Controller();
 
-        /** @brief main file descriptor for the socket */
-        int fd;
-        /** @brief address for the socket */
-        sockaddr_un addr{};
+    /**
+     * @brief sends a message to a specific client
+     * @param msg the message to send
+     * @param client_index the index of the client
+     * @todo rework this to not use indices
+     */
+    bool send_msg(gs_socket_msg* msg, int client_index);
 
-    public:
-        /** 
-         * @brief instantiates an IO_Controller and binds to the socket
-         * @details currently awaits a single client connection
-         * @param socket_path path to the socket
-         */
-        IO_Controller(std::string socket_path);
-        /**
-         * @brief destructor, disconnects all clients and un-binds the socket
-         */
-        ~IO_Controller();
-        /**
-         * @brief sends a message to a specific client index
-         * @param msg pointer to the message being sent
-         * @param client_index index of the client in the clients vector
-         * @return true on success, false on failure
-         */
-        bool send_msg(gs_socket_msg* msg, int client_index);
-        /**
-         * @brief receive a message from a specific client index
-         * @param msg pointer to the message being received (will be overwritten)
-         * @param client_index index of the client in the clients vector
-         * @return true on success, false on failure
-         */
-        bool recv_msg(gs_socket_msg* msg, int client_index);
+    /** @brief starts the socket api */
+    void start();
+    /** @brief stops the socket api, killing all active connections */
+    void stop();
+
+private:
+    /** @brief path of the socket */
+    std::string socket_path;
+
+    /** @brief file descriptor for the socket */
+    int fd = -1;
+
+    /** @brief vector of client file_descriptors */
+    std::vector<int> clients;
+    /** @brief vector of client threads (each client get's its own thread for recieving) */
+    std::vector<ClientThread> client_threads;
+
+    /** @brief thread used for accepting new clients */
+    std::thread accept_thread;
+
+    /** @brief thread used for removing old threads */
+    std::thread monitor_thread;
+
+    /** @brief mutex used when accepting or removing clients */
+    std::mutex clients_mutex;
+    /** @brief used to stop running threads */
+    std::atomic<bool> running{false};
+
+    /** @brief handler to be called when a message is recieved */
+    message_handler_t message_handler;
+
+    /** @brief thread entry point for accepting clients */
+    void accept_clients();
+    /** 
+     * @brief thread entry point for each individual client
+     * @param client_fd the file descriptor for the specific client being handled
+     * @param finished flag for if the thread has finished completely
+     */
+    void handle_client(int client_fd, std::shared_ptr<std::atomic<bool>> finished);
+    /** @brief thread that removes old client threads
+     */
+    void thread_garbage_collector();
 };

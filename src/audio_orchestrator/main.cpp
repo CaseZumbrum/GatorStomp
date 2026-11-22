@@ -9,18 +9,25 @@
 #include "io_system/io_controller.h"
 #include "audio_orchestrator.h"
 #include "effects/echo_effect.h"
+#include "effects/passthrough_effect.h"
 
+#include <functional>
 #include <thread>
 #include <chrono>
 
-void passthrough(orchestrator_buffer_t* input, orchestrator_buffer_t* output){
-    std::copy(input->begin(), input->end(), output->begin());
-}
-
-
-
 int main(){
+    // todo take in pipe/socket as arguments
+
     Audio_Orchestrator a("/tmp/gs_demo/capture.pcm", "/tmp/gs_demo/playback.pcm");
+
+    IO_Controller server("/tmp/gs.sock", std::bind(&Audio_Orchestrator::handle_message, &a, std::placeholders::_1));
+
+    server.start();
+
+    PassthroughEffect passthrough;
+
+    unsigned int pass_index = a.register_transform(&passthrough);
+
     EchoEffect echo(
         44100,  // Sample rate
         300.0f, // Delay (ms)
@@ -28,10 +35,9 @@ int main(){
         0.5f,   // Wet
         1.0f    // Dry
     );
-
     unsigned int echo_index = a.register_transform(&echo);
 
-    a.set_active_transform(echo_index);
+    a.set_active_transform(pass_index);
 
     a.start();
     a.execution_thread.join();

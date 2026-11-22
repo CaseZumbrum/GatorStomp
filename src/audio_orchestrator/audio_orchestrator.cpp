@@ -1,7 +1,6 @@
 /**
  * @file audio_orchestrator.cpp
  * @brief Implementation of the audio_orchestrator class, which is the hub for all DSP in gatorstomp
- * @todo move tweaks into me!
  * @author Case Zumbrum
  */
 
@@ -124,4 +123,20 @@ void Audio_Orchestrator::execution_thread_runner() {
             break;
         }
     }
+}
+
+bool Audio_Orchestrator::handle_message(gs_socket_msg msg){
+    // todo make me a switch case
+    if(msg.type == gs_msg_type::GS_MSG_TWEAK){
+        this->active_transform->tweak(msg.id, msg.value);
+    }
+    else if(msg.type == gs_msg_type::GS_MSG_BUTTON){
+        if(msg.id < this->transforms.size()){
+            this->set_active_transform(msg.id);
+        }
+        else{
+            return false;
+        }
+    }
+    return true;
 }
