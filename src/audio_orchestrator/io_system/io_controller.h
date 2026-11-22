@@ -13,9 +13,15 @@
 #include <mutex>
 #include <atomic>
 #include <functional>
+#include <memory>
 
 /** @brief class for a gs_socket_message handler */
 typedef std::function<bool(gs_socket_msg)> message_handler_t;
+
+struct ClientThread {
+    std::thread thread;
+    std::shared_ptr<std::atomic<bool>> finished;
+};
 
 /** @brief Class for the socket API of the audio orchestrator. Does not handle messages, but accepts a callback for them*/
 class IO_Controller {
@@ -54,10 +60,13 @@ private:
     /** @brief vector of client file_descriptors */
     std::vector<int> clients;
     /** @brief vector of client threads (each client get's its own thread for recieving) */
-    std::vector<std::thread> client_threads;
+    std::vector<ClientThread> client_threads;
 
     /** @brief thread used for accepting new clients */
     std::thread accept_thread;
+
+    /** @brief thread used for removing old threads */
+    std::thread monitor_thread;
 
     /** @brief mutex used when accepting or removing clients */
     std::mutex clients_mutex;
@@ -72,10 +81,10 @@ private:
     /** 
      * @brief thread entry point for each individual client
      * @param client_fd the file descriptor for the specific client being handled
+     * @param finished flag for if the thread has finished completely
      */
-    void handle_client(int client_fd);
+    void handle_client(int client_fd, std::shared_ptr<std::atomic<bool>> finished);
     /** @brief thread that removes old client threads
-     * @todo implement me
      */
     void thread_garbage_collector();
 };

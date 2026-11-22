@@ -16,6 +16,8 @@
 #include <cerrno>
 #include <stdexcept>
 #include <algorithm>
+#include <memory>
+#include <chrono>
 
 IO_Controller::IO_Controller(std::string socket_path, message_handler_t message_handler=nullptr) {
     this->socket_path = socket_path;
@@ -65,6 +67,8 @@ void IO_Controller::start() {
     accept_thread = std::thread(
         &IO_Controller::accept_clients, this
     );
+
+    monitor_thread = std::thread(&IO_Controller::thread_garbage_collector, this);
 }
 
 void IO_Controller::accept_clients() {
@@ -89,10 +93,14 @@ void IO_Controller::accept_clients() {
 
             clients.push_back(client_fd);
 
-            client_threads.emplace_back(
-                &IO_Controller::handle_client,
-                this,
-                client_fd
+            auto finished = std::make_shared<std::atomic<bool>>(false);
+            client_threads.emplace_back(ClientThread{
+                std::thread(&IO_Controller::handle_client,
+                    this,
+                    client_fd,
+                    finished),
+                finished
+            }
             );
         }
 
@@ -101,7 +109,7 @@ void IO_Controller::accept_clients() {
     }
 }
 
-void IO_Controller::handle_client(int client_fd) {
+void IO_Controller::handle_client(int client_fd, std::shared_ptr<std::atomic<bool>> finished) {
 
     gs_socket_msg msg{};
 
@@ -152,6 +160,7 @@ void IO_Controller::handle_client(int client_fd) {
         );
     }
 
+    finished->store(true);
     std::cout << "Client disconnected: " << client_fd << std::endl;
 }
 
@@ -196,6 +205,11 @@ void IO_Controller::stop() {
         accept_thread.join();
     }
 
+    // wait for the monitor thread
+    if(monitor_thread.joinable()){
+        monitor_thread.join();
+    }
+
     // close all the client fd's and threads
     {
         std::lock_guard<std::mutex> lock(clients_mutex);
@@ -205,14 +219,50 @@ void IO_Controller::stop() {
         }
     }
 
-    for (auto& thread : client_threads) {
-        if (thread.joinable()) {
-            thread.join();
+    for (auto& client_thread : client_threads) {
+        if (client_thread.thread.joinable()) {
+            client_thread.thread.join();
         }
     }
 
     // remove the path
     unlink(socket_path.c_str());
+}
+
+void IO_Controller::thread_garbage_collector(){
+
+    while (running) {
+
+        {
+            std::lock_guard<std::mutex> lock(clients_mutex);
+
+            auto it = client_threads.begin();
+
+            // go through threads
+            while (it != client_threads.end()) {
+
+                // if the thread is finished
+                if (it->finished->load()) {
+
+                    // join if possible
+                    if (it->thread.joinable()) {
+                        it->thread.join();
+                    }
+                    // remove the thread
+                    it = client_threads.erase(it);
+
+                // move on if the thread is not done yet
+                } else {
+                    ++it;
+                }
+            }
+        }
+
+        // this should only schedule every 10 seconds
+        std::this_thread::sleep_for(
+            std::chrono::seconds(10)
+        );
+    }
 }
 
 IO_Controller::~IO_Controller() {
