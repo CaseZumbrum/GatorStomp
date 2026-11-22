@@ -20,8 +20,7 @@ int main(){
 
     Audio_Orchestrator a("/tmp/gs_demo/capture.pcm", "/tmp/gs_demo/playback.pcm");
 
-    auto boundFunc = std::bind(&Audio_Orchestrator::handle_message, &a, std::placeholders::_1);
-    IO_Controller server("/tmp/gs.sock", boundFunc);
+    IO_Controller server("/tmp/gs.sock", std::bind(&Audio_Orchestrator::handle_message, &a, std::placeholders::_1));
 
     server.start();
 
