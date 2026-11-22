@@ -19,9 +19,9 @@
 
 IO_Controller::IO_Controller(std::string socket_path, message_handler_t message_handler=nullptr) {
     this->socket_path = socket_path;
-
     this->message_handler = message_handler;
 
+    // open the socket
     fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
 
     if (fd == -1) {
@@ -39,8 +39,10 @@ IO_Controller::IO_Controller(std::string socket_path, message_handler_t message_
     std::strncpy(addr.sun_path, socket_path.c_str(),
                  sizeof(addr.sun_path) - 1);
 
+    // remove any existing sockets at the path
     unlink(socket_path.c_str());
 
+    // bind the socket to the filesystem
     if (bind(fd, reinterpret_cast<sockaddr*>(&addr),
              sizeof(addr)) == -1) {
         close(fd);
@@ -59,6 +61,7 @@ void IO_Controller::start() {
         return;
     }
 
+    // spin up the client accepting thread
     accept_thread = std::thread(
         &IO_Controller::accept_clients, this
     );
@@ -68,6 +71,7 @@ void IO_Controller::accept_clients() {
 
     while (running) {
 
+        // accept a client (blocks until a client connects)
         int client_fd = accept(fd, nullptr, nullptr);
 
         if (client_fd == -1) {
@@ -79,6 +83,7 @@ void IO_Controller::accept_clients() {
             continue;
         }
 
+        // add a new client
         {
             std::lock_guard<std::mutex> lock(clients_mutex);
 
@@ -102,6 +107,7 @@ void IO_Controller::handle_client(int client_fd) {
 
     while (running) {
 
+        // recieve a message from the client (blocks until a message is received)
         ssize_t bytes = recv(
             client_fd,
             &msg,
@@ -109,6 +115,7 @@ void IO_Controller::handle_client(int client_fd) {
             0
         );
 
+        // nothing received
         if (bytes <= 0) {
             if (bytes == -1 && errno == EINTR) {
                 continue;
@@ -117,6 +124,7 @@ void IO_Controller::handle_client(int client_fd) {
             break;
         }
 
+        // failed packet
         if (bytes != sizeof(gs_socket_msg)) {
             std::cerr << "Invalid packet size from client "
                       << client_fd << std::endl;
@@ -134,6 +142,7 @@ void IO_Controller::handle_client(int client_fd) {
 
     close(client_fd);
 
+    // remove the client on exit
     {
         std::lock_guard<std::mutex> lock(clients_mutex);
 
@@ -150,13 +159,16 @@ bool IO_Controller::send_msg(
     gs_socket_msg* msg,
     int client_index
 ) {
+    // don't let the clients list change during a send
     std::lock_guard<std::mutex> lock(clients_mutex);
 
+    // make sure the index is valid
     if (client_index < 0 ||
         client_index >= static_cast<int>(clients.size())) {
         return false;
     }
 
+    // send the message
     ssize_t bytes = send(
         clients[client_index],
         msg,
@@ -169,6 +181,7 @@ bool IO_Controller::send_msg(
 
 void IO_Controller::stop() {
 
+    // turn off threads
     if (!running.exchange(false)) {
         return;
     }
@@ -178,10 +191,12 @@ void IO_Controller::stop() {
     close(fd);
     fd = -1;
 
+    // wait for the accepting thread
     if (accept_thread.joinable()) {
         accept_thread.join();
     }
 
+    // close all the client fd's and threads
     {
         std::lock_guard<std::mutex> lock(clients_mutex);
 
@@ -196,6 +211,7 @@ void IO_Controller::stop() {
         }
     }
 
+    // remove the path
     unlink(socket_path.c_str());
 }
 
