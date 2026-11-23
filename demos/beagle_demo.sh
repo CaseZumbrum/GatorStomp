@@ -38,8 +38,9 @@ amixer cset name='Aux Volume' 90%
 
 # Route AUX left/right into the input mixers
 amixer cset name='Mixin Left Aux Left Switch' on
-amixer cset name='Mixin Right Aux Right Switch' off
-amixer cset name='Mixin Right Mixin Left Switch' on
+amixer cset name='Mixin Right Aux Right Switch' on
+amixer cset name='Mixin Right Mixin Left Switch' off
+amixer cset name="DAC Mono Switch" on
 
 # Enable input PGA and ADC
 amixer cset name='ADC Switch' on
@@ -54,7 +55,7 @@ amixer cset name='DAC Right Source MUX' 'DAI Input Right'
 # Route DAC to headphone mixer
 amixer cset name='Mixout Left DAC Left Switch' on
 # possibly remove this, might only be needed for mono guitar hack
-amixer cset name='Mixout Right DAC Right Switch' off
+amixer cset name='Mixout Right DAC Right Switch' on
 
 # Enable headphone output
 amixer cset name='DAC Volume' 80%
