@@ -33,7 +33,7 @@ int main(int argc, char **argv){
     unsigned int pass_index = a.register_transform(&passthrough);
 
     EchoEffect echo(
-        44100,  // Sample rate
+        96000,  // Sample rate
         300.0f, // Delay (ms)
         0.75f,   // Decay
         0.5f,   // Wet

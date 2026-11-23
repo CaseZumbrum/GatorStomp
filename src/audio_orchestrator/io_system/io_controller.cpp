@@ -257,9 +257,9 @@ void IO_Controller::thread_garbage_collector(){
             }
         }
 
-        // this should only schedule every 10 seconds
+        // this should only schedule every 100 milliseconds
         std::this_thread::sleep_for(
-            std::chrono::seconds(10)
+            std::chrono::milliseconds(100)
         );
     }
 }
