@@ -27,22 +27,24 @@ make html
 
 ## Quickstart Guide
 
-Follow the instructions in the sphinx documentation for quickstart!
+Follow the instructions in the sphinx documentation for [quickstart](https://casezumbrum.github.io/GatorStomp/quickstart.html).
 
 ## Completed Work
 
-- There is a working OS image in the releases tab. This image has our needed modules and can be flashed to the PocketBeagle2 Dev Board we are using during development (instructions in the docs)
-- There are working drivers for the input buttons and encoders, as well as a testing system for simulating sending/receiving events that involve them.
-- There is a defined packet structure for controlling the main audio processor
-- There are drivers for the ADC/DAC that populate/empty FIFOs with live audio data
-- There is a simple audio orchestrator that permits c/c++ transforms on data from/to FIFOs
+- There is a full OS image under the releases tab. This image has modules and drivers for all hardware needed for this project.
+- There are modules for the DA7212 audio codec that we are using, these allow us to populate and consume audio FIFOs
+- The Audio Orchestrator is defined and performs real time DSP using configurable and extendable effects
+- There is a fully defined API structure for controlling the Audio Orchestrator
+- There are scripts that send GPIO input to the Audio Orchestrator API
+- There demo scripts for testing the entire system on PCs and the PocketBeagle2
+- There are scripts for simulating user input
+
+We are able to perform a full demo using the PocketBeagle2 and the DA7212 codec. This demo takes in an analog audio signal, performs live DSP using custom effects, and outputs an analog audio signal.
 
 ## Known Bugs
-- The audio orchestrator API does not do anything currently (cannot be controlled)
-- The audio orchestrator API does not function with multiple connected clients
-- The audio orchestrator API does not function with 0 connected clients
-- The OS is lacking a python and octave interpreter
-- The ADC/DAC drivers currently use anonymous FIFOs, we are planning to switch to named ones
-- Misaligned packets to the audio orchestrator can cause out of sync errors that destroy audio integrity
 
-For more information regarding completed work and known bugs, please view the pre_alpha_build document at the root of the repository.
+- The majority of VST plugins fail to run
+- The majority of LV2 plugins fail to run
+- The audio orchestrator may take upwards of 100ms to terminate after buffers empty fully due to the monitor thread having a 100ms sleep
+- The OS does not start our systems at boot, they need to be started manually
+- Currently configuration of the DA7212 codec is done through a bash script, should be moved into the audio workers
