@@ -12,7 +12,7 @@ The current state of the project uses 2 dev boards, the PocketBeagle 2 and the D
     - To build the OS, use :doc:`/yocto_setup` (this is not needed though, there are images on github releases!)
     - To flash the OS, follow :doc:`/running_os`
 #. Hardware
-    - To setup the hardware for the project, follow the guide 
+    - To setup the hardware for the audio codec, follow :doc:`codec`
 #. Running Demos
     - For testing the whole system, follow :doc:`/demos/audio_orchestrator_demos`
     - For testing in the user input devices, use :doc:`/demos/pocketbeagle2_button_demo` and :doc:`pocketbeagle2_pedal_controls`
