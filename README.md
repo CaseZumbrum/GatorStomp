@@ -45,6 +45,7 @@ We are able to perform a full demo using the PocketBeagle2 and the DA7212 codec.
 
 - The majority of VST plugins fail to run
 - The majority of LV2 plugins fail to run
+- The majority of CLAP plugins fail to run
 - The audio orchestrator may take upwards of 100ms to terminate after buffers empty fully due to the monitor thread having a 100ms sleep
 - The OS does not start our systems at boot, they need to be started manually
 - Currently configuration of the DA7212 codec is done through a bash script, should be moved into the audio workers
