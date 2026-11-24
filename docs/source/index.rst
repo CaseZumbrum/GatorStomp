@@ -34,16 +34,31 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Quickstart:
 
-   building.rst
-   _doxygen_generated/doxygen
-
-   yocto_setup
-   mock_listener
-   pocketbeagle2_button_demo
-   pocketbeagle2_pedal_controls
-   running_os
+   quickstart
+   building
    cross_compile
+   yocto_setup
+   running_os
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tools:
+
+   pocketbeagle2_pedal_controls
+   tools/mock_listener
    tools/wav-pcm
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Demos:
+
    demos/audio_orchestrator_demos
+   demos/pocketbeagle2_button_demo
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Doxygen:
+
+   _doxygen_generated/doxygen

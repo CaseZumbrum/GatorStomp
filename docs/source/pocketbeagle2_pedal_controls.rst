@@ -119,7 +119,7 @@ How the overlay gets loaded depends on the image.
 Installing on the Debian image
 ------------------------------
 
-This assumes the board is set up as described in :doc:`pocketbeagle2_button_demo`, with SSH working and the listener built in ``~/gatorstomp_demo``.
+This assumes the board is set up as described in :doc:`demos/pocketbeagle2_button_demo`, with SSH working and the listener built in ``~/gatorstomp_demo``.
 
 From the repo root in WSL, copy the overlay and the sender to the board:
 

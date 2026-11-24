@@ -25,6 +25,10 @@ cd docs
 make html
 ```
 
+## Quickstart Guide
+
+Follow the instructions in the sphinx documentation for quickstart!
+
 ## Completed Work
 
 - There is a working OS image in the releases tab. This image has our needed modules and can be flashed to the PocketBeagle2 Dev Board we are using during development (instructions in the docs)
