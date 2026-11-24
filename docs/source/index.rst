@@ -44,6 +44,7 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    pocketbeagle2_button_demo
    pocketbeagle2_pedal_controls
    running_os
+   codec
    cross_compile
    tools/wav-pcm
    demos/audio_orchestrator_demos
