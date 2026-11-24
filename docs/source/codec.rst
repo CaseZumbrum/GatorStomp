@@ -25,22 +25,31 @@ You can pass ``plughw:0,0`` into the ``audio_io_workers`` as ALSA devices to get
 Hardware Connnections
 +++++++++++++++++++++
 
-+------------------------+--------------------------+------------------+
-| Function               | PocketBeagle 2 Header   | Processor Signal |
-|                        | Pin                      |                  |
-+========================+==========================+==================+
-| I2S Data Input (RX)    | P1.10                    | MCASP0_AXR3      |
-+------------------------+--------------------------+------------------+
-| I2S Data Output (TX)   | P1.12                    | MCASP0_AXR2      |
-+------------------------+--------------------------+------------------+
-| I2S Bit Clock (BCLK)   | P2.01                    | MCASP0_ACLKX     |
-+------------------------+--------------------------+------------------+
-| I2S Word Clock (LRCLK) | P1.04                    | MCASP0_AFSX      |
-+------------------------+--------------------------+------------------+
-| I2C Data (SDA)         | P1.26                    | I2C2_SDA         |
-+------------------------+--------------------------+------------------+
-| I2C Clock (SCL)        | P1.28                    | I2C2_SCL         |
-+------------------------+--------------------------+------------------+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 35 30
+
+   * - Function
+     - PocketBeagle 2 Header Pin
+     - Processor Signal
+   * - I2S Data Input (RX)
+     - P1.10
+     - MCASP0_AXR3
+   * - I2S Data Output (TX)
+     - P1.12
+     - MCASP0_AXR2
+   * - I2S Bit Clock (BCLK)
+     - P2.01
+     - MCASP0_ACLKX
+   * - I2S Word Clock (LRCLK)
+     - P1.04
+     - MCASP0_AFSX
+   * - I2C Data (SDA)
+     - P1.26
+     - I2C2_SDA
+   * - I2C Clock (SCL)
+     - P1.28
+     - I2C2_SCL
 
 Follow this table for connecting the codec to the PocketBeagle. The picture below may be useful!
 
