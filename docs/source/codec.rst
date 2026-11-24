@@ -22,6 +22,34 @@ The device tree for this project should automatically mount it and it should sho
 
 You can pass ``plughw:0,0`` into the ``audio_io_workers`` as ALSA devices to get them working.
 
+Hardware Connnections
++++++++++++++++++++++
+
++------------------------+--------------------------+------------------+
+| Function               | PocketBeagle 2 Header   | Processor Signal |
+|                        | Pin                      |                  |
++========================+==========================+==================+
+| I2S Data Input (RX)    | P1.10                    | MCASP0_AXR3      |
++------------------------+--------------------------+------------------+
+| I2S Data Output (TX)   | P1.12                    | MCASP0_AXR2      |
++------------------------+--------------------------+------------------+
+| I2S Bit Clock (BCLK)   | P2.01                    | MCASP0_ACLKX     |
++------------------------+--------------------------+------------------+
+| I2S Word Clock (LRCLK) | P1.04                    | MCASP0_AFSX      |
++------------------------+--------------------------+------------------+
+| I2C Data (SDA)         | P1.26                    | I2C2_SDA         |
++------------------------+--------------------------+------------------+
+| I2C Clock (SCL)        | P1.28                    | I2C2_SCL         |
++------------------------+--------------------------+------------------+
+
+Follow this table for connecting the codec to the PocketBeagle. The picture below may be useful!
+
+.. image:: /_static/images/codec_connection.png
+   :width: 400px
+   :alt: Image showing codec connected to the PocketBeagle
+   :align: center
+
+
 Configuring the Codec
 +++++++++++++++++++++
 
