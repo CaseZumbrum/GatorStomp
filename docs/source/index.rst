@@ -41,6 +41,7 @@ or via this download link `here <https://www.doxygen.nl/download.html>`_
    cross_compile
    yocto_setup
    running_os
+   codec
 
 .. toctree::
    :maxdepth: 2
