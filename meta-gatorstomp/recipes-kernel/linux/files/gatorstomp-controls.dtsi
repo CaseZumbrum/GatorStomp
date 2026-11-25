@@ -1,0 +1,190 @@
+
+/*
+ * GatorSTOMP Controls
+ * 4 footswitches + 4 rotary encoders with push buttons
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/* GPIO pin multiplexing */
+&main_pmx0 {
+
+    /* Footswitches and encoder push buttons */
+    gatorstomp_key_pins: gatorstomp-key-pins {
+        pinctrl-single,pins = <
+            /* Footswitches 0-3 */
+            AM62X_IOPAD(0x0100, PIN_INPUT_PULLUP, 7) /* P2.22 GPIO0_63 */
+            AM62X_IOPAD(0x0104, PIN_INPUT_PULLUP, 7) /* P2.17 GPIO0_64 */
+            AM62X_IOPAD(0x0178, PIN_INPUT_PULLUP, 7) /* P2.19 GPIO1_0  */
+            AM62X_IOPAD(0x00B8, PIN_INPUT_PULLUP, 7) /* P2.02 GPIO0_45 */
+
+            /* Encoder push buttons 0-3 */
+            AM62X_IOPAD(0x00D0, PIN_INPUT_PULLUP, 7) /* P2.24 GPIO0_51 */
+            AM62X_IOPAD(0x00F8, PIN_INPUT_PULLUP, 7) /* P2.28 GPIO0_61 */
+            AM62X_IOPAD(0x01B4, PIN_INPUT_PULLUP, 7) /* P2.31 GPIO1_15 */
+            AM62X_IOPAD(0x0170, PIN_DISABLE, 7)     /* P2.31A alternate pad */
+            AM62X_IOPAD(0x00F4, PIN_INPUT_PULLUP, 7) /* P2.34 GPIO0_60 */
+        >;
+    };
+
+    /* Encoder 0 rotation */
+    gatorstomp_encoder_0_pins: gatorstomp-encoder-0-pins {
+        pinctrl-single,pins = <
+            AM62X_IOPAD(0x00D8, PIN_INPUT_PULLUP, 7) /* P2.18 A */
+            AM62X_IOPAD(0x00C8, PIN_INPUT_PULLUP, 7) /* P2.20 B */
+        >;
+    };
+
+    /* Encoder 1 rotation */
+    gatorstomp_encoder_1_pins: gatorstomp-encoder-1-pins {
+        pinctrl-single,pins = <
+            AM62X_IOPAD(0x01C4, PIN_INPUT_PULLUP, 7) /* P2.25 A */
+            AM62X_IOPAD(0x01C0, PIN_INPUT_PULLUP, 7) /* P2.27 B */
+        >;
+    };
+
+    /* Encoder 2 rotation */
+    gatorstomp_encoder_2_pins: gatorstomp-encoder-2-pins {
+        pinctrl-single,pins = <
+            AM62X_IOPAD(0x01BC, PIN_INPUT_PULLUP, 7) /* P2.29 A */
+            AM62X_IOPAD(0x00A4, PIN_DISABLE, 7)     /* P2.29A alternate pad */
+            AM62X_IOPAD(0x00EC, PIN_INPUT_PULLUP, 7) /* P2.30 B */
+        >;
+    };
+
+    /* Encoder 3 rotation */
+    gatorstomp_encoder_3_pins: gatorstomp-encoder-3-pins {
+        pinctrl-single,pins = <
+            AM62X_IOPAD(0x00E8, PIN_INPUT_PULLUP, 7) /* P2.32 A */
+            AM62X_IOPAD(0x00D4, PIN_INPUT_PULLUP, 7) /* P2.33 B */
+        >;
+    };
+};
+
+/* Input devices */
+ / {
+    /* Footswitches and encoder push buttons */
+    gatorstomp-controls {
+        compatible = "gpio-keys";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gatorstomp_key_pins>;
+
+        footswitch-0 {
+            label = "GatorStomp Foot Switch 0";
+            linux,code = <BTN_0>;
+            gpios = <&main_gpio0 63 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        footswitch-1 {
+            label = "GatorStomp Foot Switch 1";
+            linux,code = <BTN_1>;
+            gpios = <&main_gpio0 64 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        footswitch-2 {
+            label = "GatorStomp Foot Switch 2";
+            linux,code = <BTN_2>;
+            gpios = <&main_gpio1 0 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        footswitch-3 {
+            label = "GatorStomp Foot Switch 3";
+            linux,code = <BTN_3>;
+            gpios = <&main_gpio0 45 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        encoder-0-push {
+            label = "GatorStomp Encoder 0 Push";
+            linux,code = <BTN_TRIGGER_HAPPY1>;
+            gpios = <&main_gpio0 51 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        encoder-1-push {
+            label = "GatorStomp Encoder 1 Push";
+            linux,code = <BTN_TRIGGER_HAPPY2>;
+            gpios = <&main_gpio0 61 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        encoder-2-push {
+            label = "GatorStomp Encoder 2 Push";
+            linux,code = <BTN_TRIGGER_HAPPY3>;
+            gpios = <&main_gpio1 15 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+
+        encoder-3-push {
+            label = "GatorStomp Encoder 3 Push";
+            linux,code = <BTN_TRIGGER_HAPPY4>;
+            gpios = <&main_gpio0 60 GPIO_ACTIVE_LOW>;
+            debounce-interval = <10>;
+        };
+    };
+
+    /* Rotary encoder 0 */
+    gatorstomp-encoder-0 {
+        compatible = "rotary-encoder";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gatorstomp_encoder_0_pins>;
+
+        gpios = <&main_gpio0 53 GPIO_ACTIVE_LOW>,
+                <&main_gpio0 49 GPIO_ACTIVE_LOW>;
+
+        linux,axis = <REL_DIAL>;
+        rotary-encoder,relative-axis;
+        rotary-encoder,steps-per-period = <1>;
+    };
+
+    /* Rotary encoder 1 */
+    gatorstomp-encoder-1 {
+        compatible = "rotary-encoder";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gatorstomp_encoder_1_pins>;
+
+        gpios = <&main_gpio1 19 GPIO_ACTIVE_LOW>,
+                <&main_gpio1 18 GPIO_ACTIVE_LOW>;
+
+        linux,axis = <REL_DIAL>;
+        rotary-encoder,relative-axis;
+        rotary-encoder,steps-per-period = <1>;
+    };
+
+    /* Rotary encoder 2 */
+    gatorstomp-encoder-2 {
+        compatible = "rotary-encoder";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gatorstomp_encoder_2_pins>;
+
+        gpios = <&main_gpio1 17 GPIO_ACTIVE_LOW>,
+                <&main_gpio0 58 GPIO_ACTIVE_LOW>;
+
+        linux,axis = <REL_DIAL>;
+        rotary-encoder,relative-axis;
+        rotary-encoder,steps-per-period = <1>;
+    };
+
+    /* Rotary encoder 3 */
+    gatorstomp-encoder-3 {
+        compatible = "rotary-encoder";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gatorstomp_encoder_3_pins>;
+
+        gpios = <&main_gpio0 57 GPIO_ACTIVE_LOW>,
+                <&main_gpio0 52 GPIO_ACTIVE_LOW>;
+
+        linux,axis = <REL_DIAL>;
+        rotary-encoder,relative-axis;
+        rotary-encoder,steps-per-period = <1>;
+    };
+};
