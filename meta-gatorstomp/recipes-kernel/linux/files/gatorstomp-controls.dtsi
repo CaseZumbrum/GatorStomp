@@ -188,3 +188,11 @@
         rotary-encoder,steps-per-period = <1>;
     };
 };
+
+/*
+ * Disable SPI0 so its shared pins can be used
+ * by GatorSTOMP rotary encoders and push buttons.
+ */
+&main_spi0 {
+    status = "disabled";
+};
